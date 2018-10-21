@@ -1,0 +1,10 @@
+.root {
+    -fx-background-color: whitesmoke;
+}
+.label {
+    -fx-font-size: 20;
+}
+
+.paneOfImage{
+    -fx-background-color: #cdd3d3;
+}
