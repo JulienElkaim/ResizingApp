@@ -1,10 +1,39 @@
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
-
+<?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<GridPane fx:controller="sample.SampleController"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-    <Button text= "Say 'Hello World'" onAction="#sayHelloWorld"/>
-    <Label GridPane.rowIndex="1" fx:id="helloWorld"/>
-</GridPane>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<VBox fx:controller="sample.SampleController" stylesheets="/sample/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1" >
+    <MenuBar id="MenuBar" minWidth = "800"   GridPane.rowIndex="0">
+        <Menu   text="File" >
+            <MenuItem text="Open..." onAction="#ChooseAFile"/>
+            <Menu text="Others">
+                <MenuItem text="Hello ! I was hidden !"/>
+            </Menu>
+
+        </Menu>
+    </MenuBar>
+    <HBox >
+        <GridPane minWidth="200" hgap="10"  vgap="10"  >
+
+            <Button GridPane.rowIndex="0" onAction="#sayHelloWorld" text="Display Gradient Green" />
+            <Button GridPane.rowIndex="1" onAction="#sayHelloWorld" text="Display Gradient Blue" />
+            <Button GridPane.rowIndex="2" onAction="#sayHelloWorld" text="Display Gradient Red" />
+            <Label  GridPane.rowIndex="3" fx:id="helloWorld" />
+            <Label  GridPane.rowIndex="4" >Percentage Of Width</Label>
+            <Slider  GridPane.rowIndex="5"  onMouseDragged="#performTaskRequested" majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>
+        </GridPane>
+        <StackPane minWidth="1000" minHeight="700" styleClass="paneOfImage" >
+            <ImageView  StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitHeight="700.0" fitWidth="700"   preserveRatio="true" />
+        </StackPane>
+    </HBox>
+</VBox>
+
