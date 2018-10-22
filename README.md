@@ -1,6 +1,6 @@
 # ResizingApp
 
-Java 11, JavaFx
+Java 10, Java 11, JavaFx
 
 <https://docs.google.com/document/d/1WnQn_8BGB1dcxQVLzfz0Gq7P1-xpGMfX4qt73U7mLEM/edit>
 

@@ -50,7 +50,7 @@ public class SampleController {
 
     public void performTaskRequested(MouseEvent mouseEvent) {
 
-        // ============= BASE DE TEST pour resizing, possibilite; de l'efacer
+        // ============= BASE DE TEST pour resizing, possibilite; de l'effacer
 
         //Image img = this.boximage.getImage();
 
