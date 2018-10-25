@@ -24,9 +24,9 @@
     <HBox >
         <GridPane minWidth="200" hgap="10"  vgap="10"  >
 
-            <Button GridPane.rowIndex="0" onAction="#sayHelloWorld" text="Display Gradient Green" />
-            <Button GridPane.rowIndex="1" onAction="#sayHelloWorld" text="Display Gradient Blue" />
-            <Button GridPane.rowIndex="2" onAction="#sayHelloWorld" text="Display Gradient Red" />
+            <Button GridPane.rowIndex="0" onAction="#greenGradient" text="Display Gradient Green" />
+            <Button GridPane.rowIndex="1" onAction="#blueGradient" text="Display Gradient Blue" />
+            <Button GridPane.rowIndex="2" onAction="#redGradient" text="Display Gradient Red" />
             <Label  GridPane.rowIndex="3" fx:id="helloWorld" />
             <Label  GridPane.rowIndex="4" >Percentage Of Width</Label>
             <Slider  GridPane.rowIndex="5"  onMouseDragged="#performTaskRequested" majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>

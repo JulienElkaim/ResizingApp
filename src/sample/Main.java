@@ -9,16 +9,18 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Seam Carving Project");
-        primaryStage.setScene(new Scene(root, 1200, 900));
+        final Scene scene = new Scene(root, 1200, 900);
+
+        primaryStage.setScene(scene);
         primaryStage.show();
 
     }
 
-    public static void main(String[] args) {
-        launch(args);
+        public static void main (String[]args){
+            launch(args);
+        }
     }
-}
 
