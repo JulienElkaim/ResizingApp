@@ -10,6 +10,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.image.Image?>
+
 
 <VBox fx:controller="sample.SampleController" stylesheets="/sample/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1" >
     <MenuBar id="MenuBar" minWidth = "800"   GridPane.rowIndex="0">
@@ -24,15 +26,17 @@
     <HBox >
         <GridPane minWidth="200" hgap="10"  vgap="10"  >
 
-            <Button GridPane.rowIndex="0" onAction="#sayHelloWorld" text="Display Gradient Green" />
-            <Button GridPane.rowIndex="1" onAction="#sayHelloWorld" text="Display Gradient Blue" />
-            <Button GridPane.rowIndex="2" onAction="#sayHelloWorld" text="Display Gradient Red" />
+            <Button GridPane.rowIndex="0" onAction="#julienZoomingExample" text="Zooming Example" />
+            <Button GridPane.rowIndex="1" onAction="#julienRedColoringExample" text="Red Coloring Example" />
+            <Button GridPane.rowIndex="2"  onAction="#julienResizingExample" text="Resizing" />
             <Label  GridPane.rowIndex="3" fx:id="helloWorld" />
             <Label  GridPane.rowIndex="4" >Percentage Of Width</Label>
-            <Slider  GridPane.rowIndex="5"  onMouseDragged="#performTaskRequested" majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>
+            <Slider  value="50" fx:id="mySlider" GridPane.rowIndex="5" majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>
         </GridPane>
-        <StackPane minWidth="1000" minHeight="700" styleClass="paneOfImage" >
-            <ImageView  StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitHeight="700.0" fitWidth="700"   preserveRatio="true" />
+        <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage" >
+            <ImageView  StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitHeight="700.0" fitWidth="700"   preserveRatio="true">
+
+            </ImageView>
         </StackPane>
     </HBox>
 </VBox>

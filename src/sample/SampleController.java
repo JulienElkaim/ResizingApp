@@ -13,27 +13,70 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import javafx.scene.control.Slider;
 
 import static java.awt.Color.*;
 
 public class SampleController {
-    private int count=0;
+    public Slider mySlider;
     public ImageView myImage;
     public Label helloWorld;
+    public BufferedImage myBufferedImage;
+    public BufferedImage myBufferedImageSTOCKED;
 
 
-    /** Say Hello to the world and increment a counter.
-     *  Now used by 3 buttons and a slider.
-     * @param actionEvent When button is pressed
+
+
+    /**
+     * Provide an example of how manipulating the bufferedImage, COULD BE AN ALTERNATIVE FOR RESIZING
      */
-    public void sayHelloWorld(ActionEvent actionEvent) {
-
-        helloWorld.setFont(new Font("Arial",10)); //seems to do not work.
-        count++;
-        helloWorld.setText("Hello the world ! " + count);
+    public void julienZoomingExample(ActionEvent actionEvent){
+        int x =(int)(0.25*this.myBufferedImage.getWidth()) ;
+        int y = (int)(0.25*this.myBufferedImage.getHeight());
+        int width =(int)(0.5*this.myBufferedImage.getWidth()) ;
+        int height = (int)(0.5*this.myBufferedImage.getHeight());
+        this.myBufferedImage = this.myBufferedImage.getSubimage(x,y,width,height);
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
+    /**
+     * Provide an example of how coloring an image based on its RGB value
+     */
+    public void julienRedColoringExample(ActionEvent actionEvent) {
+        int maxX = this.myBufferedImage.getWidth();
+        int maxY = this.myBufferedImage.getHeight();
 
+        for (int x = 1; x < maxX; x++){
+            for(int y = 1; y < maxY; y++){
+
+                Color myPixelColor = new Color(this.myBufferedImage.getRGB(x,y));
+                int red = myPixelColor.getRed();
+
+                double coef = (this.mySlider.getValue()+50)/100 ;
+                red = (255 < (int)(red*coef))? 255: (int)(red*coef);
+
+                int blue = myPixelColor.getBlue();
+                int green = myPixelColor.getGreen();
+                int pixel =(red << 16) + (green << 8) + blue;
+                this.myBufferedImage.setRGB(x,y,pixel);
+            }
+        }
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    }
+
+    /**
+     * Provide an example of how resizing regarding the slider value
+     */
+    public void julienResizingExample(){
+       double coef = (0.01<this.mySlider.getValue()/100)? this.mySlider.getValue()/100:0.01 ;
+       int widthInitial = this.myBufferedImageSTOCKED.getWidth();
+       int heightInitial = this.myBufferedImageSTOCKED.getHeight();
+       this.myImage.maxHeight(500);
+       this.myImage.maxWidth(500);
+       this.myImage.setFitHeight(coef*heightInitial);
+       this.myImage.setFitWidth(coef*widthInitial);
+
+    }
 
     public void ChooseAFile(ActionEvent actionEvent) throws IOException {
 
@@ -41,46 +84,34 @@ public class SampleController {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("JPEG Files (*.jpg)", "*.jpg");
         fileChooser.getExtensionFilters().add(extFilter);
+        fileChooser.setInitialDirectory(new File("./img/"));
         File file = fileChooser.showOpenDialog(null);
 
         //Displaying the image chosen.
-        BufferedImage bufferedImage;
-        bufferedImage = ImageIO.read(file);
-        Image image = SwingFXUtils.toFXImage(bufferedImage, null);
+
+        this.myBufferedImageSTOCKED = ImageIO.read(file);
+        this.myBufferedImage = this.myBufferedImageSTOCKED;
+        Image image = SwingFXUtils.toFXImage(this.myBufferedImage, null);
         this.myImage.setImage(image);
 
     }
 
-    public void performTaskRequested(ActionEvent actionEvent) {
-
-        // ============= BASE DE TEST pour resizing, possibilite; de l'effacer
-
-        //Image img = this.boximage.getImage();
-
-        //double w = img.getWidth();
-        //double h = img.getHeight();
-
-        //BufferedImage dimg = new BufferedImage((int)w+1, (int)h+1, BufferedImage.TYPE_INT_ARGB);
-        //Image image = SwingFXUtils.toFXImage(dimg, null);
-        //this.myImage.setImage(image);
-
-
-        //Just to show the slider is in use.
-        this.sayHelloWorld(new ActionEvent());
-        }
-
-    public static BufferedImage createGradientMask(int width, int height, int orientation, Color color) {
+    /**
+     * Laurence Gradient way
+     * */
+    /*
+    public  BufferedImage createGradientMask(int width, int height, int orientation, Color color) {
         BufferedImage gradient = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = gradient.createGraphics();
+        Graphics2D g = this.myBufferedImage.createGraphics();
         GradientPaint paint = new GradientPaint(0.0f, 0.0f, BLACK, orientation == SwingConstants.HORIZONTAL? width : 0.0f,
                 orientation == SwingConstants.VERTICAL? height : 0.0f, color);
         g.setPaint(paint);
         g.fill(new Rectangle2D.Double(0, 0, width, height));
 
         g.dispose();
-        gradient.flush();
+        this.myBufferedImage.flush();
 
-        return gradient;
+        return this.myBufferedImage;
     }
 
     public void greenGradient(ActionEvent actionEvent) {
@@ -89,23 +120,9 @@ public class SampleController {
         bufferedImage = this.createGradientMask(900, 1200, 0, GREEN);
         Image image = SwingFXUtils.toFXImage(bufferedImage, null);
         this.myImage.setImage(image);
-    }
+    }*/
 
-    public void redGradient(ActionEvent actionEvent) {
-        //Displaying the gradient.
-        BufferedImage bufferedImage;
-        bufferedImage = this.createGradientMask(900, 1200, 0, RED);
-        Image image = SwingFXUtils.toFXImage(bufferedImage, null);
-        this.myImage.setImage(image);
-    }
 
-    public void blueGradient(ActionEvent actionEvent) {
-        //Displaying the gradient.
-        BufferedImage bufferedImage;
-        bufferedImage = this.createGradientMask(900, 1200, 0, BLUE);
-        Image image = SwingFXUtils.toFXImage(bufferedImage, null);
-        this.myImage.setImage(image);
-    }
 }
 
 
