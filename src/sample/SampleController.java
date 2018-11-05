@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javafx.scene.control.Slider;
-import javafx.stage.Stage;
 
 import static java.lang.Math.abs;
 
@@ -57,7 +56,6 @@ public class SampleController {
         File file = fileChooser.showOpenDialog(null);
 
         //Displaying the image chosen.
-
         this.myBufferedImageSTOCKED = ImageIO.read(file);
         this.myBufferedImage = this.myBufferedImageSTOCKED;
         Image image = SwingFXUtils.toFXImage(this.myBufferedImage, null);
@@ -103,7 +101,7 @@ public class SampleController {
                     Right = myRightPixelColor.getBlue();
                 }
                 int gradient = abs(Left-Right);
-                if (gradient > 255) { //8 pour transparent, 16 pour rouge, 24 pour green, rien pour bleu
+                if (gradient > 255) {
                     gradient = 255;
                 }
                 gradient = (gradient << decalage);
@@ -127,6 +125,8 @@ public class SampleController {
         this.myBufferedImage = createGradient("blue");
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
+
+
 
 }
 
