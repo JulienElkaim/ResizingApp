@@ -95,11 +95,11 @@ public class SampleController {
                     gradient = 255;
                 }
 
-                //changement de couleur  //8 pour transparent, 16 pour rouge, 24 pour green, rien pour bleu
+                //changement de couleur  //8 pour green, 16 pour rouge, rien pour bleu
                 if (couleur == "red") { //rouge
                     gradient = (gradient << 16);
                 } else if (couleur == "green") { //vert
-                    gradient = (gradient << 24);
+                    gradient = (gradient << 8);
                 }
                 this.myBufferedImage.setRGB(x,y,gradient);
             }
