@@ -4,18 +4,15 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javafx.scene.control.Slider;
 
-import static java.awt.Color.*;
+import static java.lang.Math.abs;
 
 public class SampleController {
     public Slider mySlider;
@@ -23,7 +20,6 @@ public class SampleController {
     public Label helloWorld;
     public BufferedImage myBufferedImage;
     public BufferedImage myBufferedImageSTOCKED;
-
 
 
 
@@ -38,30 +34,6 @@ public class SampleController {
         this.myBufferedImage = this.myBufferedImage.getSubimage(x,y,width,height);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
-    }
-    /**
-     * Provide an example of how coloring an image based on its RGB value
-     */
-    public void julienRedColoringExample(ActionEvent actionEvent) {
-        int maxX = this.myBufferedImage.getWidth();
-        int maxY = this.myBufferedImage.getHeight();
-
-        for (int x = 1; x < maxX; x++){
-            for(int y = 1; y < maxY; y++){
-
-                Color myPixelColor = new Color(this.myBufferedImage.getRGB(x,y));
-                int red = myPixelColor.getRed();
-
-                double coef = (this.mySlider.getValue()+50)/100 ;
-                red = (255 < (int)(red*coef))? 255: (int)(red*coef);
-
-                int blue = myPixelColor.getBlue();
-                int green = myPixelColor.getGreen();
-                int pixel =(red << 16) + (green << 8) + blue;
-                this.myBufferedImage.setRGB(x,y,pixel);
-            }
-        }
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
     /**
@@ -97,31 +69,58 @@ public class SampleController {
     }
 
     /**
-     * Laurence Gradient way
-     * */
-    /*
-    public  BufferedImage createGradientMask(int width, int height, int orientation, Color color) {
-        BufferedImage gradient = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = this.myBufferedImage.createGraphics();
-        GradientPaint paint = new GradientPaint(0.0f, 0.0f, BLACK, orientation == SwingConstants.HORIZONTAL? width : 0.0f,
-                orientation == SwingConstants.VERTICAL? height : 0.0f, color);
-        g.setPaint(paint);
-        g.fill(new Rectangle2D.Double(0, 0, width, height));
+     * The gradient is the difference between the intensity of the same colour in the left and in the right pixel
+     */
 
-        g.dispose();
-        this.myBufferedImage.flush();
+    public BufferedImage createGradient(String couleur){
+        int maxX = this.myBufferedImage.getWidth();
+        int maxY = this.myBufferedImage.getHeight();
+        this.myBufferedImageSTOCKED = this.myBufferedImage;
 
+        for (int x = 2; x < maxX-1; x++) {
+            for (int y = 1; y < maxY; y++) {
+
+                Color myPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x, y));
+
+                //pixel à gauche
+                Color myLeftPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x - 1, y));
+                int redLeft = myLeftPixelColor.getRed();
+
+                //pixel à droite
+                Color myRightPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x + 1, y));
+                int redRight = myRightPixelColor.getRed();
+
+                int gradient = abs(redLeft - redRight);
+                if (gradient > 255) { //8 pour transparent, 16 pour rouge, 24 pour green, rien pour bleu
+                    gradient = 255;
+                }
+
+                //changement de couleur  //8 pour transparent, 16 pour rouge, 24 pour green, rien pour bleu
+                if (couleur == "red") { //rouge
+                    gradient = (gradient << 16);
+                } else if (couleur == "green") { //vert
+                    gradient = (gradient << 24);
+                }
+                this.myBufferedImage.setRGB(x,y,gradient);
+            }
+        }
         return this.myBufferedImage;
     }
 
-    public void greenGradient(ActionEvent actionEvent) {
-        //Displaying the gradient.
-        BufferedImage bufferedImage;
-        bufferedImage = this.createGradientMask(900, 1200, 0, GREEN);
-        Image image = SwingFXUtils.toFXImage(bufferedImage, null);
-        this.myImage.setImage(image);
-    }*/
+    public void redGradient(ActionEvent actionEvent){
+        this.myBufferedImage = createGradient("red");
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    }
 
+    public void greenGradient(ActionEvent actionEvent){
+        this.myBufferedImage = createGradient("green");
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    }
+
+    public void blueGradient(ActionEvent actionEvent){
+        this.myBufferedImage = createGradient("blue");
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    }
 
 }
 
