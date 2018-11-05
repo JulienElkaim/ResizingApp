@@ -27,7 +27,7 @@
         <GridPane minWidth="200" hgap="10"  vgap="10"  >
 
             <Button GridPane.rowIndex="0" onAction="#julienZoomingExample" text="Zooming Example" />
-            <Button GridPane.rowIndex="1" onAction="#julienRedColoringExample" text="Red Coloring Example" />
+            <Button GridPane.rowIndex="1"  onAction="#Gradient" text="Red Gradient" />
             <Button GridPane.rowIndex="2"  onAction="#julienResizingExample" text="Resizing" />
             <Label  GridPane.rowIndex="3" fx:id="helloWorld" />
             <Label  GridPane.rowIndex="4" >Percentage Of Width</Label>
