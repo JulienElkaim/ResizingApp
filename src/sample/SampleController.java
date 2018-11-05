@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javafx.scene.control.Slider;
+import javafx.stage.Stage;
 
 import static java.lang.Math.abs;
 
@@ -39,15 +40,11 @@ public class SampleController {
     /**
      * Provide an example of how resizing regarding the slider value
      */
-    public void julienResizingExample(){
-       double coef = (0.01<this.mySlider.getValue()/100)? this.mySlider.getValue()/100:0.01 ;
-       int widthInitial = this.myBufferedImageSTOCKED.getWidth();
-       int heightInitial = this.myBufferedImageSTOCKED.getHeight();
-       this.myImage.maxHeight(500);
-       this.myImage.maxWidth(500);
-       this.myImage.setFitHeight(coef*heightInitial);
-       this.myImage.setFitWidth(coef*widthInitial);
-
+    public void resizing(){
+        double coef = (0.01<this.mySlider.getValue()/100)? abs(this.mySlider.getValue())/100:0.01 ;
+        this.myImage.setScaleY(1);
+        this.myImage.setScaleX(coef);
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
     public void ChooseAFile(ActionEvent actionEvent) throws IOException {
@@ -84,23 +81,32 @@ public class SampleController {
 
                 //pixel à gauche
                 Color myLeftPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x - 1, y));
-                int redLeft = myLeftPixelColor.getRed();
-
                 //pixel à droite
                 Color myRightPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x + 1, y));
-                int redRight = myRightPixelColor.getRed();
 
-                int gradient = abs(redLeft - redRight);
+                int decalage = 0;
+                int Left = 0;
+                int Right = 0;
+                //changement de couleur  //8 pour green, 16 pour rouge, rien pour bleu
+                if (couleur == "red") { //rouge
+                    Left = myLeftPixelColor.getRed();
+                    Right = myRightPixelColor.getRed();
+                    decalage = 16;
+                    //gradient = (gradient << 16);
+                } else if (couleur == "green") { //vert
+                    Left = myLeftPixelColor.getGreen();
+                    Right = myRightPixelColor.getGreen();
+                    decalage = 8;
+                    //gradient = (gradient << 8);
+                } else {
+                    Left = myLeftPixelColor.getBlue();
+                    Right = myRightPixelColor.getBlue();
+                }
+                int gradient = abs(Left-Right);
                 if (gradient > 255) { //8 pour transparent, 16 pour rouge, 24 pour green, rien pour bleu
                     gradient = 255;
                 }
-
-                //changement de couleur  //8 pour green, 16 pour rouge, rien pour bleu
-                if (couleur == "red") { //rouge
-                    gradient = (gradient << 16);
-                } else if (couleur == "green") { //vert
-                    gradient = (gradient << 8);
-                }
+                gradient = (gradient << decalage);
                 this.myBufferedImage.setRGB(x,y,gradient);
             }
         }

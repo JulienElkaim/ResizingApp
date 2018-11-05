@@ -30,10 +30,10 @@
             <Button GridPane.rowIndex="1"  onAction="#redGradient" text="Red Gradient" />
             <Button GridPane.rowIndex="2"  onAction="#greenGradient" text="Green Gradient" />
             <Button GridPane.rowIndex="3"  onAction="#blueGradient" text="Blue Gradient" />
-            <Button GridPane.rowIndex="4"  onAction="#julienResizingExample" text="Resizing" />
+            <Button GridPane.rowIndex="4"  onAction="#resizing" text="Resizing" />
             <Label  GridPane.rowIndex="5" fx:id="helloWorld" />
             <Label  GridPane.rowIndex="6" >Percentage Of Width</Label>
-            <Slider  value="50" fx:id="mySlider" GridPane.rowIndex="5" majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>
+            <Slider  value="50" fx:id="mySlider" GridPane.rowIndex="7" majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>
         </GridPane>
         <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage" >
             <ImageView  StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitHeight="700.0" fitWidth="700"   preserveRatio="true">
