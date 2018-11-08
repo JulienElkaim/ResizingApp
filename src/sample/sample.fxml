@@ -26,7 +26,7 @@
     <HBox >
         <GridPane minWidth="200" hgap="10"  vgap="10"  >
 
-            <Button GridPane.rowIndex="0" onAction="#julienZoomingExample" text="Zooming Example" />
+            <Button GridPane.rowIndex="0" onAction="#createCropImage" text="Crop Image" />
             <Button GridPane.rowIndex="1"  onAction="#redGradient" text="Red Gradient" />
             <Button GridPane.rowIndex="2"  onAction="#greenGradient" text="Green Gradient" />
             <Button GridPane.rowIndex="3"  onAction="#blueGradient" text="Blue Gradient" />

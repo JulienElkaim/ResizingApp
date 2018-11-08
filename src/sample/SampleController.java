@@ -126,7 +126,14 @@ public class SampleController {
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
+    public void createCropImage() {
+        double coef = (0.01<this.mySlider.getValue()/100)? abs(this.mySlider.getValue())/100:0.01 ;
+        int width = this.myBufferedImageSTOCKED.getWidth() ;
+        int height = this.myBufferedImageSTOCKED.getHeight();
+        BufferedImage dest = this.myBufferedImage.getSubimage(0, 0, (int) (coef*width), height);
+        this.myImage.setImage(SwingFXUtils.toFXImage(dest, null));
 
+    }
 
 }
 
