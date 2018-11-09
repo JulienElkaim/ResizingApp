@@ -17,6 +17,7 @@
     <MenuBar id="MenuBar" minWidth = "800"   GridPane.rowIndex="0">
         <Menu   text="File" >
             <MenuItem text="Open..." onAction="#ChooseAFile"/>
+            <MenuItem text="Save as..." onAction="#saveAFile"/>
             <Menu text="Others">
                 <MenuItem text="Hello ! I was hidden !"/>
             </Menu>

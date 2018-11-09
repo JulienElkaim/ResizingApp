@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import javafx.scene.control.Slider;
 
+import javax.imageio.ImageIO;
+
 import static java.lang.Math.abs;
 
 public class SampleController {
@@ -60,6 +62,20 @@ public class SampleController {
         this.myBufferedImage = this.myBufferedImageSTOCKED;
         Image image = SwingFXUtils.toFXImage(this.myBufferedImage, null);
         this.myImage.setImage(image);
+
+    }
+
+    public void saveAFile(ActionEvent actionEvent) throws IOException{
+
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG Files (*.jpg)", "*.jpg");
+
+        FileChooser saveFileChooser = new FileChooser();
+        saveFileChooser.getExtensionFilters().add(extFilter);
+        saveFileChooser.setInitialDirectory(new File("./img/"));
+        saveFileChooser.setInitialFileName("AfterMyModifications");
+        File file = saveFileChooser.showSaveDialog(null);
+
+        ImageIO.write(this.myBufferedImage, "jpg", file);
 
     }
 
