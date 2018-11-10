@@ -13,7 +13,8 @@
 <?import javafx.scene.image.Image?>
 
 
-<VBox fx:controller="sample.SampleController" stylesheets="/sample/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1" >
+<?import javafx.scene.control.ScrollPane?>
+<VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressedAdd" fx:controller="sample.SampleController" stylesheets="/sample/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1" >
     <MenuBar id="MenuBar" minWidth = "800"   GridPane.rowIndex="0">
         <Menu   text="File" >
             <MenuItem text="Open..." onAction="#ChooseAFile"/>
@@ -38,7 +39,7 @@
             <Button GridPane.rowIndex="8"  onAction="#resizing" text="Resizing OLD" />
         </GridPane>
         <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage" >
-            <ImageView StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitHeight="700.0" fitWidth="700"   preserveRatio="true">
+            <ImageView onMouseClicked="#imageClicked" StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitWidth="1000" fitHeight="850" preserveRatio="true">
 
             </ImageView>
         </StackPane>

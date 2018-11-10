@@ -13,6 +13,8 @@ import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.activation.ActivationInstantiator;
@@ -24,7 +26,7 @@ import javax.imageio.ImageIO;
 import static java.lang.Math.abs;
 
 public class SampleController {
-    //private KeyCode keyPressed;
+    private KeyCode keyPressed;
     private String sliderListener="";
     public Slider mySlider;
     public ImageView myImage;
@@ -33,15 +35,15 @@ public class SampleController {
     public BufferedImage myBufferedImageSTOCKED;
 
     public void initialize(){
-        System.out.println("lol");
+
 
         //Reaction when  the Slider value is changed
-        this.mySlider.valueProperty().addListener((ov, old_val, new_val) -> this.listenSliderChange());
+        this.mySlider.valueProperty().addListener((ov, old_val, new_val) -> this.listenSliderChange(ov, old_val, new_val));
 
 
     }
 
-    private void listenSliderChange() {
+    private void listenSliderChange(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
 
         //The function called will change accordingly to the last listener activated
         switch(this.sliderListener){
@@ -49,23 +51,58 @@ public class SampleController {
                 this.resizing();
                 break;
             case "Zooming Example":
-                this.zoom();
+                this.unZoom();
+
+                double coefViewReal = this.myImage.getFitWidth()/this.myBufferedImage.getWidth();
+                double widthView = this.myBufferedImage.getWidth()*coefViewReal;
+                double heightView = this.myBufferedImage.getHeight()*coefViewReal;
+                this.zoom( 0.5*widthView, 0.5*heightView );
                 break;
         }
 
     }
+    private BufferedImage cloningBufferedImage(BufferedImage bImage){
+        ColorModel cm = bImage.getColorModel();
+        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+        WritableRaster raster = bImage.copyData(null);
+        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
 
-    /**
-     * Provide an example of how manipulating the bufferedImage, COULD BE AN ALTERNATIVE FOR RESIZING
-     */
-    public void zoom(){
-        int x =(int)(0.25*this.myBufferedImage.getWidth()) ;
-        int y = (int)(0.25*this.myBufferedImage.getHeight());
-        int width =(int)(0.5*this.myBufferedImage.getWidth()) ;
-        int height = (int)(0.5*this.myBufferedImage.getHeight());
-        this.myBufferedImage = this.myBufferedImage.getSubimage(x,y,width,height);
+    }
+    private void unZoom(){
+
+        this.myBufferedImage = cloningBufferedImage(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
+    }
+
+    private void zoom(double X, double Y){
+        //zooming power is 30% of the initial image
+
+        double zoomingCoef = this.mySlider.getValue()/100  *(0.1-1) +1;// 1* -0.9 +1
+        //double zoomingCoef = this.mySlider.getValue()/100;
+        double initWidth = this.myBufferedImage.getWidth();
+        double initHeight = this.myBufferedImage.getHeight();
+
+        double coefViewReal = this.myImage.getFitWidth()/initWidth;
+
+        double XReal = X/coefViewReal;
+        double YReal = Y/coefViewReal;
+
+        double x = Math.max(0, XReal - (zoomingCoef/2)* initWidth);
+        double y = Math.max(0 , YReal - (zoomingCoef/2)* initHeight);
+
+        int width =(int)(zoomingCoef*this.myBufferedImage.getWidth()) ;
+        int height = (int)(zoomingCoef*this.myBufferedImage.getHeight());
+
+        while (x+width >= this.myBufferedImage.getWidth()){
+            x-=1;
+        }
+        while (y+height >= this.myBufferedImage.getHeight()){
+            y-=1;
+        }
+
+        this.myBufferedImage = this.myBufferedImage.getSubimage((int)x,(int)y,width,height);
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
 
@@ -90,7 +127,7 @@ public class SampleController {
 
         //Displaying the image chosen.
         this.myBufferedImageSTOCKED = ImageIO.read(file);
-        this.myBufferedImage = this.myBufferedImageSTOCKED;
+        this.myBufferedImage = cloningBufferedImage(this.myBufferedImageSTOCKED);
         Image image = SwingFXUtils.toFXImage(this.myBufferedImage, null);
         this.myImage.setImage(image);
 
@@ -194,6 +231,23 @@ public class SampleController {
         return myStr;
     }
 
+
+    public void keyPressedRemove(KeyEvent keyEvent) {
+        this.keyPressed = null;
+    }
+
+    public void keyPressedAdd(KeyEvent keyEvent) {
+        this.keyPressed = keyEvent.getCode();
+    }
+
+    public void imageClicked(MouseEvent mouseEvent) {
+
+        if (this.keyPressed == KeyCode.SHIFT)
+            this.unZoom();
+        else
+            this.zoom(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY());
+
+    }
 }
 
 
