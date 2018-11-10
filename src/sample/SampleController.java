@@ -1,6 +1,7 @@
 package sample;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,9 +21,8 @@ public class SampleController {
     public Slider mySlider;
     public ImageView myImage;
     public Label helloWorld;
-    public BufferedImage myBufferedImage;
-    public BufferedImage myBufferedImageSTOCKED;
-
+    private BufferedImage myBufferedImage;
+    private BufferedImage myBufferedImageSTOCKED;
 
 
     /**
@@ -59,7 +59,7 @@ public class SampleController {
 
         //Displaying the image chosen.
         this.myBufferedImageSTOCKED = ImageIO.read(file);
-        this.myBufferedImage = this.myBufferedImageSTOCKED;
+        this.myBufferedImage =   ImageIO.read(file);
         Image image = SwingFXUtils.toFXImage(this.myBufferedImage, null);
         this.myImage.setImage(image);
 
@@ -83,20 +83,19 @@ public class SampleController {
      * The gradient is the difference between the intensity of the same colour in the left and in the right pixel
      */
 
-    public BufferedImage createGradient(String couleur){
+    public void createGradient(String couleur){
         int maxX = this.myBufferedImage.getWidth();
         int maxY = this.myBufferedImage.getHeight();
-        this.myBufferedImageSTOCKED = this.myBufferedImage;
+
 
         for (int x = 2; x < maxX-1; x++) {
             for (int y = 1; y < maxY; y++) {
 
-                Color myPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x, y));
-
-                //pixel à gauche
-                Color myLeftPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x - 1, y));
                 //pixel à droite
                 Color myRightPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x + 1, y));
+                //pixel à gauche
+                Color myLeftPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x - 1, y));
+
 
                 int decalage = 0;
                 int Left = 0;
@@ -122,23 +121,24 @@ public class SampleController {
                 }
                 gradient = (gradient << decalage);
                 this.myBufferedImage.setRGB(x,y,gradient);
+
             }
         }
-        return this.myBufferedImage;
+
     }
 
     public void redGradient(ActionEvent actionEvent){
-        this.myBufferedImage = createGradient("red");
+        createGradient("red");
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
     public void greenGradient(ActionEvent actionEvent){
-        this.myBufferedImage = createGradient("green");
+        createGradient("green");
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
     public void blueGradient(ActionEvent actionEvent){
-        this.myBufferedImage = createGradient("blue");
+        createGradient("blue");
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
