@@ -83,8 +83,8 @@ public class SampleController {
                 Color myRightPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x + 1, y));
 
                 int decalage = 0;
-                int Left = 0;
-                int Right = 0;
+                int Left;
+                int Right;
                 //changement de couleur  //8 pour green, 16 pour rouge, rien pour bleu
                 if (couleur == "red") { //rouge
                     Left = myLeftPixelColor.getRed();
