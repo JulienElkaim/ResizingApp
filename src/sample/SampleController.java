@@ -1,15 +1,22 @@
 package sample;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.rmi.activation.ActivationInstantiator;
+
 import javafx.scene.control.Slider;
 
 import javax.imageio.ImageIO;
@@ -17,18 +24,41 @@ import javax.imageio.ImageIO;
 import static java.lang.Math.abs;
 
 public class SampleController {
+    //private KeyCode keyPressed;
+    private String sliderListener="";
     public Slider mySlider;
     public ImageView myImage;
     public Label helloWorld;
     public BufferedImage myBufferedImage;
     public BufferedImage myBufferedImageSTOCKED;
 
+    public void initialize(){
+        System.out.println("lol");
 
+        //Reaction when  the Slider value is changed
+        this.mySlider.valueProperty().addListener((ov, old_val, new_val) -> this.listenSliderChange());
+
+
+    }
+
+    private void listenSliderChange() {
+
+        //The function called will change accordingly to the last listener activated
+        switch(this.sliderListener){
+            case "Resizing":
+                this.resizing();
+                break;
+            case "Zooming Example":
+                this.zoom();
+                break;
+        }
+
+    }
 
     /**
      * Provide an example of how manipulating the bufferedImage, COULD BE AN ALTERNATIVE FOR RESIZING
      */
-    public void julienZoomingExample(ActionEvent actionEvent){
+    public void zoom(){
         int x =(int)(0.25*this.myBufferedImage.getWidth()) ;
         int y = (int)(0.25*this.myBufferedImage.getHeight());
         int width =(int)(0.5*this.myBufferedImage.getWidth()) ;
@@ -37,6 +67,7 @@ public class SampleController {
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
+
 
     /**
      * Provide an example of how resizing regarding the slider value
@@ -143,6 +174,25 @@ public class SampleController {
     }
 
 
+    public void Switcher(ActionEvent actionEvent) {
+       this.sliderListener = this.getText(actionEvent.getSource().toString());
+    }
+
+    private String getText (String src){
+        String myStr="";
+        char currentChar;
+        for (int i=src.length()-2; i> -1; i--){
+
+            currentChar = src.charAt(i);
+            if (currentChar=='\''){
+                i = -1;
+                continue;
+            }
+            myStr = currentChar + myStr;
+
+        }
+        return myStr;
+    }
 
 }
 
