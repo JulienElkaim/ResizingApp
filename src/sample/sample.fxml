@@ -39,7 +39,7 @@
             <Button GridPane.rowIndex="8"  onAction="#createCropImage" text="Crop image" />
         </GridPane>
         <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage" >
-            <ImageView onMouseClicked="#imageClicked" StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitWidth="1000" fitHeight="850" preserveRatio="true">
+            <ImageView onMouseClicked="#imageClicked" StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage" fitWidth="1000" fitHeight="850" preserveRatio="true" >
 
             </ImageView>
         </StackPane>
