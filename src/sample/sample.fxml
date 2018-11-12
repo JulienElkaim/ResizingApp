@@ -37,6 +37,9 @@
             <Label  GridPane.rowIndex="6" >Percentage Of Width</Label>
             <Slider value="50" fx:id="mySlider" GridPane.rowIndex="7" majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>
             <Button GridPane.rowIndex="8"  onAction="#resizing" text="Resizing OLD" />
+            <Button GridPane.rowIndex="9" onAction = "#energyMap" text="Energy computation" />
+            <Button GridPane.rowIndex="10" onAction = "#printBestSeamVertical" text="Seam Printing" />
+
         </GridPane>
         <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage" >
             <ImageView onMouseClicked="#imageClicked" StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitWidth="1000" fitHeight="850" preserveRatio="true">

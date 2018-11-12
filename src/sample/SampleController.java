@@ -248,6 +248,7 @@ public class SampleController {
     }
 
     public void imageClicked(MouseEvent mouseEvent) {
+        System.out.println(mouseEvent.getX() + " , " + mouseEvent.getY());
 
         if (this.keyPressed == KeyCode.SHIFT)
             this.unZoom();
@@ -305,6 +306,105 @@ public class SampleController {
         this.myBufferedImage = grayOut(determineEnergy());
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
+
+
+    private long[][] dynamicEnergySeamVertical(){
+        int maxX = this.myBufferedImage.getWidth();
+        int maxY = this.myBufferedImage.getHeight();
+        long [][] dynamicSeamTable = new long [maxX][maxY];
+
+        //seam computing
+        for (int y = 0; y < maxY; y++) {
+            for (int x = 0; x < maxX; x++) {
+                if (y == 0) {
+                    // la toute premiere ligne
+                    dynamicSeamTable[x][y] = this.myBufferedImage.getRGB(x,y);
+                }else{
+                    // les autres lignes
+
+                    // le pixel border-left de l'image
+                    if (x==0){
+                        dynamicSeamTable[x][y] = this.myBufferedImage.getRGB(x,y) + Math.min(dynamicSeamTable[x][y-1], dynamicSeamTable[x+1][y-1]);
+
+                    }else if(x==(maxX-1)){ // le pixel border-right de l'image
+                        dynamicSeamTable[x][y] = this.myBufferedImage.getRGB(x,y) + Math.min(dynamicSeamTable[x][y-1], dynamicSeamTable[x-1][y-1]);
+
+                    }else{ // les pixels au milieu de la ligne
+                        dynamicSeamTable[x][y] = this.myBufferedImage.getRGB(x,y) + Math.min(dynamicSeamTable[x][y-1], Math.min(dynamicSeamTable[x-1][y-1],dynamicSeamTable[x+1][y-1] ) );
+                    }
+                }
+            }
+
+        }
+
+        return dynamicSeamTable;
+
+    }
+
+    private int[] bestVerticalSeam(long[][] seamTable){
+        int maxY = seamTable[0].length;
+        int maxX = seamTable.length;
+        int[] lowestSeamXCoordinates = new int [maxY];
+
+        //recherche dans la dernière ligne du pixel etant la fin de la seam la plus petite
+        for (int x=0 ; x < maxX;x++){
+            if (x == 0){
+
+                lowestSeamXCoordinates[maxY-1] = 0; // Premier pixel a etre verifier, il est champion LOW par defaut
+
+            }else{
+                if(seamTable[lowestSeamXCoordinates[maxY-1] ][maxY-1] > seamTable[x][maxY-1]) // Si notre champion LOW est battu
+                    lowestSeamXCoordinates[maxY-1] = x;
+            }
+        }
+
+        //Pour tous les autres lignes en decoulant
+
+        for (int y=(maxY-2);y >-1; y--){
+            //comparaison entre les pixels au dessus de  lui
+
+
+            if(lowestSeamXCoordinates[y+1]==0){
+                //SI le pixel davant est sur le bord gauche: 2 pixel au dessus de lui:
+                //[0][y]
+                //[1][y]
+                lowestSeamXCoordinates[y] = (seamTable[0][y] <= seamTable[1][y])? 0: 1 ;
+
+
+            }else if (lowestSeamXCoordinates[y+1]==(maxX-1) ){
+                //SI le pixel est sur le bord droit: 2 pixel au dessus de lui:
+                //[maxX-1][y]
+                //[maxX-2][y]
+                lowestSeamXCoordinates[y] = (seamTable[maxX-2][y] <= seamTable[maxX-1][y])? maxX-2: maxX-1 ;
+            }else{
+                //SI le pixel est sur le bord droit: 2 pixel au dessus de lui:
+                //[lowestSeamXCoordinates[y-1]-1][y]
+                //[lowestSeamXCoordinates[y-1]][y]
+                //[lowestSeamXCoordinates[y-1]+1][y]
+                lowestSeamXCoordinates[y] = (seamTable[lowestSeamXCoordinates[y+1]-1][y] <= seamTable[lowestSeamXCoordinates[y+1]][y])? (lowestSeamXCoordinates[y+1]-1): lowestSeamXCoordinates[y+1] ;
+                lowestSeamXCoordinates[y] = (seamTable[lowestSeamXCoordinates[y]][y] <= seamTable[lowestSeamXCoordinates[y+1]+1][y])? lowestSeamXCoordinates[y]: (lowestSeamXCoordinates[y+1]+1) ;
+                //Assigne le X du moins energique du parent gauche et face puis assigne le X du moins energique du parent droit et du gagnatprecedent
+            }
+
+        }
+
+        return lowestSeamXCoordinates;
+    }
+
+    public void printBestSeamVertical(ActionEvent actionEvent){
+        int totalRedRGB = 255 <<16;
+        int[] seamToPrint = bestVerticalSeam(dynamicEnergySeamVertical());
+
+        for (int y = 0; y < seamToPrint.length; y++){
+            this.myBufferedImage.setRGB(seamToPrint[y], y,totalRedRGB);
+        }
+
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+
+
+
+    }
 }
+
 
 
