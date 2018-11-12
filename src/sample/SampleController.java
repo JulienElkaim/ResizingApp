@@ -13,7 +13,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
@@ -252,6 +254,56 @@ public class SampleController {
         else
             this.zoom(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY());
 
+    }
+
+
+    /**
+     * This method convert the color image into grayscale image
+     */
+    public BufferedImage grayOut(BufferedImage img) {
+        ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace
+                .getInstance(ColorSpace.CS_GRAY), null);
+        colorConvert.filter(img, img);
+
+        return img;
+    }
+
+    public BufferedImage determineEnergy(){
+        int maxX = this.myBufferedImage.getWidth();
+        int maxY = this.myBufferedImage.getHeight();
+        this.myBufferedImage = cloningBufferedImage(this.myBufferedImageSTOCKED);
+        for (int x = 2; x < maxX-1; x++) {
+            for (int y = 2; y < maxY-1; y++) {
+
+                //pixel à gauche
+                Color myLeftPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x - 1, y));
+                //pixel à droite
+                Color myRightPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x + 1, y));
+                //top pixel
+                Color myTopPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x, y - 1));
+                //bottom pixel
+                Color myBottomPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x, y + 1));
+
+                int energyRed;
+                int energyGreen;
+                int energyBlue;
+                int energy;
+
+                energyRed = abs(myLeftPixelColor.getRed()-myRightPixelColor.getRed())+abs(myTopPixelColor.getRed()-myBottomPixelColor.getRed());
+                energyGreen = abs(myLeftPixelColor.getGreen()-myRightPixelColor.getGreen())+abs(myTopPixelColor.getGreen()-myBottomPixelColor.getGreen());
+                energyBlue = abs(myLeftPixelColor.getBlue()-myRightPixelColor.getBlue())+abs(myTopPixelColor.getBlue()-myBottomPixelColor.getBlue());
+
+
+                energy = (energyRed<<16) + (energyGreen<<8) + energyBlue;
+                this.myBufferedImage.setRGB(x,y,energy);
+            }
+        }
+        return this.myBufferedImage;
+    }
+
+    public void energyMap(ActionEvent actionEvent){
+        this.myBufferedImage = grayOut(determineEnergy());
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 }
 
