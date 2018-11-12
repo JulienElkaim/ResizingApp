@@ -15,6 +15,6 @@ Cette application permettra d'effectuer les opérations suivantes sur une images
 Faire des packages : par exemple un dédié au traitement d'image
 Différence pixel de gauche et pixel de droite : calcul du gradient (on obtiendra des lignes ), max 255
 
-Sauvegarde, seam carving, obervable -> Julien
+Seam carving, obervable -> Julien
 
 Recadrage, adapt image to window -> Laurence
