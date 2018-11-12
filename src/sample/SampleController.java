@@ -163,8 +163,6 @@ public class SampleController {
         for (int x = 2; x < maxX-1; x++) {
             for (int y = 2; y < maxY-1; y++) {
 
-                Color myPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x, y));
-
                 //pixel à gauche
                 Color myLeftPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x - 1, y));
                 //pixel à droite
@@ -174,8 +172,6 @@ public class SampleController {
                 //bottom pixel
                 Color myBottomPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x, y + 1));
 
-                int Left;
-                int Right;
                 int energyRed;
                 int energyGreen;
                 int energyBlue;
@@ -190,11 +186,165 @@ public class SampleController {
                 this.myBufferedImage.setRGB(x,y,energy);
             }
         }
-        return grayOut(this.myBufferedImage);
+        return this.myBufferedImage;
     }
 
     public void energyMap(ActionEvent actionEvent){
-        this.myBufferedImage = determineEnergy();
+        this.myBufferedImage = grayOut(determineEnergy());
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    }
+
+    /**
+     * This method gets the index of min element in input array
+     * @return int  --> minIndex
+     */
+    public int getMinIndex(double[] numbers){
+        double minValue = numbers[0];
+        int minIndex = 0;
+        for(int i=0;i<numbers.length;i++){
+            if(numbers[i] < minValue){
+                minValue = numbers[i];
+                minIndex = i;
+            }
+        }
+        return minIndex;
+    }
+
+    /**
+     * This method gets the min value in input array
+     * @return double  --> minValue
+     */
+    public double getMinValue(double[] numbers){
+        double minValue = numbers[0];
+        for(int i=0;i<numbers.length;i++){
+            if(numbers[i] < minValue){
+                minValue = numbers[i];
+            }
+        }
+        return minValue;
+    }
+
+    /**
+     * This method calculates the cumulative energy array
+     * @return double[][]  --> cumulative_energy_array
+     */
+    public double[][] getCumulativeEnergyArray (BufferedImage img){
+        int width = img.getWidth();
+        int height = img.getHeight();
+        double[][] cumulativeEnergyArray = new double[height][width];
+
+        for (int y = 1; y < height; ++y){
+            for (int x = 1; x < width-1; ++x){
+                cumulativeEnergyArray[y][x] = (double)img.getRaster().getSample(x,y,0);
+            }
+        }
+
+        for (int y = 1; y < height; ++y){
+            for (int x = 1; x < width-1; ++x){
+                double temp = 0.0;
+                double tempArray3[] = new double[3];
+                tempArray3[0] = cumulativeEnergyArray[y-1][x-1];
+                tempArray3[1] = cumulativeEnergyArray[y-1][x];
+                tempArray3[2] = cumulativeEnergyArray[y-1][x+1];
+                temp = getMinValue(tempArray3) + (double)img.getRaster().getSample(x,y,0);
+                cumulativeEnergyArray[y][x] = temp;
+            }
+        }
+        return cumulativeEnergyArray;
+    }
+
+    /**
+     * This method finds the minimum cost path from
+     * cumulative energy array
+     * @return int[]  --> path
+     */
+    public int[] findPath (double[][] cumulativeEnergyArray) {
+        int width = cumulativeEnergyArray[0].length;
+        int height = cumulativeEnergyArray.length;
+        int[] path = new int[height];
+
+        double[] tempArray = new double[width - 10];
+        int y = height - 1;
+        for (int x = 5; x < width - 5; ++x) {
+            tempArray[x - 5] = cumulativeEnergyArray[y][x];
+        }
+
+        int ind_bot = getMinIndex(tempArray) + 5;
+        //System.out.println("\nThe bottom index is: " + ind_bot);
+        path[height - 1] = ind_bot;
+
+        int ind_temp = 0;
+        double[] tempArray2 = new double[3];
+        for (int i = height - 1; i > 0; --i) {
+            tempArray2[0] = cumulativeEnergyArray[i - 1][path[i] - 1];
+            tempArray2[1] = cumulativeEnergyArray[i - 1][path[i]];
+            tempArray2[2] = cumulativeEnergyArray[i - 1][path[i] + 1];
+            ind_temp = getMinIndex(tempArray2);
+            path[i - 1] = path[i] + ind_temp - 1;
+            if (path[i - 1] <= 0) {
+                path[i - 1] = 1;
+            } else if (path[i - 1] >= width - 1) {
+                path[i - 1] = width - 2;
+            }
+        }
+        return path;
+    }
+
+    /**
+     * This method remove the path from input image
+     * @return BufferedImage  --> removePathImg
+     */
+    public BufferedImage removePathFromImage(BufferedImage img, int[] path){
+        int type = img.getType();
+        int width = img.getWidth();
+        int height = img.getHeight();
+        int band = 3;
+        BufferedImage removePathImg = new BufferedImage(width-1, height, type);
+        WritableRaster raster = removePathImg.getRaster();
+
+        for (int b = 0; b < band; ++b){
+            for (int y = 0; y < height; ++y){
+                for (int x = 0; x <= path[y]-2; ++x){
+                    double temp = 0.0;
+                    temp = img.getRaster().getSample(x, y, b);
+                    raster.setSample(x, y, b, Math.round(temp));
+                }
+                for (int x = path[y]-1; x < width-1; ++x){
+                    double temp = 0.0;
+                    temp = img.getRaster().getSample(x+1, y, b);
+                    raster.setSample(x, y, b, Math.round(temp));
+                }
+            }
+        }
+        return removePathImg;
+    }
+    /**
+     * This method remove the path from energy array
+     * @return double[][]  --> new_cumulativeEnergyArray
+     */
+    public double[][] removePathEnergyArray(double[][] cumulativeEnergyArray, int[] path){
+        int width = cumulativeEnergyArray[0].length;
+        int height = cumulativeEnergyArray.length;
+        double[][] new_cumulativeEnergyArray = new double[height][width-1];
+        for (int y = 0; y < height; ++y){
+            for (int x = 0; x <= path[y]-1; ++x){
+                new_cumulativeEnergyArray[y][x] = cumulativeEnergyArray[y][x];
+            }
+            for (int x = path[y]; x < width-1; ++x){
+                new_cumulativeEnergyArray[y][x] = cumulativeEnergyArray[y][x+1];
+            }
+        }
+        return new_cumulativeEnergyArray;
+    }
+
+    public void seamCarving(){
+        double[][] cumulativeEnergyArray = getCumulativeEnergyArray(determineEnergy());
+        double zoomingCoef = this.mySlider.getValue()/100  *(0.1-1) +1;
+        while (cumulativeEnergyArray[0].length>zoomingCoef*this.myBufferedImageSTOCKED.getWidth()){
+            int[] path = findPath(cumulativeEnergyArray);
+            this.myBufferedImage = removePathFromImage(this.myBufferedImage, path);
+            cumulativeEnergyArray = removePathEnergyArray(cumulativeEnergyArray, path);
+        }
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
