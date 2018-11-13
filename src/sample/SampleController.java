@@ -1,9 +1,7 @@
 package sample;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,11 +16,8 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
-import java.rmi.activation.ActivationInstantiator;
 
 import javafx.scene.control.Slider;
-
-import javax.imageio.ImageIO;
 
 import static java.lang.Math.abs;
 
@@ -119,7 +114,7 @@ public class SampleController {
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
-    public void ChooseAFile(ActionEvent actionEvent) throws IOException {
+    public void ChooseAFile() throws IOException {
 
         // Choosing the file to input
         FileChooser fileChooser = new FileChooser();
@@ -138,7 +133,7 @@ public class SampleController {
 
     }
 
-    public void saveAFile(ActionEvent actionEvent) throws IOException{
+    public void saveAFile() throws IOException{
 
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG Files (*.jpg)", "*.jpg");
 
@@ -171,22 +166,26 @@ public class SampleController {
 
 
                 int decalage = 0;
-                int Left = 0;
-                int Right = 0;
+                int Left;
+                int Right;
                 //changement de couleur  //8 pour green, 16 pour rouge, rien pour bleu
-                if (couleur == "red") { //rouge
-                    Left = myLeftPixelColor.getRed();
-                    Right = myRightPixelColor.getRed();
-                    decalage = 16;
-                    //gradient = (gradient << 16);
-                } else if (couleur == "green") { //vert
-                    Left = myLeftPixelColor.getGreen();
-                    Right = myRightPixelColor.getGreen();
-                    decalage = 8;
-                    //gradient = (gradient << 8);
-                } else {
-                    Left = myLeftPixelColor.getBlue();
-                    Right = myRightPixelColor.getBlue();
+                switch (couleur) {
+                    case "red":  //rouge
+                        Left = myLeftPixelColor.getRed();
+                        Right = myRightPixelColor.getRed();
+                        decalage = 16;
+                        //gradient = (gradient << 16);
+                        break;
+                    case "green":  //vert
+                        Left = myLeftPixelColor.getGreen();
+                        Right = myRightPixelColor.getGreen();
+                        decalage = 8;
+                        //gradient = (gradient << 8);
+                        break;
+                    default:
+                        Left = myLeftPixelColor.getBlue();
+                        Right = myRightPixelColor.getBlue();
+                        break;
                 }
                 int gradient = abs(Left-Right);
                 if (gradient > 255) {
@@ -200,17 +199,17 @@ public class SampleController {
 
     }
 
-    public void redGradient(ActionEvent actionEvent){
+    public void redGradient(){
         createGradient("red");
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
-    public void greenGradient(ActionEvent actionEvent){
+    public void greenGradient(){
         createGradient("green");
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
-    public void blueGradient(ActionEvent actionEvent){
+    public void blueGradient(){
         createGradient("blue");
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
@@ -221,7 +220,7 @@ public class SampleController {
     }
 
     private String getText (String src){
-        String myStr="";
+        StringBuilder myStr= new StringBuilder();
         char currentChar;
         for (int i=src.length()-2; i> -1; i--){
 
@@ -230,14 +229,14 @@ public class SampleController {
                 i = -1;
                 continue;
             }
-            myStr = currentChar + myStr;
+            myStr.insert(0, currentChar);
 
         }
-        return myStr;
+        return myStr.toString();
     }
 
 
-    public void keyPressedRemove(KeyEvent keyEvent) {
+    public void keyPressedRemove() {
         this.keyPressed = null;
     }
 
@@ -260,12 +259,13 @@ public class SampleController {
         int width = this.myBufferedImage.getWidth() ;
         int height = this.myBufferedImage.getHeight();
         int newWidth = (int) (coef*width);
-        BufferedImage dest = this.myBufferedImage.getSubimage(0, 0, newWidth, height);
+        BufferedImage dest = this.myBufferedImageSTOCKED.getSubimage(0, 0, newWidth, height);
         System.out.println("Height is equal to:" + height);
         System.out.println("New width is equal to:" + newWidth);
         this.myImage.setImage(SwingFXUtils.toFXImage(dest, null));
 
     }
+
 }
 
 
