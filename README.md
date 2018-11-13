@@ -1,6 +1,6 @@
 # ResizingApp
 
-Java 10, Java 11, JavaFx
+Java 11, JavaFx
 
 Rendu : 30 novembre
 
@@ -11,10 +11,26 @@ Rendu : 30 novembre
 L’objectif de ce projet est l’implémentation d’une application de redimensionnement d’image en Java.
 Cette application permettra d'effectuer les opérations suivantes sur une images : recadrage, mise à l’échelle et seam carving.
 
-
+## Remarques sur le sujet
 Faire des packages : par exemple un dédié au traitement d'image
+
 Différence pixel de gauche et pixel de droite : calcul du gradient (on obtiendra des lignes ), max 255
 
-Seam carving, obervable -> Julien
+## Difficultés rencontrées
 
-Recadrage, adapt image to window -> Laurence
+* resizing 
+    * à effectuer sur la BufferedImage plutôt que sur l'ImageView
+
+* crop (recardage)
+    * dépendant du FXML et de sa définition de l'ImageView
+
+* gradient 
+    * a soulevé le problème de la copie de la BufferedImage
+    
+## Les extensions rajoutées
+### Zoom
+Possibilité de zoomer sur l'image
+
+Implémenté car il nous a permis de faire bien la différence entre zoom, crop et resizing
+
+    
