@@ -12,22 +12,25 @@ import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
-
 import javafx.scene.control.Slider;
 
 import static java.lang.Math.abs;
 
 public class SampleController {
+    public Label seamPrintingLabel;
+    public Label energyPrintingLabel;
     private KeyCode keyPressed;
     private String sliderListener="";
     public Slider mySlider;
     public ImageView myImage;
-    public Label helloWorld;
+    private String tempImg;
 
     public BufferedImage myBufferedImage;
     public BufferedImage myBufferedImageSTOCKED;
@@ -37,7 +40,7 @@ public class SampleController {
 
 
         //Reaction when  the Slider value is changed
-        this.mySlider.valueProperty().addListener((ov, old_val, new_val) -> this.listenSliderChange(ov, old_val, new_val));
+        this.mySlider.valueProperty().addListener(this::listenSliderChange);
 
 
     }
@@ -46,10 +49,10 @@ public class SampleController {
 
         //The function called will change accordingly to the last listener activated
         switch(this.sliderListener){
-            case "Resizing":
+            case "Resize":
                 this.resizing();
                 break;
-            case "Zooming Example":
+            case "Zoom":
                 this.unZoom();
 
                 double coefViewReal = this.myImage.getFitWidth()/this.myBufferedImage.getWidth();
@@ -57,6 +60,15 @@ public class SampleController {
                 double heightView = this.myBufferedImage.getHeight()*coefViewReal;
                 this.zoom( 0.5*widthView, 0.5*heightView );
                 break;
+
+            case "Seam Carving":
+                this.myBufferedImage = this.cloningBufferedImage(this.myBufferedImageSTOCKED);
+                this.seamWithdraw(new_val.intValue());
+                break;
+            case"Crop":
+                this.createCropImage();
+
+
         }
 
     }
@@ -113,7 +125,8 @@ public class SampleController {
         int width = (int) (coef*this.myBufferedImage.getWidth());
         int height = this.myBufferedImage.getHeight();
         BufferedImage dest = scale(this.myBufferedImage,width, height);
-        this.myImage.setImage(SwingFXUtils.toFXImage(dest,null));
+        this.myBufferedImage = this.cloningBufferedImage(dest);
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
     public static BufferedImage scale(BufferedImage src, int width, int height){
@@ -265,19 +278,221 @@ public class SampleController {
 
     }
 
+
     public void createCropImage() {
-        double coef = (0.01<this.mySlider.getValue()/100)? abs(this.mySlider.getValue())/100:0.01 ;
+        double coef = (0.01 < this.mySlider.getValue() / 100) ? abs(this.mySlider.getValue()) / 100 : 0.01;
         this.myBufferedImage = cloningBufferedImage(this.myBufferedImageSTOCKED);
-        int width = this.myBufferedImage.getWidth() ;
+        int width = this.myBufferedImage.getWidth();
         int height = this.myBufferedImage.getHeight();
-        int newWidth = (int) (coef*width);
+        int newWidth = (int) (coef * width);
         BufferedImage dest = this.myBufferedImageSTOCKED.getSubimage(0, 0, newWidth, height);
         System.out.println("Height is equal to:" + height);
         System.out.println("New width is equal to:" + newWidth);
         this.myImage.setImage(SwingFXUtils.toFXImage(dest, null));
 
     }
+    /**
+     * This method convert the color image into grayscale image
+     */
+    public BufferedImage grayOut(BufferedImage img) {
+        ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace
+                .getInstance(ColorSpace.CS_GRAY), null);
+        colorConvert.filter(img, img);
+
+        return img;
+    }
+
+    public BufferedImage determineEnergy(BufferedImage imgToCompute){
+        int maxX = imgToCompute.getWidth();
+        int maxY = imgToCompute.getHeight();
+        BufferedImage newBImage = this.cloningBufferedImage(imgToCompute);
+
+        for (int x = 2; x < maxX-1; x++) {
+            for (int y = 2; y < maxY-1; y++) {
+
+                //pixel à gauche
+                Color myLeftPixelColor = new Color(imgToCompute.getRGB(x - 1, y));
+                //pixel à droite
+                Color myRightPixelColor = new Color(imgToCompute.getRGB(x + 1, y));
+                //top pixel
+                Color myTopPixelColor = new Color(imgToCompute.getRGB(x, y - 1));
+                //bottom pixel
+                Color myBottomPixelColor = new Color(imgToCompute.getRGB(x, y + 1));
+
+                int energyRed;
+                int energyGreen;
+                int energyBlue;
+                int energy;
+
+                energyRed = abs(myLeftPixelColor.getRed()-myRightPixelColor.getRed())+abs(myTopPixelColor.getRed()-myBottomPixelColor.getRed());
+                energyGreen = abs(myLeftPixelColor.getGreen()-myRightPixelColor.getGreen())+abs(myTopPixelColor.getGreen()-myBottomPixelColor.getGreen());
+                energyBlue = abs(myLeftPixelColor.getBlue()-myRightPixelColor.getBlue())+abs(myTopPixelColor.getBlue()-myBottomPixelColor.getBlue());
+
+
+                energy = (energyRed<<16) + (energyGreen<<8) + energyBlue;
+                newBImage.setRGB(x,y,energy);
+            }
+        }
+        return newBImage;
+    }
+
+    public void energyMap(){
+        if (this.tempImg!="Energy computation"){
+            this.energyPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
+            this.myImage.setImage(SwingFXUtils.toFXImage(grayOut(determineEnergy(this.myBufferedImage)), null));
+            this.tempImg = "Energy computation";
+        }else{
+            this.energyPrintingLabel.setTextFill(javafx.scene.paint.Color.PALEVIOLETRED);
+            this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+            this.tempImg = null;
+        }
+            }
+
+
+    private long[][] dynamicEnergySeamVertical(BufferedImage imgToCompute){
+        int maxX = imgToCompute.getWidth();
+        int maxY = imgToCompute.getHeight();
+        long [][] dynamicSeamTable = new long [maxX][maxY];
+
+        //seam computing
+        for (int y = 0; y < maxY; y++) {
+            for (int x = 0; x < maxX; x++) {
+                if (y == 0) {
+                    // la toute premiere ligne
+                    dynamicSeamTable[x][y] = imgToCompute.getRGB(x,y);
+                }else{
+                    // les autres lignes
+
+                    // le pixel border-left de l'image
+                    if (x==0){
+                        dynamicSeamTable[x][y] = imgToCompute.getRGB(x,y) + Math.min(dynamicSeamTable[x][y-1], dynamicSeamTable[x+1][y-1]);
+
+                    }else if(x==(maxX-1)){ // le pixel border-right de l'image
+                        dynamicSeamTable[x][y] = imgToCompute.getRGB(x,y) + Math.min(dynamicSeamTable[x][y-1], dynamicSeamTable[x-1][y-1]);
+
+                    }else{ // les pixels au milieu de la ligne
+                        dynamicSeamTable[x][y] = imgToCompute.getRGB(x,y) + Math.min(dynamicSeamTable[x][y-1], Math.min(dynamicSeamTable[x-1][y-1],dynamicSeamTable[x+1][y-1] ) );
+                    }
+                }
+            }
+
+        }
+
+        return dynamicSeamTable;
+
+    }
+
+    private int[] bestVerticalSeam(long[][] seamTable){
+        int maxY = seamTable[0].length;
+        int maxX = seamTable.length;
+        int[] lowestSeamXCoordinates = new int [maxY];
+
+        //recherche dans la dernière ligne du pixel etant la fin de la seam la plus petite
+        for (int x=0 ; x < maxX;x++){
+            if (x == 0){
+
+                lowestSeamXCoordinates[maxY-1] = 0; // Premier pixel a etre verifier, il est champion LOW par defaut
+
+            }else{
+                if(seamTable[lowestSeamXCoordinates[maxY-1] ][maxY-1] > seamTable[x][maxY-1]) // Si notre champion LOW est battu
+                    lowestSeamXCoordinates[maxY-1] = x;
+            }
+        }
+
+        //Pour tous les autres lignes en decoulant
+
+        for (int y=(maxY-2);y >-1; y--){
+            //comparaison entre les pixels au dessus de  lui
+
+
+            if(lowestSeamXCoordinates[y+1]==0){
+                //SI le pixel davant est sur le bord gauche: 2 pixel au dessus de lui:
+                //[0][y]
+                //[1][y]
+                lowestSeamXCoordinates[y] = (seamTable[0][y] <= seamTable[1][y])? 0: 1 ;
+
+
+            }else if (lowestSeamXCoordinates[y+1]==(maxX-1) ){
+                //SI le pixel est sur le bord droit: 2 pixel au dessus de lui:
+                //[maxX-1][y]
+                //[maxX-2][y]
+                lowestSeamXCoordinates[y] = (seamTable[maxX-2][y] <= seamTable[maxX-1][y])? maxX-2: maxX-1 ;
+            }else{
+                //SI le pixel est sur le bord droit: 2 pixel au dessus de lui:
+                //[lowestSeamXCoordinates[y-1]-1][y]
+                //[lowestSeamXCoordinates[y-1]][y]
+                //[lowestSeamXCoordinates[y-1]+1][y]
+                lowestSeamXCoordinates[y] = (seamTable[lowestSeamXCoordinates[y+1]-1][y] <= seamTable[lowestSeamXCoordinates[y+1]][y])? (lowestSeamXCoordinates[y+1]-1): lowestSeamXCoordinates[y+1] ;
+                lowestSeamXCoordinates[y] = (seamTable[lowestSeamXCoordinates[y]][y] <= seamTable[lowestSeamXCoordinates[y+1]+1][y])? lowestSeamXCoordinates[y]: (lowestSeamXCoordinates[y+1]+1) ;
+                //Assigne le X du moins energique du parent gauche et face puis assigne le X du moins energique du parent droit et du gagnatprecedent
+            }
+
+        }
+
+        return lowestSeamXCoordinates;
+    }
+
+    public void printBestSeamVertical(){
+        this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.BLACK);
+
+        if (this.tempImg =="Show next seam"){
+
+            this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.PALEVIOLETRED);
+            this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+            this.tempImg = null;
+
+
+        }else {
+            if (this.myBufferedImage!=null){
+                this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
+            }
+
+            BufferedImage energyBImage = grayOut(determineEnergy(this.myBufferedImage));
+
+            int totalRedRGB = 255 << 16;
+            int[] seamToPrint = bestVerticalSeam(dynamicEnergySeamVertical(energyBImage));
+
+            for (int y = 0; y < seamToPrint.length; y++) {
+                energyBImage.setRGB(seamToPrint[y], y, totalRedRGB);
+            }
+
+            this.myImage.setImage(SwingFXUtils.toFXImage(energyBImage, null));
+            this.tempImg = "Show next seam";
+
+        }
+    }
+    private BufferedImage seamVerticalDestroyer(BufferedImage img, int[] seam){
+        int maxX = img.getWidth();
+        int maxY = img.getHeight();
+        BufferedImage newBImage = new BufferedImage(maxX-1, maxY, BufferedImage.TYPE_INT_RGB);
+
+        for (int y=0; y < maxY; y++){
+            for (int x=0; x < maxX-1; x++){
+
+                if( seam[y] <=x ) {// it is the pixel to skip
+                    newBImage.setRGB(x, y, img.getRGB(x+1, y));
+                }else{
+                    newBImage.setRGB(x, y, img.getRGB(x, y));
+                }
+            }
+        }
+        return newBImage;
+    }
+
+    public void seamWithdraw(int nbOfSeamToWithdraw) {
+
+        for (int i=0; i< nbOfSeamToWithdraw; i++) {
+            BufferedImage energyBImage = grayOut(determineEnergy(this.myBufferedImage));
+            int[] seamToWithdraw = bestVerticalSeam(dynamicEnergySeamVertical(energyBImage));
+
+            BufferedImage bImageWithOutSeam = this.seamVerticalDestroyer(this.myBufferedImage, seamToWithdraw);
+
+            this.myBufferedImage = this.cloningBufferedImage(bImageWithOutSeam);
+            this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+           }
+    }
 
 }
+
 
 
