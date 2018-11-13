@@ -26,23 +26,27 @@ import static java.lang.Math.abs;
 import javafx.scene.shape.Rectangle;
 
 public class SampleController {
-    //Objet visuel
+    //Objets visuels
     public ImageView myImage;
+    public Slider mySlider;
     public Rectangle redG;
     public Rectangle greenG;
     public Rectangle blueG;
     public Label seamPrintingLabel;
     public Label energyPrintingLabel;
+
+    //Objets conceptuels
     private KeyCode keyPressed;
     private String sliderListener="";
-    public Slider mySlider;
-
     private String tempImg;
+
+    //Objets image
     private BufferedImage myBufferedImage;
     private BufferedImage myBufferedImageSTOCKED;
 
 
     public void initialize(){
+        this.sliderListener = "Crop";
         this.tempImg ="null";
         this.redG.setFill(javafx.scene.paint.Color.RED);
         this.greenG.setFill(javafx.scene.paint.Color.GREEN);
@@ -300,8 +304,6 @@ public class SampleController {
         int height = this.myBufferedImage.getHeight();
         int newWidth = (int) (coef * width);
         BufferedImage dest = this.myBufferedImageSTOCKED.getSubimage(0, 0, newWidth, height);
-        System.out.println("Height is equal to:" + height);
-        System.out.println("New width is equal to:" + newWidth);
         this.myImage.setImage(SwingFXUtils.toFXImage(dest, null));
 
     }
@@ -524,7 +526,6 @@ public class SampleController {
     private void gradientSwitcher(String colorGradient) {
 
         if(this.tempImg.equals(colorGradient)){
-            System.out.println("RESET de limage");
             this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
             this.tempImg="null";
 
