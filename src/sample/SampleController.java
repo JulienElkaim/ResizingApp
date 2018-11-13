@@ -1,11 +1,8 @@
 package sample;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.shape.Box;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -14,19 +11,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import java.awt.*;
-import javafx.scene.paint.Paint;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.File;
-
 import java.io.IOException;
-import java.rmi.activation.ActivationInstantiator;
 import javafx.scene.control.Slider;
-import javax.imageio.ImageIO;
-
 import static java.lang.Math.abs;
 
 public class SampleController {
@@ -36,7 +28,6 @@ public class SampleController {
     private String sliderListener="";
     public Slider mySlider;
     public ImageView myImage;
-    public Label helloWorld;
     private String tempImg;
 
     public BufferedImage myBufferedImage;
@@ -47,7 +38,7 @@ public class SampleController {
 
 
         //Reaction when  the Slider value is changed
-        this.mySlider.valueProperty().addListener((ov, old_val, new_val) -> this.listenSliderChange(ov, old_val, new_val));
+        this.mySlider.valueProperty().addListener(this::listenSliderChange);
 
 
     }
@@ -56,10 +47,10 @@ public class SampleController {
 
         //The function called will change accordingly to the last listener activated
         switch(this.sliderListener){
-            case "Resizing":
+            case "Resize":
                 this.resizing();
                 break;
-            case "Zooming Example":
+            case "Zoom":
                 this.unZoom();
 
                 double coefViewReal = this.myImage.getFitWidth()/this.myBufferedImage.getWidth();
@@ -67,6 +58,12 @@ public class SampleController {
                 double heightView = this.myBufferedImage.getHeight()*coefViewReal;
                 this.zoom( 0.5*widthView, 0.5*heightView );
                 break;
+
+            case "Seam Carving":
+                this.myBufferedImage = this.cloningBufferedImage(this.myBufferedImageSTOCKED);
+                this.seamWithdraw(new_val.intValue());
+
+
         }
 
     }
@@ -252,7 +249,6 @@ public class SampleController {
     }
 
     public void imageClicked(MouseEvent mouseEvent) {
-        System.out.println(mouseEvent.getX() + " , " + mouseEvent.getY());
 
         if (this.keyPressed == KeyCode.SHIFT)
             this.unZoom();
@@ -404,6 +400,7 @@ public class SampleController {
     }
 
     public void printBestSeamVertical(){
+        this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.BLACK);
 
         if (this.tempImg =="Show next seam"){
 
@@ -413,8 +410,10 @@ public class SampleController {
 
 
         }else {
+            if (this.myBufferedImage!=null){
+                this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
+            }
 
-            this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
             BufferedImage energyBImage = grayOut(determineEnergy(this.myBufferedImage));
 
             int totalRedRGB = 255 << 16;
@@ -429,9 +428,35 @@ public class SampleController {
 
         }
     }
+    private BufferedImage seamVerticalDestroyer(BufferedImage img, int[] seam){
+        int maxX = img.getWidth();
+        int maxY = img.getHeight();
+        BufferedImage newBImage = new BufferedImage(maxX-1, maxY, BufferedImage.TYPE_INT_RGB);
 
-    public void SeamWithdraw(ActionEvent actionEvent) {
+        for (int y=0; y < maxY; y++){
+            for (int x=0; x < maxX-1; x++){
 
+                if( seam[y] <=x ) {// it is the pixel to skip
+                    newBImage.setRGB(x, y, img.getRGB(x+1, y));
+                }else{
+                    newBImage.setRGB(x, y, img.getRGB(x, y));
+                }
+            }
+        }
+        return newBImage;
+    }
+
+    public void seamWithdraw(int nbOfSeamToWithdraw) {
+
+        for (int i=0; i< nbOfSeamToWithdraw; i++) {
+            BufferedImage energyBImage = grayOut(determineEnergy(this.myBufferedImage));
+            int[] seamToWithdraw = bestVerticalSeam(dynamicEnergySeamVertical(energyBImage));
+
+            BufferedImage bImageWithOutSeam = this.seamVerticalDestroyer(this.myBufferedImage, seamToWithdraw);
+
+            this.myBufferedImage = this.cloningBufferedImage(bImageWithOutSeam);
+            this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+           }
     }
 
 }
