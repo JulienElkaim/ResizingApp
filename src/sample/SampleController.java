@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
@@ -109,9 +110,20 @@ public class SampleController {
      */
     public void resizing(){
         double coef = (0.01<this.mySlider.getValue()/100)? abs(this.mySlider.getValue())/100:0.01 ;
-        this.myImage.setScaleY(1);
-        this.myImage.setScaleX(coef);
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+        int width = (int) (coef*this.myBufferedImage.getWidth());
+        int height = this.myBufferedImage.getHeight();
+        BufferedImage dest = scale(this.myBufferedImage,width, height);
+        this.myImage.setImage(SwingFXUtils.toFXImage(dest,null));
+    }
+
+    public static BufferedImage scale(BufferedImage src, int width, int height){
+        BufferedImage dest = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = dest.createGraphics();
+        AffineTransform at = AffineTransform.getScaleInstance(
+                (double)width/src.getWidth(),
+                (double)height/src.getHeight());
+        g.drawRenderedImage(src,at);
+        return dest;
     }
 
     public void ChooseAFile() throws IOException {
