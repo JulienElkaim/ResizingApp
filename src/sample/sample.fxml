@@ -14,6 +14,7 @@
 
 
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.shape.Box?>
 <VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressedAdd" fx:controller="sample.SampleController" stylesheets="/sample/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1" >
     <MenuBar id="MenuBar" minWidth = "800"   GridPane.rowIndex="0">
         <Menu   text="File" >
@@ -37,8 +38,12 @@
             <Label  GridPane.rowIndex="6" >Percentage Of Width</Label>
             <Slider value="50" fx:id="mySlider" GridPane.rowIndex="7" majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>
             <Button GridPane.rowIndex="8"  onAction="#resizing" text="Resizing OLD" />
-            <Button GridPane.rowIndex="9" onAction = "#energyMap" text="Energy computation" />
-            <Button GridPane.rowIndex="10" onAction = "#printBestSeamVertical" text="Seam Printing" />
+            <Label fx:id="energyPrintingLabel" onMouseEntered="#energyMap" onMouseExited="#energyMap" GridPane.rowIndex="9" text="Show energy" />
+            <Label fx:id="seamPrintingLabel" onMouseEntered="#printBestSeamVertical" onMouseExited="#printBestSeamVertical" GridPane.rowIndex="10" text="Show next seam" />
+            <GridPane GridPane.rowIndex="11" hgap="2">
+                <Button alignment="CENTER" GridPane.rowIndex="0" onAction = "#SeamWithdraw" text="Seam Carving" />
+            </GridPane>
+
 
         </GridPane>
         <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage" >
