@@ -21,10 +21,13 @@ import java.io.File;
 import java.io.IOException;
 import javafx.scene.control.Slider;
 
+
 import static java.lang.Math.abs;
 import javafx.scene.shape.Rectangle;
 
 public class SampleController {
+    //Objet visuel
+    public ImageView myImage;
     public Rectangle redG;
     public Rectangle greenG;
     public Rectangle blueG;
@@ -33,13 +36,14 @@ public class SampleController {
     private KeyCode keyPressed;
     private String sliderListener="";
     public Slider mySlider;
-    public ImageView myImage;
+
     private String tempImg;
     private BufferedImage myBufferedImage;
     private BufferedImage myBufferedImageSTOCKED;
 
-    public void initialize(){
 
+    public void initialize(){
+        this.tempImg ="null";
         this.redG.setFill(javafx.scene.paint.Color.RED);
         this.greenG.setFill(javafx.scene.paint.Color.GREEN);
         this.blueG.setFill(javafx.scene.paint.Color.BLUE);
@@ -60,7 +64,7 @@ public class SampleController {
                 this.resizing();
                 break;
             case "Zoom":
-                this.unZoom();
+                this.reset();
 
                 double coefViewReal = this.myImage.getFitHeight()/this.myBufferedImage.getHeight();
                 double widthView = this.myBufferedImage.getWidth()*coefViewReal;
@@ -86,7 +90,7 @@ public class SampleController {
         return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
 
     }
-    private void unZoom(){
+    private void reset(){
 
         this.myBufferedImage = cloningBufferedImage(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
@@ -94,14 +98,14 @@ public class SampleController {
     }
 
     private void zoom(double X, double Y){
-        //zooming power is 30% of the initial image
+
 
         double zoomingCoef = this.mySlider.getValue()/100  *(0.1-1) +1;// 1* -0.9 +1
-        //double zoomingCoef = this.mySlider.getValue()/100;
+
         double initWidth = this.myBufferedImage.getWidth();
         double initHeight = this.myBufferedImage.getHeight();
 
-        double coefViewReal = this.myImage.getFitWidth()/initWidth;
+        double coefViewReal = this.myImage.getFitHeight()/initHeight;
 
         double XReal = X/coefViewReal;
         double YReal = Y/coefViewReal;
@@ -128,9 +132,10 @@ public class SampleController {
      * Provide an example of how resizing regarding the slider value
      */
     private void resizing(){
+        this.myBufferedImage = this.cloningBufferedImage(this.myBufferedImageSTOCKED);
         double coef = (0.01<this.mySlider.getValue()/100)? abs(this.mySlider.getValue())/100:0.01 ;
-        int width = (int) (coef*this.myBufferedImage.getWidth());
-        int height = this.myBufferedImage.getHeight();
+        int width = (int) (coef*this.myBufferedImageSTOCKED.getWidth());
+        int height = this.myBufferedImageSTOCKED.getHeight();
         BufferedImage dest = scale(this.myBufferedImage,width, height);
         this.myBufferedImage = this.cloningBufferedImage(dest);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
@@ -281,7 +286,7 @@ public class SampleController {
     public void imageClicked(MouseEvent mouseEvent) {
 
         if (this.keyPressed == KeyCode.SHIFT)
-            this.unZoom();
+            this.reset();
         else
             this.zoom(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY());
 
@@ -358,7 +363,7 @@ public class SampleController {
         }else{
             this.energyPrintingLabel.setTextFill(javafx.scene.paint.Color.PALEVIOLETRED);
             this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-            this.tempImg = null;
+            this.tempImg = "null";
         }
     }
 
@@ -452,7 +457,7 @@ public class SampleController {
 
             this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.PALEVIOLETRED);
             this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-            this.tempImg = null;
+            this.tempImg = "null";
 
 
         }else {
@@ -516,12 +521,12 @@ public class SampleController {
         gradientSwitcher("blueG");
     }
 
-    private void gradientSwitcher(String colorGradient){
+    private void gradientSwitcher(String colorGradient) {
 
-        if (this.tempImg.equals(colorGradient)){
+        if(this.tempImg.equals(colorGradient)){
             System.out.println("RESET de limage");
             this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-            this.tempImg=null;
+            this.tempImg="null";
 
         }else{
 
@@ -543,10 +548,3 @@ public class SampleController {
 
 }
 
-
-
-/*
-<Button GridPane.rowIndex="4"  onAction="#redGradient" text="Red Gradient" />
-<Button GridPane.rowIndex="5"  onAction="#greenGradient" text="Green Gradient" />
-<Button GridPane.rowIndex="6"  onAction="#blueGradient" text="Blue Gradient" />
-*/

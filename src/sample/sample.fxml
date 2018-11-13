@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Labeled?>
 
 <?import javafx.scene.shape.Rectangle?>
 
@@ -26,6 +27,7 @@
     </MenuBar>
     <HBox >
         <GridPane prefWidth="250" hgap="10"  vgap="10"  >
+
             <Button GridPane.rowIndex="0"  onAction="#Switcher" text="Crop" />
             <Button GridPane.rowIndex="1"  onAction="#Switcher" text="Resize" />
             <Button GridPane.rowIndex="2"  onAction = "#Switcher" text="Seam Carving" />
