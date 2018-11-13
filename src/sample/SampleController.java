@@ -22,8 +22,12 @@ import java.io.IOException;
 import javafx.scene.control.Slider;
 
 import static java.lang.Math.abs;
+import javafx.scene.shape.Rectangle;
 
 public class SampleController {
+    public Rectangle redG;
+    public Rectangle greenG;
+    public Rectangle blueG;
     public Label seamPrintingLabel;
     public Label energyPrintingLabel;
     private KeyCode keyPressed;
@@ -31,12 +35,14 @@ public class SampleController {
     public Slider mySlider;
     public ImageView myImage;
     private String tempImg;
-
-    public BufferedImage myBufferedImage;
-    public BufferedImage myBufferedImageSTOCKED;
+    private BufferedImage myBufferedImage;
+    private BufferedImage myBufferedImageSTOCKED;
 
     public void initialize(){
 
+        this.redG.setFill(javafx.scene.paint.Color.RED);
+        this.greenG.setFill(javafx.scene.paint.Color.GREEN);
+        this.blueG.setFill(javafx.scene.paint.Color.BLUE);
 
 
         //Reaction when  the Slider value is changed
@@ -44,6 +50,7 @@ public class SampleController {
 
 
     }
+
 
     private void listenSliderChange(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
 
@@ -55,7 +62,7 @@ public class SampleController {
             case "Zoom":
                 this.unZoom();
 
-                double coefViewReal = this.myImage.getFitWidth()/this.myBufferedImage.getWidth();
+                double coefViewReal = this.myImage.getFitHeight()/this.myBufferedImage.getHeight();
                 double widthView = this.myBufferedImage.getWidth()*coefViewReal;
                 double heightView = this.myBufferedImage.getHeight()*coefViewReal;
                 this.zoom( 0.5*widthView, 0.5*heightView );
@@ -120,7 +127,7 @@ public class SampleController {
     /**
      * Provide an example of how resizing regarding the slider value
      */
-    public void resizing(){
+    private void resizing(){
         double coef = (0.01<this.mySlider.getValue()/100)? abs(this.mySlider.getValue())/100:0.01 ;
         int width = (int) (coef*this.myBufferedImage.getWidth());
         int height = this.myBufferedImage.getHeight();
@@ -129,7 +136,7 @@ public class SampleController {
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
-    public static BufferedImage scale(BufferedImage src, int width, int height){
+    private static BufferedImage scale(BufferedImage src, int width, int height){
         BufferedImage dest = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = dest.createGraphics();
         AffineTransform at = AffineTransform.getScaleInstance(
@@ -176,18 +183,19 @@ public class SampleController {
      * The gradient is the difference between the intensity of the same colour in the left and in the right pixel
      */
 
-    public void createGradient(String couleur){
-        int maxX = this.myBufferedImage.getWidth();
-        int maxY = this.myBufferedImage.getHeight();
+    private BufferedImage createGradient(String couleur){
+        BufferedImage gradientBImage = this.cloningBufferedImage(this.myBufferedImage);
+        int maxX = gradientBImage.getWidth();
+        int maxY = gradientBImage.getHeight();
 
 
         for (int x = 2; x < maxX-1; x++) {
             for (int y = 1; y < maxY; y++) {
 
                 //pixel à droite
-                Color myRightPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x + 1, y));
+                Color myRightPixelColor = new Color(this.myBufferedImage.getRGB(x + 1, y));
                 //pixel à gauche
-                Color myLeftPixelColor = new Color(this.myBufferedImageSTOCKED.getRGB(x - 1, y));
+                Color myLeftPixelColor = new Color(this.myBufferedImage.getRGB(x - 1, y));
 
 
                 int decalage = 0;
@@ -217,26 +225,27 @@ public class SampleController {
                     gradient = 255;
                 }
                 gradient = (gradient << decalage);
-                this.myBufferedImage.setRGB(x,y,gradient);
+                gradientBImage.setRGB(x,y,gradient);
 
             }
         }
-
+        return gradientBImage;
     }
 
-    public void redGradient(){
-        createGradient("red");
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+
+    private void redGradient(){
+        BufferedImage img = createGradient("red");
+        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
-    public void greenGradient(){
-        createGradient("green");
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    private void greenGradient(){
+        BufferedImage img = createGradient("green");
+        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
-    public void blueGradient(){
-        createGradient("blue");
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    private void blueGradient(){
+        BufferedImage img = createGradient("blue");
+        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
 
@@ -279,7 +288,7 @@ public class SampleController {
     }
 
 
-    public void createCropImage() {
+    private void createCropImage() {
         double coef = (0.01 < this.mySlider.getValue() / 100) ? abs(this.mySlider.getValue()) / 100 : 0.01;
         this.myBufferedImage = cloningBufferedImage(this.myBufferedImageSTOCKED);
         int width = this.myBufferedImage.getWidth();
@@ -294,7 +303,7 @@ public class SampleController {
     /**
      * This method convert the color image into grayscale image
      */
-    public BufferedImage grayOut(BufferedImage img) {
+    private BufferedImage grayOut(BufferedImage img) {
         ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace
                 .getInstance(ColorSpace.CS_GRAY), null);
         colorConvert.filter(img, img);
@@ -302,7 +311,7 @@ public class SampleController {
         return img;
     }
 
-    public BufferedImage determineEnergy(BufferedImage imgToCompute){
+    private BufferedImage determineEnergy(BufferedImage imgToCompute){
         int maxX = imgToCompute.getWidth();
         int maxY = imgToCompute.getHeight();
         BufferedImage newBImage = this.cloningBufferedImage(imgToCompute);
@@ -337,8 +346,13 @@ public class SampleController {
     }
 
     public void energyMap(){
-        if (this.tempImg!="Energy computation"){
-            this.energyPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
+        this.energyPrintingLabel.setTextFill(javafx.scene.paint.Color.BLACK);
+
+        if (!this.tempImg.equals("Energy computation")){
+            if (this.myBufferedImage!=null)
+                this.energyPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
+
+            assert this.myBufferedImage != null;
             this.myImage.setImage(SwingFXUtils.toFXImage(grayOut(determineEnergy(this.myBufferedImage)), null));
             this.tempImg = "Energy computation";
         }else{
@@ -346,7 +360,7 @@ public class SampleController {
             this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
             this.tempImg = null;
         }
-            }
+    }
 
 
     private long[][] dynamicEnergySeamVertical(BufferedImage imgToCompute){
@@ -379,7 +393,6 @@ public class SampleController {
         }
 
         return dynamicSeamTable;
-
     }
 
     private int[] bestVerticalSeam(long[][] seamTable){
@@ -435,7 +448,7 @@ public class SampleController {
     public void printBestSeamVertical(){
         this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.BLACK);
 
-        if (this.tempImg =="Show next seam"){
+        if (this.tempImg.equals("Show next seam")){
 
             this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.PALEVIOLETRED);
             this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
@@ -447,6 +460,7 @@ public class SampleController {
                 this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
             }
 
+            assert this.myBufferedImage != null;
             BufferedImage energyBImage = grayOut(determineEnergy(this.myBufferedImage));
 
             int totalRedRGB = 255 << 16;
@@ -479,7 +493,7 @@ public class SampleController {
         return newBImage;
     }
 
-    public void seamWithdraw(int nbOfSeamToWithdraw) {
+    private void seamWithdraw(int nbOfSeamToWithdraw) {
 
         for (int i=0; i< nbOfSeamToWithdraw; i++) {
             BufferedImage energyBImage = grayOut(determineEnergy(this.myBufferedImage));
@@ -492,7 +506,47 @@ public class SampleController {
            }
     }
 
+    public void redGSwitcher (){
+        gradientSwitcher("redG");
+    }
+    public void greenGSwitcher (){
+        gradientSwitcher("greenG");
+    }
+    public void blueGSwitcher (){
+        gradientSwitcher("blueG");
+    }
+
+    private void gradientSwitcher(String colorGradient){
+
+        if (this.tempImg.equals(colorGradient)){
+            System.out.println("RESET de limage");
+            this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+            this.tempImg=null;
+
+        }else{
+
+            switch (colorGradient) {
+                case "redG":
+                    this.redGradient();
+                    break;
+                case "greenG":
+                    this.greenGradient();
+                    break;
+                case "blueG":
+                    this.blueGradient();
+                    break;
+            }
+
+            this.tempImg = colorGradient;
+        }
+    }
+
 }
 
 
 
+/*
+<Button GridPane.rowIndex="4"  onAction="#redGradient" text="Red Gradient" />
+<Button GridPane.rowIndex="5"  onAction="#greenGradient" text="Green Gradient" />
+<Button GridPane.rowIndex="6"  onAction="#blueGradient" text="Blue Gradient" />
+*/

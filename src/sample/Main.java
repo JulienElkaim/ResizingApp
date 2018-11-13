@@ -15,7 +15,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Seam Carving Project");
-        final Scene scene = new Scene(root, 1200, 900);
+        final Scene scene = new Scene(root, 1600, 900);
 
         primaryStage.setScene(scene);
         primaryStage.show();
