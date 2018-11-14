@@ -46,8 +46,8 @@
                 <Label fx:id="sliderListenerLabel"  text="" />
             </HBox>
 
-            <Label fx:id="energyPrintingLabel" onMouseEntered="#energyMap" onMouseExited="#energyMap" GridPane.rowIndex="12" text="Show energy" />
-            <Label fx:id="seamPrintingLabel" onMouseEntered="#printBestSeamVertical" onMouseExited="#printBestSeamVertical" GridPane.rowIndex="13" text="Show next seam" />
+            <Label fx:id="energyPrintingLabel" onMouseEntered="#imageEnergyDisplay" onMouseExited="#imageEnergyDisplay" GridPane.rowIndex="12" text="Show energy" />
+            <Label fx:id="seamPrintingLabel" onMouseEntered="#imageVerticalSeamDisplay" onMouseExited="#imageVerticalSeamDisplay" GridPane.rowIndex="13" text="Show next seam" />
 
             <Label GridPane.rowIndex="16" text="Make actual image persistant : " />
             <HBox GridPane.rowIndex="17"  alignment="CENTER">

@@ -1,8 +1,10 @@
 package operation;
 
 import java.awt.*;
+import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
 import java.nio.Buffer;
 
 import imageChange.*;
@@ -71,16 +73,28 @@ public class ImageResize {
         int height = (int)(zoomingCoef*initHeight);
 
 
-        while (x+width >= myBufferedImage.getWidth()){
+        while (x+width >= myBufferedImage.getWidth())
             x-=1;
-        }
-        while (y+height >= myBufferedImage.getHeight()){
+
+        while (y+height >= myBufferedImage.getHeight())
             y-=1;
-        }
 
         return myBufferedImage.getSubimage((int)x,(int)y,width,height);
     }
 
+
+    public static BufferedImage SeamCarving(int nbOfSeamToWithdraw, BufferedImage img) {
+
+        for (int i=0; i< nbOfSeamToWithdraw; i++) {
+            BufferedImage energyBImage =ImageSeamComputation.EnergizedImage(img);
+            int[] seamToWithdraw = ImageSeamComputation.bestSeam(energyBImage);
+
+            BufferedImage bImageWithOutSeam = ImageSeamComputation.seamVerticalDestroyer(img, seamToWithdraw);
+            img = SimpleOperation.cloningBufferedImage(bImageWithOutSeam);
+        }
+
+        return img;
+    }
 
 
 }
