@@ -20,7 +20,7 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import javafx.scene.control.Slider;
-
+import operation.*;
 
 import static java.lang.Math.abs;
 import javafx.scene.shape.Rectangle;
@@ -80,7 +80,7 @@ public class Controller {
                 break;
 
             case "Seam Carving":
-                this.myBufferedImage = this.cloningBufferedImage(this.myBufferedImageSTOCKED);
+                this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
                 this.seamWithdraw(new_val.intValue());
                 break;
             case"Crop":
@@ -90,16 +90,10 @@ public class Controller {
         }
 
     }
-    private BufferedImage cloningBufferedImage(BufferedImage bImage){
-        ColorModel cm = bImage.getColorModel();
-        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        WritableRaster raster = bImage.copyData(null);
-        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
 
-    }
     private void reset(){
 
-        this.myBufferedImage = cloningBufferedImage(this.myBufferedImageSTOCKED);
+        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
@@ -139,12 +133,12 @@ public class Controller {
      * Provide an example of how resizing regarding the slider value
      */
     private void resizing(){
-        this.myBufferedImage = this.cloningBufferedImage(this.myBufferedImageSTOCKED);
+        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
         double coef = (0.01<this.mySlider.getValue()/100)? abs(this.mySlider.getValue())/100:0.01 ;
         int width = (int) (coef*this.myBufferedImageSTOCKED.getWidth());
         int height = this.myBufferedImageSTOCKED.getHeight();
         BufferedImage dest = scale(this.myBufferedImage,width, height);
-        this.myBufferedImage = this.cloningBufferedImage(dest);
+        this.myBufferedImage = SimpleOperation.cloningBufferedImage(dest);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
@@ -170,7 +164,7 @@ public class Controller {
         //Displaying the image chosen.
         this.myBufferedImageSTOCKED = ImageIO.read(file);
 
-        this.myBufferedImage = cloningBufferedImage(this.myBufferedImageSTOCKED);
+        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
 
         Image image = SwingFXUtils.toFXImage(this.myBufferedImage, null);
         this.myImage.setImage(image);
@@ -191,72 +185,19 @@ public class Controller {
 
     }
 
-    /**
-     * The gradient is the difference between the intensity of the same colour in the left and in the right pixel
-     */
-
-    private BufferedImage createGradient(String couleur){
-        BufferedImage gradientBImage = this.cloningBufferedImage(this.myBufferedImage);
-        int maxX = gradientBImage.getWidth();
-        int maxY = gradientBImage.getHeight();
-
-
-        for (int x = 2; x < maxX-1; x++) {
-            for (int y = 1; y < maxY; y++) {
-
-                //pixel à droite
-                Color myRightPixelColor = new Color(this.myBufferedImage.getRGB(x + 1, y));
-                //pixel à gauche
-                Color myLeftPixelColor = new Color(this.myBufferedImage.getRGB(x - 1, y));
-
-
-                int decalage = 0;
-                int Left;
-                int Right;
-                //changement de couleur  //8 pour green, 16 pour rouge, rien pour bleu
-                switch (couleur) {
-                    case "red":  //rouge
-                        Left = myLeftPixelColor.getRed();
-                        Right = myRightPixelColor.getRed();
-                        decalage = 16;
-                        //gradient = (gradient << 16);
-                        break;
-                    case "green":  //vert
-                        Left = myLeftPixelColor.getGreen();
-                        Right = myRightPixelColor.getGreen();
-                        decalage = 8;
-                        //gradient = (gradient << 8);
-                        break;
-                    default:
-                        Left = myLeftPixelColor.getBlue();
-                        Right = myRightPixelColor.getBlue();
-                        break;
-                }
-                int gradient = abs(Left-Right);
-                if (gradient > 255) {
-                    gradient = 255;
-                }
-                gradient = (gradient << decalage);
-                gradientBImage.setRGB(x,y,gradient);
-
-            }
-        }
-        return gradientBImage;
-    }
-
 
     private void redGradient(){
-        BufferedImage img = createGradient("red");
+        BufferedImage img = Gradient.createGradient("red",this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
     private void greenGradient(){
-        BufferedImage img = createGradient("green");
+        BufferedImage img = Gradient.createGradient("green",this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
     private void blueGradient(){
-        BufferedImage img = createGradient("blue");
+        BufferedImage img = Gradient.createGradient("blue",this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
@@ -303,7 +244,7 @@ public class Controller {
 
     private void createCropImage() {
         double coef = (0.01 < this.mySlider.getValue() / 100) ? abs(this.mySlider.getValue()) / 100 : 0.01;
-        this.myBufferedImage = cloningBufferedImage(this.myBufferedImageSTOCKED);
+        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
         int width = this.myBufferedImage.getWidth();
         int height = this.myBufferedImage.getHeight();
         int newWidth = (int) (coef * width);
@@ -325,7 +266,7 @@ public class Controller {
     private BufferedImage determineEnergy(BufferedImage imgToCompute){
         int maxX = imgToCompute.getWidth();
         int maxY = imgToCompute.getHeight();
-        BufferedImage newBImage = this.cloningBufferedImage(imgToCompute);
+        BufferedImage newBImage = SimpleOperation.cloningBufferedImage(imgToCompute);
 
         for (int x = 2; x < maxX-1; x++) {
             for (int y = 2; y < maxY-1; y++) {
@@ -512,7 +453,7 @@ public class Controller {
 
             BufferedImage bImageWithOutSeam = this.seamVerticalDestroyer(this.myBufferedImage, seamToWithdraw);
 
-            this.myBufferedImage = this.cloningBufferedImage(bImageWithOutSeam);
+            this.myBufferedImage = SimpleOperation.cloningBufferedImage(bImageWithOutSeam);
             this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
            }
     }
@@ -552,7 +493,7 @@ public class Controller {
     }
 
     public void loadChanges() {
-        this.myBufferedImageSTOCKED = this.cloningBufferedImage(this.myBufferedImage);
+        this.myBufferedImageSTOCKED = SimpleOperation.cloningBufferedImage(this.myBufferedImage);
     }
 }
 

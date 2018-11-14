@@ -16,6 +16,8 @@ Faire des packages : par exemple un dédié au traitement d'image
 
 Différence pixel de gauche et pixel de droite : calcul du gradient (on obtiendra des lignes ), max 255
 
+
+imageChange
 ## Difficultés rencontrées
 
 * resizing 
