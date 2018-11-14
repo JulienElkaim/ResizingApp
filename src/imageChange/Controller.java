@@ -84,7 +84,7 @@ public class Controller {
                 this.seamWithdraw(new_val.intValue());
                 break;
             case"Crop":
-                this.createCropImage();
+                this.cropButton(new_val.doubleValue());
 
 
         }
@@ -134,8 +134,13 @@ public class Controller {
      */
 
     private void resizeButton(double sliderValue){
-      this.myBufferedImage = SimpleOperation.cloningBufferedImage( ImageResize.resizingWidth( this.myBufferedImageSTOCKED,sliderValue ) );
-      this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+        this.myBufferedImage = SimpleOperation.cloningBufferedImage( ImageResize.resizingWidth( this.myBufferedImageSTOCKED,sliderValue ) );
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+    }
+
+    private void cropButton(double sliderValue){
+        this.myBufferedImage = SimpleOperation.cloningBufferedImage( ImageResize.croppingWidth(this.myBufferedImageSTOCKED,sliderValue));
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
 
@@ -230,16 +235,7 @@ public class Controller {
     }
 
 
-    private void createCropImage() {
-        double coef = (0.01 < this.mySlider.getValue() / 100) ? abs(this.mySlider.getValue()) / 100 : 0.01;
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
-        int width = this.myBufferedImage.getWidth();
-        int height = this.myBufferedImage.getHeight();
-        int newWidth = (int) (coef * width);
-        BufferedImage dest = this.myBufferedImageSTOCKED.getSubimage(0, 0, newWidth, height);
-        this.myImage.setImage(SwingFXUtils.toFXImage(dest, null));
 
-    }
     /**
      * This method convert the color image into grayscale image
      */

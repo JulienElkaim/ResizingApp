@@ -25,7 +25,14 @@ public class ImageResize {
         return (ImageResize.scale(myBufferedImage,width, height));
     }
 
-
+    public static BufferedImage croppingWidth(BufferedImage myBufferedImage, double cropCoef) {
+        double coef = (0.01 < cropCoef / 100) ? abs(cropCoef) / 100 : 0.01;
+        int width = myBufferedImage.getWidth();
+        int height = myBufferedImage.getHeight();
+        int newWidth = (int) (coef * width);
+        BufferedImage dest = myBufferedImage.getSubimage(0, 0, newWidth, height);
+        return dest;
+    }
 
 
 
