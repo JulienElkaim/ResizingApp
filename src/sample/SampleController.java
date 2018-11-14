@@ -547,5 +547,8 @@ public class SampleController {
         }
     }
 
+    public void loadChanges(ActionEvent actionEvent) {
+        this.myBufferedImageSTOCKED = this.cloningBufferedImage(this.myBufferedImage);
+    }
 }
 

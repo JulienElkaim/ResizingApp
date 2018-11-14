@@ -37,13 +37,12 @@
                 <Rectangle onMouseEntered="#greenGSwitcher" onMouseExited="#greenGSwitcher" GridPane.columnIndex="2" fx:id="greenG" width="40" height="40" />
                 <Rectangle onMouseEntered="#blueGSwitcher" onMouseExited="#blueGSwitcher" GridPane.columnIndex="3" fx:id="blueG" width="40" height="40" />
             </GridPane>
-
             <Label  GridPane.rowIndex="7" >Percentage Of Width</Label>
             <Slider GridPane.rowIndex="8" value="50" fx:id="mySlider"  majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>
-
             <Label fx:id="energyPrintingLabel" onMouseEntered="#energyMap" onMouseExited="#energyMap" GridPane.rowIndex="9" text="Show energy" />
             <Label fx:id="seamPrintingLabel" onMouseEntered="#printBestSeamVertical" onMouseExited="#printBestSeamVertical" GridPane.rowIndex="10" text="Show next seam" />
-
+            <Label GridPane.rowIndex="14" text="Make actual image persistant : " />
+            <Button GridPane.rowIndex="15"  onAction="#loadChanges" text="Validate modifications" />
         </GridPane>
         <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage" >
             <ImageView onMouseClicked="#imageClicked" StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitHeight="700" preserveRatio="true" >
