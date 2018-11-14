@@ -2,10 +2,17 @@
     -fx-background-color: whitesmoke;
 }
 .label {
-    -fx-font-size: 20;
+    -fx-font-size: 1.1em;
 
 }
 
 .paneOfImage{
     -fx-background-color: #cdd3d3;
 }
+
+.custom-footer{
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: Black;
+
+}
+

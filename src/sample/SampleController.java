@@ -34,6 +34,7 @@ public class SampleController {
     public Rectangle blueG;
     public Label seamPrintingLabel;
     public Label energyPrintingLabel;
+    public Label sliderListenerLabel;
 
     //Objets conceptuels
     private KeyCode keyPressed;
@@ -44,9 +45,16 @@ public class SampleController {
     private BufferedImage myBufferedImage;
     private BufferedImage myBufferedImageSTOCKED;
 
+    private String displayActualFunction(String functionName){
+        if (this.myBufferedImage==null)
+            return " - ";
+        else
+            return "Actually Using : " + functionName;
+    }
 
     public void initialize(){
-        this.sliderListener = "Crop";
+        this.sliderListener = "Zoom";
+        this.sliderListenerLabel.setText(this.displayActualFunction(this.sliderListener));
         this.tempImg ="null";
         this.redG.setFill(javafx.scene.paint.Color.RED);
         this.greenG.setFill(javafx.scene.paint.Color.GREEN);
@@ -68,12 +76,7 @@ public class SampleController {
                 this.resizing();
                 break;
             case "Zoom":
-                this.reset();
-
-                double coefViewReal = this.myImage.getFitHeight()/this.myBufferedImage.getHeight();
-                double widthView = this.myBufferedImage.getWidth()*coefViewReal;
-                double heightView = this.myBufferedImage.getHeight()*coefViewReal;
-                this.zoom( 0.5*widthView, 0.5*heightView );
+                //Just for visualisation, the use of ZOOM with the slider is done by clicking on the imageView
                 break;
 
             case "Seam Carving":
@@ -260,6 +263,7 @@ public class SampleController {
 
     public void Switcher(ActionEvent actionEvent) {
        this.sliderListener = this.getText(actionEvent.getSource().toString());
+       this.sliderListenerLabel.setText(this.displayActualFunction(this.sliderListener));
     }
 
     private String getText (String src){
@@ -291,7 +295,7 @@ public class SampleController {
 
         if (this.keyPressed == KeyCode.SHIFT)
             this.reset();
-        else
+        else if (this.sliderListener.equals("Zoom"))
             this.zoom(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY());
 
     }
@@ -547,7 +551,7 @@ public class SampleController {
         }
     }
 
-    public void loadChanges(ActionEvent actionEvent) {
+    public void loadChanges() {
         this.myBufferedImageSTOCKED = this.cloningBufferedImage(this.myBufferedImage);
     }
 }
