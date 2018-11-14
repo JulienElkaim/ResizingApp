@@ -73,7 +73,7 @@ public class Controller {
         //The function called will change accordingly to the last listener activated
         switch(this.sliderListener){
             case "Resize":
-                this.resizing();
+                this.resizeButton(new_val.doubleValue());
                 break;
             case "Zoom":
                 //Just for visualisation, the use of ZOOM with the slider is done by clicking on the imageView
@@ -132,25 +132,13 @@ public class Controller {
     /**
      * Provide an example of how resizing regarding the slider value
      */
-    private void resizing(){
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
-        double coef = (0.01<this.mySlider.getValue()/100)? abs(this.mySlider.getValue())/100:0.01 ;
-        int width = (int) (coef*this.myBufferedImageSTOCKED.getWidth());
-        int height = this.myBufferedImageSTOCKED.getHeight();
-        BufferedImage dest = scale(this.myBufferedImage,width, height);
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage(dest);
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+
+    private void resizeButton(double sliderValue){
+      this.myBufferedImage = SimpleOperation.cloningBufferedImage( ImageResize.resizingWidth( this.myBufferedImageSTOCKED,sliderValue ) );
+      this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
-    private static BufferedImage scale(BufferedImage src, int width, int height){
-        BufferedImage dest = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = dest.createGraphics();
-        AffineTransform at = AffineTransform.getScaleInstance(
-                (double)width/src.getWidth(),
-                (double)height/src.getHeight());
-        g.drawRenderedImage(src,at);
-        return dest;
-    }
+
 
     public void ChooseAFile() throws IOException {
 
