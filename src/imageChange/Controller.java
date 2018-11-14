@@ -91,43 +91,14 @@ public class Controller {
 
     }
 
+
+
     private void reset(){
 
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
-
-    private void zoom(double X, double Y){
-
-
-        double zoomingCoef = this.mySlider.getValue()/100  *(0.1-1) +1;// 1* -0.9 +1
-
-        double initWidth = this.myBufferedImage.getWidth();
-        double initHeight = this.myBufferedImage.getHeight();
-
-        double coefViewReal = this.myImage.getFitHeight()/initHeight;
-
-        double XReal = X/coefViewReal;
-        double YReal = Y/coefViewReal;
-
-        double x = Math.max(0, XReal - (zoomingCoef/2)* initWidth);
-        double y = Math.max(0 , YReal - (zoomingCoef/2)* initHeight);
-
-        int width =(int)(zoomingCoef*this.myBufferedImage.getWidth()) ;
-        int height = (int)(zoomingCoef*this.myBufferedImage.getHeight());
-
-        while (x+width >= this.myBufferedImage.getWidth()){
-            x-=1;
-        }
-        while (y+height >= this.myBufferedImage.getHeight()){
-            y-=1;
-        }
-
-        this.myBufferedImage = this.myBufferedImage.getSubimage((int)x,(int)y,width,height);
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-    }
-
 
     /**
      * Provide an example of how resizing regarding the slider value
@@ -143,7 +114,10 @@ public class Controller {
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
-
+    private void zoomButton(double X, double Y, double sliderValue){
+        BufferedImage img = ImageResize.zoom(this.myImage, X, Y, sliderValue);
+        this.myImage.setImage(SwingFXUtils.toFXImage(img,null));
+    }
 
     public void ChooseAFile() throws IOException {
 
@@ -230,7 +204,7 @@ public class Controller {
         if (this.keyPressed == KeyCode.SHIFT)
             this.reset();
         else if (this.sliderListener.equals("Zoom"))
-            this.zoom(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY());
+            this.zoomButton(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY(), this.mySlider.getValue());
 
     }
 

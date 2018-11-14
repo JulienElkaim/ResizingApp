@@ -6,6 +6,8 @@ import java.awt.image.BufferedImage;
 import imageChange.*;
 import javafx.embed.swing.SwingFXUtils;
 
+import javafx.scene.image.ImageView;
+
 import static java.lang.Math.abs;
 
 public class ImageResize {
@@ -32,6 +34,38 @@ public class ImageResize {
         int newWidth = (int) (coef * width);
         BufferedImage dest = myBufferedImage.getSubimage(0, 0, newWidth, height);
         return dest;
+    }
+
+    public static BufferedImage zoom(ImageView myImage, double X, double Y, double zoomCoef){
+
+        BufferedImage myBufferedImage = SwingFXUtils.fromFXImage(myImage.getImage(),null);
+
+
+        double zoomingCoef = zoomCoef/100  *(0.1-1) +1;// 1* -0.9 +1
+
+        double initWidth = myBufferedImage.getWidth();
+        double initHeight = myBufferedImage.getHeight();
+
+        double coefViewReal = myImage.getFitHeight()/initHeight;
+
+        double XReal = X/coefViewReal;
+        double YReal = Y/coefViewReal;
+
+        double x = Math.max(0, XReal - (zoomingCoef/2)* initWidth);
+        double y = Math.max(0 , YReal - (zoomingCoef/2)* initHeight);
+
+        int width =(int)(zoomingCoef*initWidth) ;
+        int height = (int)(zoomingCoef*initHeight);
+
+        while (x+width >= myBufferedImage.getWidth()){
+            x-=1;
+        }
+        while (y+height >= myBufferedImage.getHeight()){
+            y-=1;
+        }
+        System.out.println("X: " + X +" , Y : " + Y + "   initwidth: " + width + " , initheight : " + height + "ZOOMING COEF: " + zoomingCoef);
+        System.out.println("x: " + x +" , y : " + y + "   width: " + width + " , height : " + height);
+        return(myBufferedImage.getSubimage((int)x,(int)y,width,height));
     }
 
 
