@@ -9,11 +9,22 @@ import static java.lang.Math.abs;
 
 public class ImageSeamComputation {
 
+    /** This function provide public possibility to obtain an energy negative of their images.
+     *
+     * @param img the energy BufferedImage to gray.
+     * @return BufferedImage that represent energized Image passed on a gray scale filter.
+     */
     public static BufferedImage EnergizedImage(BufferedImage img){
 
         return ImageSeamComputation.grayOut(ImageSeamComputation.determineEnergy(img));
 
     }
+
+    /** Transform your images with a gray filter.
+     *
+     * @param img is the BufferedImage to filter.
+     * @return a copy of your BufferedImage in a gray Scale.
+     */
     private static BufferedImage grayOut(BufferedImage img) {
 
         ColorConvertOp colorConvert = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
@@ -23,7 +34,7 @@ public class ImageSeamComputation {
 
     /** BUG BUG BUG: Need to compute energy for border pixel (x=2, y=2...)
      *
-     * @param imgToCompute
+     * @param imgToCompute is the bufferedImage bas to compute the energy.
      * @return BufferedImage that represent energy of the initial image.
      */
     private static BufferedImage determineEnergy(BufferedImage imgToCompute){
@@ -56,7 +67,11 @@ public class ImageSeamComputation {
         return newBImage;
     }
 
-
+    /** Provide Dynamic structure to find seams available on your Gray energy BufferedImage.
+     *
+     * @param imgToCompute is the energy BufferedImage source to retrieve seams pattern.
+     * @return a matrix of long that represent a dynamic seam matrix
+     */
     private static long[][] dynamicVerticalSeam(BufferedImage imgToCompute){
         int maxX = imgToCompute.getWidth();
         int maxY = imgToCompute.getHeight();
@@ -87,31 +102,29 @@ public class ImageSeamComputation {
         return dynamicSeamTable;
     }
 
+    /** Isolate the best seam over the image.
+     *
+     * @param seamTable dynamic seam matrix.
+     * @return a seam of seam.length elements of X coordinates (Seam is vertical, useful for width resizing)
+     */
     private static int[] bestVerticalSeam(long[][] seamTable){
         int maxY = seamTable[0].length;
         int maxX = seamTable.length;
         int[] lowestSeamXCoordinates = new int [maxY];
 
         //Search in last line of energy table which one is the best
-        for (int x=0 ; x < maxX;x++){
-
+        for (int x=0 ; x < maxX;x++)
             if (x == 0)
                 lowestSeamXCoordinates[maxY-1] = 0;
-            else{
+            else
                 if(seamTable[lowestSeamXCoordinates[maxY-1] ][maxY-1] > seamTable[x][maxY-1])
                     lowestSeamXCoordinates[maxY-1] = x;
-            }
-        }
 
         //For every other pixel, we are looking for next X coordinates between pixels above the previous pixel found.
-        for (int y=(maxY-2);y >-1; y--){
-
-
-
+        for (int y=(maxY-2);y >-1; y--)
             if(lowestSeamXCoordinates[y+1]==0)
                 //If on border-left, 2 pixels above him
                 lowestSeamXCoordinates[y] = (seamTable[0][y] <= seamTable[1][y])? 0: 1 ;
-
 
             else if (lowestSeamXCoordinates[y+1]==(maxX-1) )
                 //If on border-right, 2 pixels above him
@@ -121,14 +134,25 @@ public class ImageSeamComputation {
                 lowestSeamXCoordinates[y] = (seamTable[lowestSeamXCoordinates[y+1]-1][y] <= seamTable[lowestSeamXCoordinates[y+1]][y])? (lowestSeamXCoordinates[y+1]-1): lowestSeamXCoordinates[y+1] ;
                 lowestSeamXCoordinates[y] = (seamTable[lowestSeamXCoordinates[y]][y] <= seamTable[lowestSeamXCoordinates[y+1]+1][y])? lowestSeamXCoordinates[y]: (lowestSeamXCoordinates[y+1]+1) ;
             }
-        }
+
         return lowestSeamXCoordinates;
     }
 
+    /** Provide possibility to know the best seam in an image
+     *
+     * @param bImageEnergized is the bufferedImage energized to retrieve seams et find the best one.
+     * @return seam of seam.length elements of X coordinates (Seam is vertical, useful for width resizing)
+     */
     public static int[]  bestSeam(BufferedImage bImageEnergized){
         return bestVerticalSeam(dynamicVerticalSeam(bImageEnergized));
     }
 
+    /** Retrieve the most relevant seam of your image.
+     *
+     * @param img the normal BufferedImage where the seam is to retrieve
+     * @param seam the seam to retrieve.
+     * @return the image without the seam provided.
+     */
     static BufferedImage seamVerticalDestroyer(BufferedImage img, int[] seam){
         int maxX = img.getWidth();
         int maxY = img.getHeight();
