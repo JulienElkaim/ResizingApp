@@ -115,8 +115,11 @@ public class Controller {
     }
 
     private void zoomButton(double X, double Y, double sliderValue){
-        BufferedImage img = ImageResize.zoom(this.myImage, X, Y, sliderValue);
-        this.myImage.setImage(SwingFXUtils.toFXImage(img,null));
+
+        double viewHeight = this.myImage.getFitHeight();
+        this.myBufferedImage = ImageResize.zoom(this.myBufferedImage, viewHeight, "H", X, Y, sliderValue);
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+
     }
 
     public void ChooseAFile() throws IOException {
@@ -451,6 +454,7 @@ public class Controller {
     }
 
     public void loadChanges() {
+        this.myBufferedImageSTOCKED = null;
         this.myBufferedImageSTOCKED = SimpleOperation.cloningBufferedImage(this.myBufferedImage);
     }
 }

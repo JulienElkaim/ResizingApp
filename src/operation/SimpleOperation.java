@@ -5,6 +5,7 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 
 public class SimpleOperation {
+
     public static BufferedImage cloningBufferedImage(BufferedImage bImage){
         ColorModel cm = bImage.getColorModel();
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();

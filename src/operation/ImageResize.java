@@ -3,6 +3,8 @@ package operation;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
+
 import imageChange.*;
 import javafx.embed.swing.SwingFXUtils;
 
@@ -20,12 +22,15 @@ public class ImageResize {
         g.drawRenderedImage(myBufferedImage,at);
         return dest;
     }
+
+
     public static BufferedImage resizingWidth(BufferedImage myBufferedImage, double resizeCoef){
         double coef = (0.01<resizeCoef/100)? abs(resizeCoef)/100:0.01 ;
         int width = (int) (coef*myBufferedImage.getWidth());
         int height = myBufferedImage.getHeight();
         return (ImageResize.scale(myBufferedImage,width, height));
     }
+
 
     public static BufferedImage croppingWidth(BufferedImage myBufferedImage, double cropCoef) {
         double coef = (0.01 < cropCoef / 100) ? abs(cropCoef) / 100 : 0.01;
@@ -36,17 +41,24 @@ public class ImageResize {
         return dest;
     }
 
-    public static BufferedImage zoom(ImageView myImage, double X, double Y, double zoomCoef){
 
-        BufferedImage myBufferedImage = SwingFXUtils.fromFXImage(myImage.getImage(),null);
+    public static BufferedImage zoom(BufferedImage myBufferedImage, double viewSize, String direction , double X, double Y, double zoomCoef){
 
+        //BufferedImage myBufferedImage = SwingFXUtils.fromFXImage(myImage.getImage(),null);
 
         double zoomingCoef = zoomCoef/100  *(0.1-1) +1;// 1* -0.9 +1
 
         double initWidth = myBufferedImage.getWidth();
         double initHeight = myBufferedImage.getHeight();
 
-        double coefViewReal = myImage.getFitHeight()/initHeight;
+        double coefViewReal = 1;
+        if (direction.equals("H"))
+            coefViewReal = viewSize / initHeight;
+         if(direction.equals("W"))
+            coefViewReal = viewSize / initWidth;
+        if(direction.equals("BOTH"))
+            coefViewReal = viewSize;
+
 
         double XReal = X/coefViewReal;
         double YReal = Y/coefViewReal;
@@ -57,15 +69,17 @@ public class ImageResize {
         int width =(int)(zoomingCoef*initWidth) ;
         int height = (int)(zoomingCoef*initHeight);
 
+        System.out.println("x: " + x +" , y : " + y + "   width: " + width + " , height : " + height);
+
+
         while (x+width >= myBufferedImage.getWidth()){
             x-=1;
         }
         while (y+height >= myBufferedImage.getHeight()){
             y-=1;
         }
-        System.out.println("X: " + X +" , Y : " + Y + "   initwidth: " + width + " , initheight : " + height + "ZOOMING COEF: " + zoomingCoef);
-        System.out.println("x: " + x +" , y : " + y + "   width: " + width + " , height : " + height);
-        return(myBufferedImage.getSubimage((int)x,(int)y,width,height));
+
+        return myBufferedImage.getSubimage((int)x,(int)y,width,height);
     }
 
 
