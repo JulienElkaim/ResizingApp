@@ -51,7 +51,7 @@
 
             <Label GridPane.rowIndex="16" text="Make actual image persistant : " />
             <HBox GridPane.rowIndex="17"  alignment="CENTER">
-                <Button alignment="CENTER"  onAction="#loadChanges" text="Validate modifications" />
+                <Button alignment="CENTER"  onAction="#makeNewOperationPersistant" text="Validate modifications" />
             </HBox>
         </GridPane>
 

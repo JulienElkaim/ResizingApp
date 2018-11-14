@@ -139,6 +139,7 @@ public class Controller {
         this.myBufferedImageSTOCKED = ImageIO.read(operation.SimpleOperation.imageFileOpen());
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+        this.labelDisplayActualListner(this.sliderListener);
 
     }
 
@@ -238,7 +239,6 @@ public class Controller {
         if(this.tempImg.equals(colorGradient)){
             this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
             this.tempImg="null";
-
         }else{
 
             switch (colorGradient) {
@@ -256,7 +256,7 @@ public class Controller {
         }
     }
 
-    public void loadChanges() {
+    public void makeNewOperationPersistant() {
         int maxX = this.myBufferedImage.getWidth();
         int maxY = this.myBufferedImage.getHeight();
         this.myBufferedImageSTOCKED = new BufferedImage(maxX, maxY,BufferedImage.TYPE_INT_RGB);
@@ -268,7 +268,7 @@ public class Controller {
 
     private String labelDisplayActualListner(String functionName){
         if (this.myBufferedImage==null)
-            return " - ";
+            return " Please load an Image to process ! ";
         else
             return "Actually Using : " + functionName;
     }
