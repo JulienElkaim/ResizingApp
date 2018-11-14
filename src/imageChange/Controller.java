@@ -110,8 +110,12 @@ public class Controller {
     }
 
     private void cropButton(double sliderValue){
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage( ImageResize.croppingWidth(this.myBufferedImageSTOCKED,sliderValue));
+        this.myBufferedImage = ImageResize.croppingWidth(this.myBufferedImageSTOCKED,sliderValue);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+
+        /*this.myBufferedImage = SimpleOperation.cloningBufferedImage( ImageResize.croppingWidth(this.myBufferedImageSTOCKED,sliderValue));
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+        */
     }
 
     private void zoomButton(double X, double Y, double sliderValue){
@@ -153,22 +157,6 @@ public class Controller {
 
         ImageIO.write(this.myBufferedImage, "jpg", file);
 
-    }
-
-
-    private void redGradient(){
-        BufferedImage img = Gradient.createGradient("red",this.myBufferedImage);
-        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
-    }
-
-    private void greenGradient(){
-        BufferedImage img = Gradient.createGradient("green",this.myBufferedImage);
-        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
-    }
-
-    private void blueGradient(){
-        BufferedImage img = Gradient.createGradient("blue",this.myBufferedImage);
-        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
 
@@ -429,6 +417,22 @@ public class Controller {
         gradientSwitcher("blueG");
     }
 
+    private void redGradient(){
+        BufferedImage img = Gradient.createGradient("red",this.myBufferedImage);
+        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
+    }
+
+    private void greenGradient(){
+        BufferedImage img = Gradient.createGradient("green",this.myBufferedImage);
+        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
+    }
+
+    private void blueGradient(){
+        BufferedImage img = Gradient.createGradient("blue",this.myBufferedImage);
+        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
+    }
+
+
     private void gradientSwitcher(String colorGradient) {
 
         if(this.tempImg.equals(colorGradient)){
@@ -448,14 +452,18 @@ public class Controller {
                     this.blueGradient();
                     break;
             }
-
             this.tempImg = colorGradient;
         }
     }
 
     public void loadChanges() {
-        this.myBufferedImageSTOCKED = null;
-        this.myBufferedImageSTOCKED = SimpleOperation.cloningBufferedImage(this.myBufferedImage);
+        int maxX = this.myBufferedImage.getWidth();
+        int maxY = this.myBufferedImage.getHeight();
+        this.myBufferedImageSTOCKED = new BufferedImage(maxX, maxY,BufferedImage.TYPE_INT_RGB);
+
+        for (int y=0; y < maxY; y++)
+            for (int x=0; x < maxX; x++)
+                this.myBufferedImageSTOCKED.setRGB(x,y, this.myBufferedImage.getRGB(x,y));
     }
 }
 

@@ -38,6 +38,7 @@ public class ImageResize {
         int height = myBufferedImage.getHeight();
         int newWidth = (int) (coef * width);
         BufferedImage dest = myBufferedImage.getSubimage(0, 0, newWidth, height);
+
         return dest;
     }
 
@@ -68,8 +69,6 @@ public class ImageResize {
 
         int width =(int)(zoomingCoef*initWidth) ;
         int height = (int)(zoomingCoef*initHeight);
-
-        System.out.println("x: " + x +" , y : " + y + "   width: " + width + " , height : " + height);
 
 
         while (x+width >= myBufferedImage.getWidth()){
