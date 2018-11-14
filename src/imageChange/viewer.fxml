@@ -14,7 +14,7 @@
 
 <?import javafx.scene.shape.Rectangle?>
 
-<VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressedAdd" fx:controller="sample.SampleController" stylesheets="/sample/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1" >
+<VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressedAdd" fx:controller="imageChange.Controller" stylesheets="/imageChange/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1" >
     <MenuBar id="MenuBar" minWidth = "800"   GridPane.rowIndex="0">
         <Menu   text="File" >
             <MenuItem text="Open..." onAction="#ChooseAFile"/>

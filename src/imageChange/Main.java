@@ -1,19 +1,16 @@
-package sample;
+package imageChange;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-import java.io.File;
 
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("viewer.fxml"));
         primaryStage.setTitle("Seam Carving Project");
         final Scene scene = new Scene(root, 1600, 900);
 

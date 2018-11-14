@@ -1,4 +1,4 @@
-package sample;
+package imageChange;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -25,7 +25,7 @@ import javafx.scene.control.Slider;
 import static java.lang.Math.abs;
 import javafx.scene.shape.Rectangle;
 
-public class SampleController {
+public class Controller {
     //Objets visuels
     public ImageView myImage;
     public Slider mySlider;
