@@ -14,9 +14,11 @@
 
 <?import javafx.scene.shape.Rectangle?>
 
-<VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressedAdd" fx:controller="imageChange.Controller" stylesheets="/imageChange/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1" >
-    <MenuBar id="MenuBar" minWidth = "800"   GridPane.rowIndex="0">
-        <Menu   text="File" >
+<VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressedAdd" fx:controller="imageChange.Controller"
+      stylesheets="/imageChange/sample.css" minWidth="Infinity" minHeight="Infinity"
+      xmlns:fx="http://javafx.com/fxml/1">
+    <MenuBar id="MenuBar" minWidth="800" GridPane.rowIndex="0">
+        <Menu text="File">
             <MenuItem text="Open..." onAction="#ChooseAFile"/>
             <MenuItem text="Save as..." onAction="#saveAFile"/>
             <Menu text="Others">
@@ -25,38 +27,45 @@
 
         </Menu>
     </MenuBar>
-    <HBox >
-        <GridPane prefWidth="250" hgap="10"  vgap="10"  >
+    <HBox>
+        <GridPane prefWidth="250" hgap="10" vgap="10">
 
-            <Button GridPane.rowIndex="0"  onAction="#Switcher" text="Crop" />
-            <Button GridPane.rowIndex="1"  onAction="#Switcher" text="Resize" />
-            <Button GridPane.rowIndex="2"  onAction="#Switcher" text="Zoom" />
-            <Button GridPane.rowIndex="3"  onAction = "#Switcher" text="Seam Carving" />
+            <Button GridPane.rowIndex="0" onAction="#Switcher" text="Crop"/>
+            <Button GridPane.rowIndex="1" onAction="#Switcher" text="Resize"/>
+            <Button GridPane.rowIndex="2" onAction="#Switcher" text="Zoom"/>
+            <Button GridPane.rowIndex="3" onAction="#Switcher" text="Seam Carving"/>
 
 
             <GridPane GridPane.rowIndex="4" hgap="10">
-                <Rectangle onMouseEntered="#redGSwitcher" onMouseExited="#redGSwitcher" GridPane.columnIndex="1" fx:id="redG" width="40" height="40" />
-                <Rectangle onMouseEntered="#greenGSwitcher" onMouseExited="#greenGSwitcher" GridPane.columnIndex="2" fx:id="greenG" width="40" height="40" />
-                <Rectangle onMouseEntered="#blueGSwitcher" onMouseExited="#blueGSwitcher" GridPane.columnIndex="3" fx:id="blueG" width="40" height="40" />
+                <Rectangle onMouseEntered="#redGSwitcher" onMouseExited="#redGSwitcher" GridPane.columnIndex="1"
+                           fx:id="redG" width="40" height="40"/>
+                <Rectangle onMouseEntered="#greenGSwitcher" onMouseExited="#greenGSwitcher" GridPane.columnIndex="2"
+                           fx:id="greenG" width="40" height="40"/>
+                <Rectangle onMouseEntered="#blueGSwitcher" onMouseExited="#blueGSwitcher" GridPane.columnIndex="3"
+                           fx:id="blueG" width="40" height="40"/>
             </GridPane>
 
-            <Label  GridPane.rowIndex="7" >Percentage Of Width : </Label>
-            <Slider GridPane.rowIndex="8" value="50" fx:id="mySlider"  majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>
-            <HBox GridPane.rowIndex="10"  alignment="CENTER">
-                <Label fx:id="sliderListenerLabel"  text="" />
+            <Label GridPane.rowIndex="7">Percentage Of Width :</Label>
+            <Slider GridPane.rowIndex="8" value="50" fx:id="mySlider" majorTickUnit="100" showTickLabels="true"
+                    showTickMarks="true" minorTickCount="5"/>
+            <HBox GridPane.rowIndex="10" alignment="CENTER">
+                <Label fx:id="sliderListenerLabel"/>
             </HBox>
 
-            <Label fx:id="energyPrintingLabel" onMouseEntered="#imageEnergyDisplay" onMouseExited="#imageEnergyDisplay" GridPane.rowIndex="12" text="Show energy" />
-            <Label fx:id="seamPrintingLabel" onMouseEntered="#imageVerticalSeamDisplay" onMouseExited="#imageVerticalSeamDisplay" GridPane.rowIndex="13" text="Show next seam" />
+            <Label fx:id="energyPrintingLabel" onMouseEntered="#imageEnergyDisplay" onMouseExited="#imageEnergyDisplay"
+                   GridPane.rowIndex="12" text="Show energy"/>
+            <Label fx:id="seamPrintingLabel" onMouseEntered="#imageVerticalSeamDisplay"
+                   onMouseExited="#imageVerticalSeamDisplay" GridPane.rowIndex="13" text="Show next seam"/>
 
-            <Label GridPane.rowIndex="16" text="Make actual image persistant : " />
-            <HBox GridPane.rowIndex="17"  alignment="CENTER">
-                <Button alignment="CENTER"  onAction="#makeNewOperationPersistant" text="Validate modifications" />
+            <Label GridPane.rowIndex="16" text="Make actual image persistant : "/>
+            <HBox GridPane.rowIndex="17" alignment="CENTER">
+                <Button alignment="CENTER" onAction="#makeNewOperationPersistant" text="Validate modifications"/>
             </HBox>
         </GridPane>
 
-        <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage" >
-            <ImageView onMouseClicked="#imageClicked" StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitHeight="700" preserveRatio="true" >
+        <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage">
+            <ImageView onMouseClicked="#imageClicked" StackPane.alignment="CENTER" HBox.hgrow="SOMETIMES"
+                       fx:id="myImage" fitHeight="700" preserveRatio="true">
 
             </ImageView>
         </StackPane>
@@ -64,6 +73,6 @@
     </HBox>
 
     <HBox maxHeight="2" styleClass="custom-footer">
-        <Label text="SHIFT + LEFT CLICK on the image at any moment to come back at the last persistant change !" />
+        <Label text="SHIFT + LEFT CLICK on the image at any moment to come back at the last persistant change !"/>
     </HBox>
 </VBox>

@@ -8,9 +8,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
 import javafx.scene.control.Slider;
 import operation.*;
 import javafx.scene.shape.Rectangle;
@@ -20,7 +22,7 @@ public class Controller {
     //Slider objects
     public Slider mySlider;
     public Label sliderListenerLabel;
-    private String sliderListener="";
+    private String sliderListener = "";
 
     //Hoovered objects
     public Rectangle redG;
@@ -39,22 +41,22 @@ public class Controller {
     private String tempImg;
 
 
-    /** INITIALIZE method is called after the fxml creation. Usefull to set an environment variables.
-     *
+    /**
+     * INITIALIZE method is called after the fxml creation. Usefull to set an environment variables.
      */
-    public void initialize(){
+    public void initialize() {
 
-        this.tempImg ="null";
+        this.tempImg = "null";
         this.initializeGradientItems();
         this.initializeSliderItems();
 
 
     }
 
-    /** This method initialize the sliderItems used in the application
-     *
+    /**
+     * This method initialize the sliderItems used in the application
      */
-    private void initializeSliderItems(){
+    private void initializeSliderItems() {
 
         this.sliderListener = "Zoom";
         this.sliderListenerLabel.setText(this.labelDisplayActualListner(this.sliderListener));
@@ -62,10 +64,10 @@ public class Controller {
 
     }
 
-    /** This method initialize the GradientItems used to display Gradient computation.
-     *
+    /**
+     * This method initialize the GradientItems used to display Gradient computation.
      */
-    private void initializeGradientItems(){
+    private void initializeGradientItems() {
 
         this.redG.setFill(javafx.scene.paint.Color.RED);
         this.greenG.setFill(javafx.scene.paint.Color.GREEN);
@@ -73,15 +75,16 @@ public class Controller {
 
     }
 
-    /** Function called when the Slider's value change, notifications are not used because we choosed a "toggle framework".
+    /**
+     * Function called when the Slider's value change, notifications are not used because we choosed a "toggle framework".
      *
-     * @param ov is the observable value of the slider.
+     * @param ov      is the observable value of the slider.
      * @param old_val is the previous value of the slider.
      * @param new_val is the actual value of the slider.
      */
     private void ListenSlider(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
 
-        switch(this.sliderListener){
+        switch (this.sliderListener) {
             case "Resize":
                 this.resizeDisplayedImage(new_val.doubleValue());
                 break;
@@ -95,75 +98,81 @@ public class Controller {
                 this.seamCarveDisplayedImage(new_val.intValue());
                 break;
 
-            case"Crop":
+            case "Crop":
                 this.cropDisplayedImage(new_val.doubleValue());
         }
     }
 
 
-    /** Reset actual modification occuring on the image.
-     *  The last persistant change saved is displayed.
-     *  only callable by SHIFT + LEFT CLICK
+    /**
+     * Reset actual modification occuring on the image.
+     * The last persistant change saved is displayed.
+     * only callable by SHIFT + LEFT CLICK
      */
-    private void resetViewModifications(){
+    private void resetViewModifications() {
 
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
 
-    /** Trigger the resizing process.
+    /**
+     * Trigger the resizing process.
      *
      * @param sliderValue is the actual value of the slider.
      */
-    private void resizeDisplayedImage( double sliderValue ){
+    private void resizeDisplayedImage(double sliderValue) {
 
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage( ImageResizeWidth.resizing( this.myBufferedImageSTOCKED,sliderValue ) );
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+        this.myBufferedImage = SimpleOperation.cloningBufferedImage(ImageResizeWidth.resizing(this.myBufferedImageSTOCKED, sliderValue));
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
 
-    /** Trigger the cropping process.
+    /**
+     * Trigger the cropping process.
      *
      * @param sliderValue is the actual value of the slider.
      */
-    private void cropDisplayedImage( double sliderValue ){
+    private void cropDisplayedImage(double sliderValue) {
 
-        this.myBufferedImage = ImageResizeWidth.cropping( this.myBufferedImageSTOCKED , sliderValue );
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+        this.myBufferedImage = ImageResizeWidth.cropping(this.myBufferedImageSTOCKED, sliderValue);
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
 
-    /** Trigger zooming process.
+    /**
+     * Trigger zooming process.
      *
-     * @param X is the x-coordinate of the mouse pointer when click occured.
-     * @param Y is the y-coordinate of the mouse pointer when click occured.
+     * @param X           is the x-coordinate of the mouse pointer when click occured.
+     * @param Y           is the y-coordinate of the mouse pointer when click occured.
      * @param sliderValue is the actual value of the slider
      */
-    private void zoomDisplayedImage(double X, double Y, double sliderValue){
+    private void zoomDisplayedImage(double X, double Y, double sliderValue) {
 
         double viewHeight = this.myImage.getFitHeight();
         this.myBufferedImage = ImageResizeWidth.zoom(this.myBufferedImage, viewHeight, "H", X, Y, sliderValue);
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
 
-    /** Trigger Seam Carving process.
+    /**
+     * Trigger Seam Carving process.
      *
      * @param nbOfSeam is the number of occurence of the process.
      */
-    private void seamCarveDisplayedImage(int nbOfSeam){
-        BufferedImage img =  ImageResizeWidth.SeamCarving(nbOfSeam, this.myBufferedImage);
+    private void seamCarveDisplayedImage(int nbOfSeam) {
+        BufferedImage img = ImageResizeWidth.SeamCarving(nbOfSeam, this.myBufferedImage);
 
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(img);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
-    /** Trigger Openning file process.
+    /**
+     * Trigger Openning file process.
      *
      * @throws IOException when it fails to read a file path provided.
      */
-    public void ChooseAFile()throws IOException {
+    public void ChooseAFile() throws IOException {
 
         this.myBufferedImageSTOCKED = ImageIO.read(operation.SimpleOperation.imageFileOpen());
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
@@ -172,39 +181,45 @@ public class Controller {
 
     }
 
-    /** Trigger Saving image process.
+    /**
+     * Trigger Saving image process.
      *
      * @throws IOException when it fails to write a file from myBufferedImage.
      */
-    public void saveAFile() throws IOException{
+    public void saveAFile() throws IOException {
         SimpleOperation.imageFileSave(this.myBufferedImage);
     }
 
-    /** Allow to switch the listener of the slider.
+    /**
+     * Allow to switch the listener of the slider.
      *
      * @param actionEvent is the Button action, with all the button relative information.
      */
     public void Switcher(ActionEvent actionEvent) {
-       this.sliderListener = SimpleOperation.getText(actionEvent.getSource().toString());
-       this.sliderListenerLabel.setText(this.labelDisplayActualListner(this.sliderListener));
+        this.sliderListener = SimpleOperation.getText(actionEvent.getSource().toString());
+        this.sliderListenerLabel.setText(this.labelDisplayActualListner(this.sliderListener));
     }
 
-    /** Called when a key is released.
-     *  Erase memory of this key.
+    /**
+     * Called when a key is released.
+     * Erase memory of this key.
      */
     public void keyPressedRemove() {
         this.keyPressed = null;
     }
 
-    /** Called when a key is pressed.
-     *  Set memory of this key.
+    /**
+     * Called when a key is pressed.
+     * Set memory of this key.
+     *
      * @param keyEvent is the action of the key pressed, with all the key relative information.
      */
     public void keyPressedAdd(KeyEvent keyEvent) {
         this.keyPressed = keyEvent.getCode();
     }
 
-    /** Called when the image displayed is clicked.
+    /**
+     * Called when the image displayed is clicked.
      *
      * @param mouseEvent is the click mouse event, with all the mouse-click relative information.
      */
@@ -217,24 +232,25 @@ public class Controller {
 
     }
 
-    /** Method to display an energy computation on an image, with the most relevant seam if necessary.
+    /**
+     * Method to display an energy computation on an image, with the most relevant seam if necessary.
      *
      * @param imgToEnergize the actual displayed image.
-     * @param label the label hoovered that trigger the function.
+     * @param label         the label hoovered that trigger the function.
      * @param doWePrintSeam only if necessary to display the seam.
      */
-    private void energyImageDisplay (BufferedImage imgToEnergize,String label, boolean doWePrintSeam ){
+    private void energyImageDisplay(BufferedImage imgToEnergize, String label, boolean doWePrintSeam) {
 
         this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.BLACK);
 
-        if (this.tempImg.equals("Energy computation") || this.tempImg.equals("Show next seam")){
+        if (this.tempImg.equals("Energy computation") || this.tempImg.equals("Show next seam")) {
             this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.PALEVIOLETRED);
             this.myImage.setImage(SwingFXUtils.toFXImage(imgToEnergize, null));
             this.tempImg = "null";
 
-        }else{
+        } else {
 
-            if (this.myBufferedImage!=null)
+            if (this.myBufferedImage != null)
                 this.energyPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
             assert this.myBufferedImage != null;
             BufferedImage bImageEnergized = ImageSeamComputation.EnergizedImage(this.myBufferedImage);
@@ -251,78 +267,79 @@ public class Controller {
         }
     }
 
-    /** Display the energy map of the displayed image and the most relevant seam.
-     *
+    /**
+     * Display the energy map of the displayed image and the most relevant seam.
      */
-    public void imageVerticalSeamDisplay(){
-        this.energyImageDisplay(this.myBufferedImage,"Show next seam", true);
+    public void imageVerticalSeamDisplay() {
+        this.energyImageDisplay(this.myBufferedImage, "Show next seam", true);
     }
 
-    /** Display the energy map of the displayed image.
-     *
+    /**
+     * Display the energy map of the displayed image.
      */
-    public void imageEnergyDisplay(){
+    public void imageEnergyDisplay() {
         this.energyImageDisplay(this.myBufferedImage, "Energy computation", false);
     }
 
 
-    /**Triggered when red square is hoovered.
-     *
+    /**
+     * Triggered when red square is hoovered.
      */
-    public void redGSwitcher (){
+    public void redGSwitcher() {
         gradientSwitcher("redG");
     }
 
-    /**Triggered when green square is hoovered.
-     *
+    /**
+     * Triggered when green square is hoovered.
      */
-    public void greenGSwitcher (){
+    public void greenGSwitcher() {
         gradientSwitcher("greenG");
     }
 
-    /**Triggered when blue square is hoovered.
-     *
+    /**
+     * Triggered when blue square is hoovered.
      */
-    public void blueGSwitcher (){
+    public void blueGSwitcher() {
         gradientSwitcher("blueG");
     }
 
 
-    /** Apply a red Gradient computation on the displayed image.
-     *
+    /**
+     * Apply a red Gradient computation on the displayed image.
      */
-    private void redGradient(){
-        BufferedImage img = Gradient.createGradient("red",this.myBufferedImage);
+    private void redGradient() {
+        BufferedImage img = Gradient.createGradient("red", this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
-    /** Apply a green Gradient computation on the displayed image.
-     *
+    /**
+     * Apply a green Gradient computation on the displayed image.
      */
-    private void greenGradient(){
-        BufferedImage img = Gradient.createGradient("green",this.myBufferedImage);
+    private void greenGradient() {
+        BufferedImage img = Gradient.createGradient("green", this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
-    /** Apply a blue Gradient computation on the displayed image.
-     *
+    /**
+     * Apply a blue Gradient computation on the displayed image.
      */
-    private void blueGradient(){
-        BufferedImage img = Gradient.createGradient("blue",this.myBufferedImage);
+    private void blueGradient() {
+        BufferedImage img = Gradient.createGradient("blue", this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
 
-    /** Trigger a Gradient computation based on the color choice provided.
+    /**
+     * Trigger a Gradient computation based on the color choice provided.
      *
      * @param colorGradient the color choice (RGB) to determine the Gradient used.
      */
     private void gradientSwitcher(String colorGradient) {
 
-        if(this.tempImg.equals(colorGradient)){
+        if (this.tempImg.equals(colorGradient)) {
             this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-            this.tempImg="null";
-        }else{
+            this.tempImg = "null";
+        } else {
 
             switch (colorGradient) {
                 case "redG":
@@ -339,26 +356,28 @@ public class Controller {
         }
     }
 
-    /** Save the last modification on the displayed image in order to chain modifications
-     *  without removing previous ones.
+    /**
+     * Save the last modification on the displayed image in order to chain modifications
+     * without removing previous ones.
      */
     public void makeNewOperationPersistant() {
         int maxX = this.myBufferedImage.getWidth();
         int maxY = this.myBufferedImage.getHeight();
-        this.myBufferedImageSTOCKED = new BufferedImage(maxX, maxY,BufferedImage.TYPE_INT_RGB);
+        this.myBufferedImageSTOCKED = new BufferedImage(maxX, maxY, BufferedImage.TYPE_INT_RGB);
 
-        for (int y=0; y < maxY; y++)
-            for (int x=0; x < maxX; x++)
-                this.myBufferedImageSTOCKED.setRGB(x,y, this.myBufferedImage.getRGB(x,y));
+        for (int y = 0; y < maxY; y++)
+            for (int x = 0; x < maxX; x++)
+                this.myBufferedImageSTOCKED.setRGB(x, y, this.myBufferedImage.getRGB(x, y));
     }
 
-    /** Actualize the label displayed to notify users of the actual active function.
+    /**
+     * Actualize the label displayed to notify users of the actual active function.
      *
      * @param functionName is the Function actually listening the slider.
      * @return the label to display on the application window.
      */
-    private String labelDisplayActualListner(String functionName){
-        if (this.myBufferedImage==null)
+    private String labelDisplayActualListner(String functionName) {
+        if (this.myBufferedImage == null)
             return " Please load an Image to process ! ";
         else
             return "Actually Using : " + functionName;
