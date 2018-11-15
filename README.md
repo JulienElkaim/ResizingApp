@@ -40,7 +40,7 @@ On suit cet [algorithme](https://en.wikipedia.org/wiki/Seam_carving)
 
 ## Extensions rajoutées
 ### Persistance des changements
-Fonctionalité : permet d'enregistrer les changements depuis le dernier enregistrement (checkpoint)
+Fonctionnalité : permet d'enregistrer les changements depuis le dernier enregistrement (checkpoint)
 
 Mode d'emploi : cliquer sur le bouton *Validate modifications*
 
@@ -52,7 +52,7 @@ Fontionalité : permet d'annuler les changements effectués depuis le dernier en
 Mode d'emploi : Faire `SHIFT + left clic` pour revenir au dernier enregistrement et annuler toutes les modifications qui ont eu lieu.
 
 ### Zoom
-Fonctionalité : Permet de zoomer sur l'image.
+Fonctionnalité : Permet de zoomer sur l'image.
 
 Mode d'emploi :
 1. sélectionner l'option zoom en appuyant sur le bouton zoom (option par défaut au lancement)
@@ -62,18 +62,18 @@ Mode d'emploi :
 Implémenté car il nous a permis de faire bien la différence entre zoom, crop et resizing 
 
 ### Afficher les changements non définitifs (gradient et energie)
-Fonctionalité :
+Fonctionnalité :
 1. Pour les gradients : permet d'afficher le gradient de la couleur du carré de couleur survolé
 2. Pour l'énergie : permet d'afficher le résultat du calcul d'énergie sur l'image, ainsi que le seam d'énergie minimale
 
-Mode d'emploi : Survoler la fonctionalité désirée
+Mode d'emploi : Survoler la fonctionnalité désirée
 * un des carrés de couleur pour le gradient de la couleur correspondante
 * le Label d'énergie en fonction de si ce qui est souhaité est l'énergie ou l'énergie et le seam d'énergie minimale
 
 Mis en oeuvre pour proposer une nouvelle façon de faire un choix à l'utilisateur, différent des boutons "classiques"
 
 ### Choix d'opération sur la hauteur  ou la largeur
-Fonctionalité : Choisir si l'utilisateur souhaite redimensionner (recadrage, mise à l'échelle, seam carving) en fonction
+Fonctionnalité : Choisir si l'utilisateur souhaite redimensionner (recadrage, mise à l'échelle, seam carving) en fonction
 de la hauteur ou de la largeur.
 
 Mode d'emploi :
