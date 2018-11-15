@@ -1,5 +1,19 @@
 # ResizingApp
 
+## Table of Contents
+1. [Introduction](#introduction)
+1. [Difficultés rencontrées](#difficults-rencontres)
+1. [Extensions de base](#extensions-de-base)
+    1. [Recadrage (crop)](#recadrage-crop)
+    1. [Mise à l'échelle](#mise--lchelle)
+    1. [Seam Carving](#seam-carving)
+1. [Extensions rajoutées](#extensions-rajoutes)
+    1. [Persistence des changements](#persistance-des-changements)
+    1. [Remise à zéro des changements](#remise--zro-des-changements)
+    1. [Afficher les changements non définitifs (gradients, énergie)](#afficher-les-changements-non-dfinitifs-gradient-et-energie)
+    1. [Choix d'opération sur la hauteur ou la largeur](#choix-dopration-sur-la-hauteur-ou-la-largeur)
+
+## Introduction 
 Java 11, JavaFx
 
 Rendu : 30 novembre
@@ -72,7 +86,7 @@ Mode d'emploi : Survoler la fonctionnalité désirée
 
 Mis en oeuvre pour proposer une nouvelle façon de faire un choix à l'utilisateur, différent des boutons "classiques"
 
-### Choix d'opération sur la hauteur  ou la largeur
+### Choix d'opération sur la hauteur ou la largeur
 Fonctionnalité : Choisir si l'utilisateur souhaite redimensionner (recadrage, mise à l'échelle, seam carving) en fonction
 de la hauteur ou de la largeur.
 
