@@ -211,17 +211,26 @@ public class ImageSeamComputation {
      * @param seam the seam to retrieve.
      * @return the image without the seam provided.
      */
-    static BufferedImage seamVerticalDestroyer(BufferedImage img, int[] seam, String Direction) {
+    static BufferedImage seamVerticalDestroyer(BufferedImage img, int[] seam, String direction) {
         int maxX = img.getWidth();
         int maxY = img.getHeight();
         BufferedImage newBImage = new BufferedImage(maxX - 1, maxY, BufferedImage.TYPE_INT_RGB);
 
-        for (int y = 0; y < maxY; y++)
-            for (int x = 0; x < maxX - 1; x++)
-                if (seam[y] <= x)
-                    newBImage.setRGB(x, y, img.getRGB(x + 1, y));
-                else
+        for (int y = 0; y < maxY; y++) {
+            for (int x = 0; x < maxX - 1; x++) {
+
+                if (seam[y] <= x) {
+
+                    if (direction.equals("H")) {
+                        newBImage.setRGB(x, y, img.getRGB(x + 1, y));
+                    } else {
+                        newBImage.setRGB(x, y, img.getRGB(x, y + 1));
+                    }
+                } else {
                     newBImage.setRGB(x, y, img.getRGB(x, y));
+                }
+            }
+        }
 
         return newBImage;
     }

@@ -16,7 +16,7 @@ public class ImageResize {
      * @param height          is the new height to obtain.
      * @return the BufferedImage scaled.
      */
-    private static BufferedImage scale(BufferedImage myBufferedImage, int width, int height) {
+    private  BufferedImage scale(BufferedImage myBufferedImage, int width, int height) {
         BufferedImage dest = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g = dest.createGraphics();
         AffineTransform at = AffineTransform.getScaleInstance(
@@ -33,7 +33,7 @@ public class ImageResize {
      * @param resizeCoef      coefficient to apply to width.
      * @return the image resized.
      */
-    public static BufferedImage resizing(BufferedImage myBufferedImage, double resizeCoef, String direction) {
+    public  BufferedImage resizing(BufferedImage myBufferedImage, double resizeCoef, String direction) {
         double coef = (0.01 < resizeCoef / 100) ? abs(resizeCoef) / 100 : 0.01;
         int width =myBufferedImage.getWidth();
         int height = myBufferedImage.getHeight();
@@ -44,7 +44,7 @@ public class ImageResize {
             height = (int) (coef * myBufferedImage.getWidth());
 
 
-        return (ImageResize.scale(myBufferedImage, width, height));
+        return (this.scale(myBufferedImage, width, height));
     }
 
     /**
@@ -54,7 +54,7 @@ public class ImageResize {
      * @param cropCoef        the coefficient to apply to width.
      * @return a cropped image.
      */
-    public static BufferedImage cropping(BufferedImage myBufferedImage, double cropCoef, String direction) {
+    public  BufferedImage cropping(BufferedImage myBufferedImage, double cropCoef, String direction) {
         double coef = (0.01 < cropCoef / 100) ? abs(cropCoef) / 100 : 0.01;
         int width = myBufferedImage.getWidth();
         int height = myBufferedImage.getHeight();
@@ -74,7 +74,7 @@ public class ImageResize {
      * @param img                the image where the seams are withdrawn.
      * @return the image without the seams.
      */
-    public static BufferedImage SeamCarving(int nbOfSeamToWithdraw, BufferedImage img, String direction) {
+    public  BufferedImage SeamCarving(int nbOfSeamToWithdraw, BufferedImage img, String direction) {
 
         for (int i = 0; i < nbOfSeamToWithdraw; i++) {
             BufferedImage energyBImage = ImageSeamComputation.EnergizedImage(img);
@@ -99,7 +99,7 @@ public class ImageResize {
      * @param zoomCoef        the strength of the zoom. High coef mean high zoom.
      * @return the BufferedImage resulting the zoom operation.
      */
-    public static BufferedImage zoom(BufferedImage myBufferedImage, double viewSize, String direction, double X, double Y, double zoomCoef) {
+    public  BufferedImage zoom(BufferedImage myBufferedImage, double viewSize, String direction, double X, double Y, double zoomCoef) {
 
         double zoomingCoef = zoomCoef / 100 * (0.1 - 1) + 1;// 1* -0.9 +1
         double initWidth = myBufferedImage.getWidth();
