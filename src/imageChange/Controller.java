@@ -42,7 +42,7 @@ public class Controller {
 
 
     /**
-     * INITIALIZE method is called after the fxml creation. Usefull to set an environment variables.
+     * INITIALIZE method is called after the fxml creation. Useful to set environment variables.
      */
     public void initialize() {
 
@@ -54,7 +54,7 @@ public class Controller {
     }
 
     /**
-     * This method initialize the sliderItems used in the application
+     * This method initializes the sliderItems used in the application
      */
     private void initializeSliderItems() {
 
@@ -76,7 +76,7 @@ public class Controller {
     }
 
     /**
-     * Function called when the Slider's value change, notifications are not used because we choosed a "toggle framework".
+     * Function called when the Slider's value changes, notifications are not used because we chose a "toggle framework".
      *
      * @param ov      is the observable value of the slider.
      * @param old_val is the previous value of the slider.
@@ -105,8 +105,8 @@ public class Controller {
 
 
     /**
-     * Reset actual modification occuring on the image.
-     * The last persistant change saved is displayed.
+     * Reset actual modification that occurred on the image.
+     * The last persistent change saved is displayed.
      * only callable by SHIFT + LEFT CLICK
      */
     private void resetViewModifications() {
@@ -143,8 +143,8 @@ public class Controller {
     /**
      * Trigger zooming process.
      *
-     * @param X           is the x-coordinate of the mouse pointer when click occured.
-     * @param Y           is the y-coordinate of the mouse pointer when click occured.
+     * @param X           is the x-coordinate of the mouse pointer when click occurred.
+     * @param Y           is the y-coordinate of the mouse pointer when click occurred.
      * @param sliderValue is the actual value of the slider
      */
     private void zoomDisplayedImage(double X, double Y, double sliderValue) {
@@ -158,7 +158,7 @@ public class Controller {
     /**
      * Trigger Seam Carving process.
      *
-     * @param nbOfSeam is the number of occurence of the process.
+     * @param nbOfSeam is the number of occurrence of the process.
      */
     private void seamCarveDisplayedImage(int nbOfSeam) {
         BufferedImage img = ImageResizeWidth.SeamCarving(nbOfSeam, this.myBufferedImage);
@@ -168,9 +168,9 @@ public class Controller {
     }
 
     /**
-     * Trigger Openning file process.
+     * Trigger Opening file process.
      *
-     * @throws IOException when it fails to read a file path provided.
+     * @throws IOException when it fails to read the file path provided.
      */
     public void ChooseAFile() throws IOException {
 

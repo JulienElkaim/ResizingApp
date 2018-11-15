@@ -57,7 +57,7 @@
             <Label fx:id="seamPrintingLabel" onMouseEntered="#imageVerticalSeamDisplay"
                    onMouseExited="#imageVerticalSeamDisplay" GridPane.rowIndex="13" text="Show next seam"/>
 
-            <Label GridPane.rowIndex="16" text="Make actual image persistant : "/>
+            <Label GridPane.rowIndex="16" text="Make actual image persistent : "/>
             <HBox GridPane.rowIndex="17" alignment="CENTER">
                 <Button alignment="CENTER" onAction="#makeNewOperationPersistant" text="Validate modifications"/>
             </HBox>

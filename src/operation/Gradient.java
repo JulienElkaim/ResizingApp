@@ -24,28 +24,24 @@ public class Gradient {
         for (int x = 2; x < maxX - 1; x++) {
             for (int y = 1; y < maxY; y++) {
 
-                //pixel à droite
                 Color myRightPixelColor = new Color(myBufferedImage.getRGB(x + 1, y));
-                //pixel à gauche
                 Color myLeftPixelColor = new Color(myBufferedImage.getRGB(x - 1, y));
 
 
-                int decalage = 0;
+                int colorChange = 0;
                 int Left;
                 int Right;
-                //changement de couleur  //8 pour green, 16 pour rouge, rien pour bleu
+                //Color change requires on operation on gradient: 8 for green, 16 for red, nothing for blue
                 switch (myColor) {
-                    case "red":  //rouge
+                    case "red":
                         Left = myLeftPixelColor.getRed();
                         Right = myRightPixelColor.getRed();
-                        decalage = 16;
-                        //gradient = (gradient << 16);
+                        colorChange = 16;
                         break;
-                    case "green":  //vert
+                    case "green":
                         Left = myLeftPixelColor.getGreen();
                         Right = myRightPixelColor.getGreen();
-                        decalage = 8;
-                        //gradient = (gradient << 8);
+                        colorChange = 8;
                         break;
                     default:
                         Left = myLeftPixelColor.getBlue();
@@ -56,7 +52,7 @@ public class Gradient {
                 if (gradient > 255) {
                     gradient = 255;
                 }
-                gradient = (gradient << decalage);
+                gradient = (gradient << colorChange);
                 gradientBImage.setRGB(x, y, gradient);
 
             }

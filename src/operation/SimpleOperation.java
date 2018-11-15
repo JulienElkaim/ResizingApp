@@ -12,7 +12,7 @@ import java.io.IOException;
 public class SimpleOperation {
 
     /**
-     * Allow to create a copy of your BufferedImage.
+     * Create a copy of BufferedImage.
      *
      * @param bImage the image source to clone.
      * @return an exact copy of the source.
@@ -46,7 +46,7 @@ public class SimpleOperation {
      * Provide the user with an interface to save its work on an image.
      *
      * @param img the image to save
-     * @throws IOException if it fails to write the file on your hard disk.
+     * @throws IOException if it fails to write the file on hard disk.
      */
     public static void imageFileSave(BufferedImage img) throws IOException {
 
