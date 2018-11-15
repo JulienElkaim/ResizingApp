@@ -81,9 +81,7 @@ Mode d'emploi :
 ## Exemple de résultats
 Image d'origine
 
-![Screenshot](img/broadway.jpg)
-
-<img src="img/broadway.jpg" width="200"/>
+<img src="img/broadway.jpg" width="1000"/>
 
 Après recadrage (crop)
 
