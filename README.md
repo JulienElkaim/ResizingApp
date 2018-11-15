@@ -12,6 +12,7 @@
     1. [Remise à zéro des changements](#remise--zro-des-changements)
     1. [Afficher les changements non définitifs (gradients, énergie)](#afficher-les-changements-non-dfinitifs-gradient-et-energie)
     1. [Choix d'opération sur la hauteur ou la largeur](#choix-dopration-sur-la-hauteur-ou-la-largeur)
+1. [Exemple de résultats](#exemple-de-rsultats)
 
 ## Introduction 
 Java 11, JavaFx
