@@ -11,16 +11,10 @@ Rendu : 30 novembre
 L’objectif de ce projet est l’implémentation d’une application de redimensionnement d’image en Java.
 Cette application permettra d'effectuer les opérations suivantes sur une images : recadrage, mise à l’échelle et seam carving.
 
-## Remarques sur le sujet
-Faire des packages : par exemple un dédié au traitement d'image
 
-Différence pixel de gauche et pixel de droite : calcul du gradient (on obtiendra des lignes ), max 255
-
-
-imageChange
 ## Difficultés rencontrées
 
-* resizing 
+* resizing (mise à l'échelle) 
     * à effectuer sur la BufferedImage plutôt que sur l'ImageView
 
 * crop (recardage)
@@ -29,10 +23,73 @@ imageChange
 * gradient 
     * a soulevé le problème de la copie de la BufferedImage
     
-## Les extensions rajoutées
+## Extensions de base
+### Recadrage (crop)
+Cette opération découpe l'image pour ne garder que le pourcentage de l'image d'origine choisi avec le slider
+
+Choix d'implémentation :
+* Pour le recadrage suivant la largeur, on fait le choix de ne garder que la partie gauche de l'image
+
+### Mise à l'échelle
+Cette opération permet de redimmensionner l'image pour qu'elle tienne dans la taille choisie avec slider.
+
+Choix d'implémentation :
+* 
+### Seam Carving
+On suit cet [algorithme](https://en.wikipedia.org/wiki/Seam_carving)
+
+## Extensions rajoutées
+### Persistance des changements
+Fonctionalité : permet d'enregistrer les changements depuis le dernier enregistrement (checkpoint)
+
+Mode d'emploi : cliquer sur le bouton *Validate modifications*
+
+Mis en oeuvre car il n'enregistre que les changements, il ne crée pas pour autant un sauvegarde de l'image au même titre que save.
+
+### Remise à zéro des changements
+Fontionalité : permet d'annuler les changements effectués depuis le dernier enregistrement
+
+Mode d'emploi : Faire `SHIFT + left clic` pour revenir au dernier enregistrement et annuler toutes les modifications qui ont eu lieu.
+
 ### Zoom
-Possibilité de zoomer sur l'image
+Fonctionalité : Permet de zoomer sur l'image.
 
-Implémenté car il nous a permis de faire bien la différence entre zoom, crop et resizing
+Mode d'emploi :
+1. sélectionner l'option zoom en appuyant sur le bouton zoom (option par défaut au lancement)
+2. cliquer sur l'image pour zoomer sur cette zone
 
-    
+
+Implémenté car il nous a permis de faire bien la différence entre zoom, crop et resizing 
+
+### Afficher les changements non définitifs (gradient et energie)
+Fonctionalité :
+1. Pour les gradients : permet d'afficher le gradient de la couleur du carré de couleur survolé
+2. Pour l'énergie : permet d'afficher le résultat du calcul d'énergie sur l'image, ainsi que le seam d'énergie minimale
+
+Mode d'emploi : Survoler la fonctionalité désirée
+* un des carrés de couleur pour le gradient de la couleur correspondante
+* le Label d'énergie en fonction de si ce qui est souhaité est l'énergie ou l'énergie et le seam d'énergie minimale
+
+Mis en oeuvre pour proposer une nouvelle façon de faire un choix à l'utilisateur, différent des boutons "classiques"
+
+### Choix d'opération sur la hauteur  ou la largeur
+Fonctionalité : Choisir si l'utilisateur souhaite redimensionner (recadrage, mise à l'échelle, seam carving) en fonction
+de la hauteur ou de la largeur.
+
+Mode d'emploi :
+
+## Exemple de résultats
+Image d'origine
+
+![Screenshot](img/broadway.jpg)
+
+Après recadrage (crop)
+
+![Screenshot](img/AfterCrop.jpg)
+
+Après mise à l'échelle (resizing)
+
+![Screenshot](img/AfterResize.jpg)
+
+Après seam carving
+![Screenshot](img/broadway.jpg)
