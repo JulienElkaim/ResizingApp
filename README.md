@@ -81,15 +81,16 @@ Mode d'emploi :
 ## Exemple de résultats
 Image d'origine
 
-<img src="img/broadway.jpg" width="714"/>
+<img src="img/broadway.jpg" alt = "Image d'origine" width="714"/>
 
 Après recadrage (crop)
 
-<img src="img/AfterCrop.jpg" width="482"/>
+<img src="img/AfterCrop.jpg" alt = "Image après recadrage" width="482"/>
 
 Après mise à l'échelle (resizing)
 
-<img src="img/AfterResize.jpg" width="482"/>
+<img src="img/AfterResize.jpg" alt = "Image après mise à l'échelle" width="482"/>
 
 Après seam carving
-<img src="img/AfterResize.jpg" width="482"/>
+
+<img src="img/AfterResize.jpg" alt = "Image après seam carving" width="482"/>
