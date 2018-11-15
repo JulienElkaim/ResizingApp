@@ -39,6 +39,8 @@ public class Controller {
     //Conceptual objects
     private KeyCode keyPressed;
     private String tempImg;
+    private ImageResize resizerWidth = new ImageResize();
+
 
 
     /**
@@ -123,7 +125,7 @@ public class Controller {
      */
     private void resizeDisplayedImage(double sliderValue) {
 
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage(ImageResizeWidth.resizing(this.myBufferedImageSTOCKED, sliderValue));
+        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.resizerWidth.resizing(this.myBufferedImageSTOCKED, sliderValue, "H"));
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
@@ -135,7 +137,7 @@ public class Controller {
      */
     private void cropDisplayedImage(double sliderValue) {
 
-        this.myBufferedImage = ImageResizeWidth.cropping(this.myBufferedImageSTOCKED, sliderValue);
+        this.myBufferedImage = this.resizerWidth.cropping(this.myBufferedImageSTOCKED, sliderValue, "H");
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
@@ -150,7 +152,7 @@ public class Controller {
     private void zoomDisplayedImage(double X, double Y, double sliderValue) {
 
         double viewHeight = this.myImage.getFitHeight();
-        this.myBufferedImage = ImageResizeWidth.zoom(this.myBufferedImage, viewHeight, "H", X, Y, sliderValue);
+        this.myBufferedImage = this.resizerWidth.zoom(this.myBufferedImage, viewHeight, "H", X, Y, sliderValue);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
@@ -161,7 +163,7 @@ public class Controller {
      * @param nbOfSeam is the number of occurrence of the process.
      */
     private void seamCarveDisplayedImage(int nbOfSeam) {
-        BufferedImage img = ImageResizeWidth.SeamCarving(nbOfSeam, this.myBufferedImage);
+        BufferedImage img = this.resizerWidth.SeamCarving(nbOfSeam, this.myBufferedImage, "H");
 
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(img);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
@@ -257,7 +259,7 @@ public class Controller {
 
             if (doWePrintSeam) {
                 int totalRedRGB = 255 << 16;
-                int[] seamToPrint = ImageSeamComputation.bestSeam(bImageEnergized);
+                int[] seamToPrint = ImageSeamComputation.bestSeam(bImageEnergized, "H");
                 for (int y = 0; y < seamToPrint.length; y++)
                     bImageEnergized.setRGB(seamToPrint[y], y, totalRedRGB);
             }

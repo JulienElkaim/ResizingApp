@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 
 import static java.lang.Math.abs;
 
-public class ImageResizeWidth {
+public class ImageResize {
 
     /**
      * Provide useful method to scale an image with new width and height.
@@ -33,11 +33,18 @@ public class ImageResizeWidth {
      * @param resizeCoef      coefficient to apply to width.
      * @return the image resized.
      */
-    public static BufferedImage resizing(BufferedImage myBufferedImage, double resizeCoef) {
+    public static BufferedImage resizing(BufferedImage myBufferedImage, double resizeCoef, String direction) {
         double coef = (0.01 < resizeCoef / 100) ? abs(resizeCoef) / 100 : 0.01;
-        int width = (int) (coef * myBufferedImage.getWidth());
+        int width =myBufferedImage.getWidth();
         int height = myBufferedImage.getHeight();
-        return (ImageResizeWidth.scale(myBufferedImage, width, height));
+
+        if (direction.equals("H"))
+            width = (int) (coef * myBufferedImage.getWidth());
+        else
+            height = (int) (coef * myBufferedImage.getWidth());
+
+
+        return (ImageResize.scale(myBufferedImage, width, height));
     }
 
     /**
@@ -47,14 +54,17 @@ public class ImageResizeWidth {
      * @param cropCoef        the coefficient to apply to width.
      * @return a cropped image.
      */
-    public static BufferedImage cropping(BufferedImage myBufferedImage, double cropCoef) {
+    public static BufferedImage cropping(BufferedImage myBufferedImage, double cropCoef, String direction) {
         double coef = (0.01 < cropCoef / 100) ? abs(cropCoef) / 100 : 0.01;
         int width = myBufferedImage.getWidth();
         int height = myBufferedImage.getHeight();
-        int newWidth = (int) (coef * width);
-        return myBufferedImage.getSubimage(0, 0, newWidth, height);
 
+        if (direction.equals("H"))
+            width = (int) (coef * width);
+        else
+            height = (int) (coef * height);
 
+        return myBufferedImage.getSubimage(0, 0, width, height);
     }
 
     /**
@@ -64,13 +74,13 @@ public class ImageResizeWidth {
      * @param img                the image where the seams are withdrawn.
      * @return the image without the seams.
      */
-    public static BufferedImage SeamCarving(int nbOfSeamToWithdraw, BufferedImage img) {
+    public static BufferedImage SeamCarving(int nbOfSeamToWithdraw, BufferedImage img, String direction) {
 
         for (int i = 0; i < nbOfSeamToWithdraw; i++) {
             BufferedImage energyBImage = ImageSeamComputation.EnergizedImage(img);
-            int[] seamToWithdraw = ImageSeamComputation.bestSeam(energyBImage);
+            int[] seamToWithdraw = ImageSeamComputation.bestSeam(energyBImage, direction);
 
-            BufferedImage bImageWithOutSeam = ImageSeamComputation.seamVerticalDestroyer(img, seamToWithdraw);
+            BufferedImage bImageWithOutSeam = ImageSeamComputation.seamVerticalDestroyer(img, seamToWithdraw, direction);
             img = SimpleOperation.cloningBufferedImage(bImageWithOutSeam);
         }
 

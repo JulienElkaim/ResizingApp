@@ -75,7 +75,7 @@ public class ImageSeamComputation {
      * @param imgToCompute is the energy BufferedImage source to retrieve seams pattern.
      * @return a matrix of long that represent a dynamic seam matrix
      */
-    private static long[][] dynamicVerticalSeam(BufferedImage imgToCompute) {
+    private static long[][] dynamicSeam(BufferedImage imgToCompute, String direction) {
         int maxX = imgToCompute.getWidth();
         int maxY = imgToCompute.getHeight();
         long[][] dynamicSeamTable = new long[maxX][maxY];
@@ -83,62 +83,93 @@ public class ImageSeamComputation {
         //seam computing
         for (int y = 0; y < maxY; y++) {
             for (int x = 0; x < maxX; x++) {
-                if (y == 0) {
-                    //the very first line
-                    dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y);
-                } else {
-                    //other lines
+                if (y==0){
+                    if (direction.equals("H"))
+                        dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y);
+                    if (direction.equals("V"))
+                        dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x-1][y], dynamicSeamTable[x - 1][y + 1]);
 
-                    //left-border pixel
-                    if (x == 0) {
+                }else if(x==0){
+                    if (direction.equals("H"))
                         dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x][y - 1], dynamicSeamTable[x + 1][y - 1]);
+                    if (direction.equals("V"))
+                        dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y);
 
-                    } else if (x == (maxX - 1)) { //right-border pixel
+                }else if (x == (maxX - 1)){
+                    if (direction.equals("H"))
                         dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x][y - 1], dynamicSeamTable[x - 1][y - 1]);
 
-                    } else { //other pixels, which are not border-pixels
+                }else if (y == (maxY-1)){
+                    if(direction.equals("H"))
+                        dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x-1][y], dynamicSeamTable[x - 1][y - 1]);
+
+                }else{
+                    if(direction.equals("H"))
                         dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x][y - 1], Math.min(dynamicSeamTable[x - 1][y - 1], dynamicSeamTable[x + 1][y - 1]));
-                    }
+                    if (direction.equals("V"))
+                        dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x - 1][y], Math.min(dynamicSeamTable[x - 1][y - 1], dynamicSeamTable[x -1][y +1]));
                 }
+
             }
         }
         return dynamicSeamTable;
     }
 
+    private static int[] lowestSeamFirstLine(int[] seam, long[][] seamTable,int maxTaille, String direction){
+        seam[maxTaille - 1] = 0;
+        for (int coor = 1; coor < maxTaille; coor++) {
+            if (direction.equals("H")) {
+                if (seamTable[seam[maxTaille - 1]][maxTaille - 1] > seamTable[coor][maxTaille - 1]) {
+                    seam[maxTaille - 1] = coor;
+                }
+            } else { // "V"
+                if (seamTable[maxTaille - 1][seam[maxTaille - 1]] > seamTable[maxTaille - 1][coor]) {
+                    seam[maxTaille - 1] = coor;
+                }
+
+            }
+        }
+        return seam;
+    }
     /**
      * Isolate the best seam over the image.
      *
      * @param seamTable dynamic seam matrix.
      * @return a seam of seam.length elements of X coordinates (Seam is vertical, useful for width resizing)
      */
-    private static int[] bestVerticalSeam(long[][] seamTable) {
+    private static int[] bestVerticalSeam(long[][] seamTable, String direction) {
         int maxY = seamTable[0].length;
         int maxX = seamTable.length;
-        int[] lowestSeamXCoordinates = new int[maxY];
+        int[] lowestSeamCoordinates;
 
+        if(direction=="H") {
+            lowestSeamCoordinates = new int[maxY];
+        }
+        else { // direction "V"
+            lowestSeamCoordinates = new int[maxX];
+        }
+
+        if(direction.equals("H"))
+            lowestSeamCoordinates = lowestSeamFirstLine(lowestSeamCoordinates, seamTable,maxY, direction);
         //Search in last line of energy table which one is the best
-        for (int x = 0; x < maxX; x++)
-            if (x == 0)
-                lowestSeamXCoordinates[maxY - 1] = 0;
-            else if (seamTable[lowestSeamXCoordinates[maxY - 1]][maxY - 1] > seamTable[x][maxY - 1])
-                lowestSeamXCoordinates[maxY - 1] = x;
+
 
         //For every other pixel, we are looking for next X coordinates between pixels above the previous pixel found.
         for (int y = (maxY - 2); y > -1; y--)
-            if (lowestSeamXCoordinates[y + 1] == 0)
+            if (lowestSeamCoordinates[y + 1] == 0)
                 //If on border-left, 2 pixels above him
-                lowestSeamXCoordinates[y] = (seamTable[0][y] <= seamTable[1][y]) ? 0 : 1;
+                lowestSeamCoordinates[y] = (seamTable[0][y] <= seamTable[1][y]) ? 0 : 1;
 
-            else if (lowestSeamXCoordinates[y + 1] == (maxX - 1))
+            else if (lowestSeamCoordinates[y + 1] == (maxX - 1))
                 //If on border-right, 2 pixels above him
-                lowestSeamXCoordinates[y] = (seamTable[maxX - 2][y] <= seamTable[maxX - 1][y]) ? maxX - 2 : maxX - 1;
+                lowestSeamCoordinates[y] = (seamTable[maxX - 2][y] <= seamTable[maxX - 1][y]) ? maxX - 2 : maxX - 1;
             else {
                 //If not on a border, 3 pixels above him
-                lowestSeamXCoordinates[y] = (seamTable[lowestSeamXCoordinates[y + 1] - 1][y] <= seamTable[lowestSeamXCoordinates[y + 1]][y]) ? (lowestSeamXCoordinates[y + 1] - 1) : lowestSeamXCoordinates[y + 1];
-                lowestSeamXCoordinates[y] = (seamTable[lowestSeamXCoordinates[y]][y] <= seamTable[lowestSeamXCoordinates[y + 1] + 1][y]) ? lowestSeamXCoordinates[y] : (lowestSeamXCoordinates[y + 1] + 1);
+                lowestSeamCoordinates[y] = (seamTable[lowestSeamCoordinates[y + 1] - 1][y] <= seamTable[lowestSeamCoordinates[y + 1]][y]) ? (lowestSeamCoordinates[y + 1] - 1) : lowestSeamCoordinates[y + 1];
+                lowestSeamCoordinates[y] = (seamTable[lowestSeamCoordinates[y]][y] <= seamTable[lowestSeamCoordinates[y + 1] + 1][y]) ? lowestSeamCoordinates[y] : (lowestSeamCoordinates[y + 1] + 1);
             }
 
-        return lowestSeamXCoordinates;
+        return lowestSeamCoordinates;
     }
 
     /**
@@ -147,8 +178,8 @@ public class ImageSeamComputation {
      * @param bImageEnergized is the bufferedImage energized to retrieve seams et find the best one.
      * @return seam of seam.length elements of X coordinates (Seam is vertical, useful for width resizing)
      */
-    public static int[] bestSeam(BufferedImage bImageEnergized) {
-        return bestVerticalSeam(dynamicVerticalSeam(bImageEnergized));
+    public static int[] bestSeam(BufferedImage bImageEnergized, String direction) {
+        return bestVerticalSeam(dynamicSeam(bImageEnergized, direction));
     }
 
     /**
@@ -158,7 +189,7 @@ public class ImageSeamComputation {
      * @param seam the seam to retrieve.
      * @return the image without the seam provided.
      */
-    static BufferedImage seamVerticalDestroyer(BufferedImage img, int[] seam) {
+    static BufferedImage seamVerticalDestroyer(BufferedImage img, int[] seam, String Direction) {
         int maxX = img.getWidth();
         int maxY = img.getHeight();
         BufferedImage newBImage = new BufferedImage(maxX - 1, maxY, BufferedImage.TYPE_INT_RGB);
