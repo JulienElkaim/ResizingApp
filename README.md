@@ -83,6 +83,8 @@ Image d'origine
 
 ![Screenshot](img/broadway.jpg)
 
+<img src="img/broadway.jpg" width="200"/>
+
 Après recadrage (crop)
 
 ![Screenshot](img/AfterCrop.jpg)
