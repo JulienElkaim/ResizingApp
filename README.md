@@ -5,7 +5,7 @@
 1. [Difficultés rencontrées](#difficultés-rencontrées)
 1. [Extensions de base](#extensions-de-base)
     1. [Recadrage (crop)](#recadrage-crop)
-    1. [Mise à l'échelle](#mise-à-l'échelle)
+    1. [Redimensionnement](#redimensionnement)
     1. [Seam Carving](#seam-carving)
 1. [Extensions rajoutées](#extensions-rajoutées)
     1. [Persistance des changements](#persistance-des-changements)
@@ -45,8 +45,8 @@ Cette opération découpe l'image pour ne garder que le pourcentage de l'image d
 Choix d'implémentation :
 * Pour le recadrage suivant la largeur, on fait le choix de ne garder que la partie gauche de l'image
 
-### Mise à l'échelle
-Cette opération permet de redimmensionner l'image pour qu'elle tienne dans la taille choisie avec slider.
+### Redimensionnement
+Cette opération permet de mettre à l'échelle l'image pour qu'elle tienne dans la taille choisie avec slider.
 
 Choix d'implémentation :
 * 
