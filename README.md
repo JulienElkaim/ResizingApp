@@ -85,6 +85,9 @@ Image d'origine
 
 Après recadrage (crop)
 
+<img src="img/broadway.jpg" width="1000"/>
+
+
 ![Screenshot](img/AfterCrop.jpg)
 
 Après mise à l'échelle (resizing)
