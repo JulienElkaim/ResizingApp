@@ -10,8 +10,8 @@
 1. [Extensions rajoutées](#extensions-rajoutées)
     1. [Persistance des changements](#persistance-des-changements)
     1. [Remise à zéro des changements](#remise-à-zéro-des-changements)
-    1. [Afficher les changements non définitifs (gradients, énergie)](#afficher-les-changements-non-définitifs-(gradient-et-energie))
-    1. [Choix d'opération sur la hauteur ou la largeur](#choix-d'opération-sur-la-hauteur-ou-la-largeur)
+    1. [Afficher gradients et énergie](#afficher-gradients-et-énergie)
+    1. [Choix largeur hauteur](#choix-largeur-hauteur)
 1. [Exemple de résultats](#exemple-de-résultats)
 
 ## Introduction 
@@ -76,7 +76,7 @@ Mode d'emploi :
 
 Implémenté car il nous a permis de faire bien la différence entre zoom, crop et resizing 
 
-### Afficher les changements non définitifs (gradient et energie)
+### Afficher gradients et énergie
 Fonctionnalité :
 1. Pour les gradients : permet d'afficher le gradient de la couleur du carré de couleur survolé
 2. Pour l'énergie : permet d'afficher le résultat du calcul d'énergie sur l'image, ainsi que le seam d'énergie minimale
@@ -85,9 +85,10 @@ Mode d'emploi : Survoler la fonctionnalité désirée
 * un des carrés de couleur pour le gradient de la couleur correspondante
 * le Label d'énergie en fonction de si ce qui est souhaité est l'énergie ou l'énergie et le seam d'énergie minimale
 
-Mis en oeuvre pour proposer une nouvelle façon de faire un choix à l'utilisateur, différent des boutons "classiques"
+Mis en oeuvre pour proposer une nouvelle façon de faire un choix à l'utilisateur, différent des boutons "classiques",
+ils permettent de faire un changement temporaire, juste un affichage temporaire du résulats de l'opération souhaitée
 
-### Choix d'opération sur la hauteur ou la largeur
+### Choix largeur hauteur
 Fonctionnalité : Choisir si l'utilisateur souhaite redimensionner (recadrage, mise à l'échelle, seam carving) en fonction
 de la hauteur ou de la largeur.
 
