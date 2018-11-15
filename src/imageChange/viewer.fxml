@@ -14,6 +14,7 @@
 
 <?import javafx.scene.shape.Rectangle?>
 
+<?import javafx.scene.control.ScrollPane?>
 <VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressedAdd" fx:controller="imageChange.Controller"
       stylesheets="/imageChange/sample.css" minWidth="Infinity" minHeight="Infinity"
       xmlns:fx="http://javafx.com/fxml/1">
@@ -27,6 +28,7 @@
 
         </Menu>
     </MenuBar>
+    <ScrollPane fitToHeight="true">
     <HBox>
         <GridPane prefWidth="250" hgap="10" vgap="10">
 
@@ -65,13 +67,13 @@
 
         <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage">
             <ImageView onMouseClicked="#imageClicked" StackPane.alignment="CENTER" HBox.hgrow="SOMETIMES"
-                       fx:id="myImage" fitHeight="700" preserveRatio="true">
+                       fx:id="myImage" fitHeight="650" preserveRatio="true">
 
             </ImageView>
         </StackPane>
 
     </HBox>
-
+    </ScrollPane>
     <HBox maxHeight="2" styleClass="custom-footer">
         <Label text="SHIFT + LEFT CLICK on the image at any moment to come back at the last persistant change !"/>
     </HBox>
