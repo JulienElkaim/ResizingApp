@@ -360,7 +360,7 @@ public class Controller {
      * Save the last modification on the displayed image in order to chain modifications
      * without removing previous ones.
      */
-    public void makeNewOperationPersistant() {
+    public void makeNewOperationPersistent() {
         int maxX = this.myBufferedImage.getWidth();
         int maxY = this.myBufferedImage.getHeight();
         this.myBufferedImageSTOCKED = new BufferedImage(maxX, maxY, BufferedImage.TYPE_INT_RGB);
