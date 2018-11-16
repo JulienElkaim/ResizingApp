@@ -9,13 +9,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javafx.scene.control.Slider;
 import operation.*;
 import javafx.scene.shape.Rectangle;
@@ -54,6 +52,7 @@ public class Controller {
     private BufferedImage myBufferedImage;
     private BufferedImage myBufferedImageSTOCKED;
     public Label directionLabel;
+    public Label pointerPositionLabel;
 
     //Conceptual objects
     private KeyCode keyPressed;
@@ -72,6 +71,7 @@ public class Controller {
         this.initializeGradientItems();
         this.initializeSliderItems();
 
+        this.myImage.setOnMouseMoved(t -> updatePointerPositionLabel(t.getX() - this.myImage.getX(), t.getY() - this.myImage.getX()));
 
     }
 
@@ -464,14 +464,11 @@ public class Controller {
     }
 
     public void helpMe()throws IOException{
-        System.out.println("OK GUY");
         File file = new File("./README.md");
-        System.out.println(file);
 
         if(!Desktop.isDesktopSupported()){
             System.out.println("Your computer have restricted access. Please open README.md manually.");
         }else {
-            System.out.println("yes");
             Desktop desktop = Desktop.getDesktop();
             if (file.exists()) desktop.open(file);
         }
@@ -479,5 +476,18 @@ public class Controller {
 
     }
 
+    private void updatePointerPositionLabel(double X, double Y){
+        double coefViewReal;
+        if (this.direction.equals("H"))
+            coefViewReal = this.myImage.getFitHeight()/this.myBufferedImage.getHeight();
+        else // direction "V"
+            coefViewReal = this.myImage.getFitWidth()/this.myBufferedImage.getWidth();
+        this.pointerPositionLabel.setText("| x : "+(int)(X/coefViewReal)+" y : "+(int)(Y/coefViewReal));
+    }
+
+
+    public void pointerLabelReset() {
+        this.pointerPositionLabel.setText("| x : - y : -");
+    }
 }
 

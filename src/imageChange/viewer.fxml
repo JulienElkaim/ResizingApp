@@ -72,7 +72,7 @@
         </GridPane>
 
         <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage">
-            <ImageView onMouseClicked="#imageClicked" StackPane.alignment="CENTER" HBox.hgrow="SOMETIMES"
+            <ImageView onMouseExited="#pointerLabelReset" onMouseClicked="#imageClicked" StackPane.alignment="CENTER" HBox.hgrow="SOMETIMES"
                        fx:id="myImage" fitHeight="650" preserveRatio="true">
 
             </ImageView>
@@ -82,6 +82,6 @@
     </ScrollPane>
     <GridPane hgap="20" styleClass="custom-footer">
         <Label GridPane.columnIndex="0" fx:id="directionLabel" text="| Actual direction: Width"/>
-        <Label GridPane.columnIndex="1" text="| x : - y : -"/>
+        <Label fx:id="pointerPositionLabel" GridPane.columnIndex="1" text="| x : - y : -"/>
     </GridPane>
 </VBox>
