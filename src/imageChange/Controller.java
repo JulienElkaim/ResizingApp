@@ -361,7 +361,7 @@ public class Controller {
      * The last persistent change saved is displayed.
      * only callable by SHIFT + LEFT CLICK
      */
-    private void resetViewModifications() {
+    public void resetViewModifications() {
 
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
