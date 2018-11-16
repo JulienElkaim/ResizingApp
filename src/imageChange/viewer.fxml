@@ -20,12 +20,19 @@
 <VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressed" fx:controller="imageChange.Controller"  stylesheets="/imageChange/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1">
     <MenuBar id="MenuBar" minWidth="800" GridPane.rowIndex="0">
         <Menu text="File">
-            <MenuItem text="Open..." onAction="#ChooseAFile"/>
-            <MenuItem text="Save as..." onAction="#saveAFile"/>
+            <MenuItem accelerator="SHORTCUT+N" text="Open..." onAction="#ChooseAFile"/>
+            <MenuItem accelerator="SHORTCUT+SHIFT+S" text="Save as..." onAction="#saveAFile"/>
             <Menu text="Others">
                 <MenuItem text="Hello ! I was hidden !"/>
             </Menu>
 
+        </Menu>
+        <Menu text = "Edit">
+            <MenuItem accelerator="CTRL+C"  text=" Validate changes" onAction="#saveViewModifications"  />
+            <MenuItem fx:id="directionMenu" accelerator="CTRL+D" onAction="#directionSwitch"  />
+        </Menu>
+        <Menu text="Help" >
+            <MenuItem text="Read Me..." onAction="#helpMe"/>
         </Menu>
     </MenuBar>
     <ScrollPane fitToHeight="true">
@@ -59,14 +66,6 @@
             <Label fx:id="seamPrintingLabel" onMouseEntered="#imageSeamDisplay"
                    onMouseExited="#imageSeamDisplay" GridPane.rowIndex="13" text="Show next seam"/>
 
-            <Label GridPane.rowIndex="16" text="Make actual image persistent : "/>
-            <HBox GridPane.rowIndex="17" alignment="CENTER">
-                <Button alignment="CENTER" onAction="#saveViewModifications" text="Validate modifications"/>
-            </HBox>
-            <Label GridPane.rowIndex="18" text="Change direction : "/>
-            <HBox GridPane.rowIndex="19" alignment="CENTER">
-                <Button fx:id="directionButton" alignment="CENTER" onAction="#directionSwitch"/>
-            </HBox>
         </GridPane>
 
         <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage">
@@ -78,7 +77,8 @@
 
     </HBox>
     </ScrollPane>
-    <HBox maxHeight="2" styleClass="custom-footer">
-        <Label text="SHIFT + LEFT CLICK on the image at any moment to come back at the last persistant change !"/>
-    </HBox>
+    <GridPane hgap="20" styleClass="custom-footer">
+        <Label GridPane.columnIndex="0" fx:id="directionLabel" text="| Actual direction: Width"/>
+        <Label GridPane.columnIndex="1" text="| x : - y : -"/>
+    </GridPane>
 </VBox>

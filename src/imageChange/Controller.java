@@ -3,15 +3,17 @@ package imageChange;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import javafx.scene.control.Slider;
@@ -36,7 +38,7 @@ public class Controller {
     public Slider mySlider;
     public Label sliderListenerLabel;
     public Label sliderLabel;
-    public Button directionButton;
+    public MenuItem directionMenu;
     private String direction;
     private String sliderListener = "";
 
@@ -51,6 +53,7 @@ public class Controller {
     public ImageView myImage;
     private BufferedImage myBufferedImage;
     private BufferedImage myBufferedImageSTOCKED;
+    public Label directionLabel;
 
     //Conceptual objects
     private KeyCode keyPressed;
@@ -63,7 +66,7 @@ public class Controller {
      * INITIALIZE method is called after the fxml creation. Useful to set environment variables.
      */
     public void initialize() {
-        directionButton.setText("Height");
+        directionMenu.setText("Switch direction -> Height");
         this.direction="H";
         this.tempImg = "null";
         this.initializeGradientItems();
@@ -160,6 +163,9 @@ public class Controller {
         //(CMD)CTRL+C save modifications to continue working on it
         if (keyEvent.getCode() == KeyCode.C && (keyEvent.isControlDown() || keyEvent.isShortcutDown()) )
             this.saveViewModifications();
+        //(CMD)CTRL+N propose to open a new image
+        if (keyEvent.getCode() == KeyCode.N && (keyEvent.isControlDown() || keyEvent.isShortcutDown()) )
+            this.ChooseAFile();
         //(CMD)CTRL+SHIFT+S propose to save your image.
         if (keyEvent.getCode() == KeyCode.S && keyEvent.isShiftDown() && (keyEvent.isControlDown() || keyEvent.isShortcutDown()) ){
             this.saveAFile();
@@ -187,7 +193,8 @@ public class Controller {
     public void directionSwitch() {
         if (this.direction.equals("H")) { //actually in width, go in height mode
 
-            this.directionButton.setText("Width");
+            this.directionMenu.setText("Switch direction -> Width");
+            this.directionLabel.setText("Actual direction: Height");
             double idealFitWidth = (this.myImage.getFitHeight()/this.myBufferedImage.getHeight()) * this.myBufferedImage.getWidth();
             this.myImage.setFitWidth(idealFitWidth);
             this.myImage.fitHeightProperty().setValue(null);
@@ -195,7 +202,8 @@ public class Controller {
 
         }else{ // actually in height, go in width mode
 
-            this.directionButton.setText("Height");
+            this.directionMenu.setText("Switch direction -> Height");
+            this.directionLabel.setText("Actual direction: Width");
             double idealFitHeight = (this.myImage.getFitWidth()/this.myBufferedImage.getWidth()) * this.myBufferedImage.getHeight();
             this.myImage.setFitHeight(idealFitHeight);
             this.myImage.fitWidthProperty().setValue(null);
@@ -330,11 +338,12 @@ public class Controller {
     /**
      * Trigger Opening file process.
      *
-     * @throws IOException when it fails to read the file path provided.
      */
-    public void ChooseAFile() throws IOException {
+    public void ChooseAFile(){
+        try{ this.myBufferedImageSTOCKED = ImageIO.read(operation.SimpleOperation.imageFileOpen());}
+        catch(IOException e){System.out.println("Error occured during the openning process!");}
+        catch(IllegalArgumentException e){System.out.println("No file choosed !");}
 
-        this.myBufferedImageSTOCKED = ImageIO.read(operation.SimpleOperation.imageFileOpen());
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
         this.sliderListenerLabel.setText(this.updateListnerLabel(this.sliderListener));
@@ -451,6 +460,22 @@ public class Controller {
         if (this.direction.equals("V"))
             return "Percentage of Height : ";
         return "/!\\ Direction issue ! Please relaunch the App /!\\";
+
+    }
+
+    public void helpMe()throws IOException{
+        System.out.println("OK GUY");
+        File file = new File("./README.md");
+        System.out.println(file);
+
+        if(!Desktop.isDesktopSupported()){
+            System.out.println("Your computer have restricted access. Please open README.md manually.");
+        }else {
+            System.out.println("yes");
+            Desktop desktop = Desktop.getDesktop();
+            if (file.exists()) desktop.open(file);
+        }
+
 
     }
 
