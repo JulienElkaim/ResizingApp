@@ -118,6 +118,14 @@ public class ImageSeamComputation {
         return dynamicSeamTable;
     }
 
+    /** Compute the best seam last pixel coordinate (x or y, depending on direction).
+     *
+     * @param seamTable The seamTable providing all the seam available.
+     * @param maxSize The size of the seam.
+     * @param maxOtherSize The other direction's size of the initial image.
+     * @param direction direction of resizing occuring.
+     * @return the coordinate (x or y, depending on direction) of the best seam's last pixel.
+     */
     private static int lowestSeamFirstCoord( long[][] seamTable,int maxSize, int maxOtherSize, String direction){
         int firstCoord = 0;
 
@@ -126,7 +134,7 @@ public class ImageSeamComputation {
                 if (seamTable[firstCoord][maxSize - 1] > seamTable[coor][maxSize - 1]) {
                     firstCoord = coor;
                 }
-            } else { // "V"
+            } else { // direction "V"
                 if (seamTable[maxSize - 1][firstCoord] > seamTable[maxSize - 1][coor]) {
                     firstCoord = coor;
                 }
@@ -137,6 +145,15 @@ public class ImageSeamComputation {
         return firstCoord;
     }
 
+    /** Compute following pixels coordinate (x or y, depending on direction) of the best seam.
+     *
+     * @param seamTable The seamTable providing all the seam available.
+     * @param firstCoord the coordinate (x or y, depending on direction) of the best seam's last pixel.
+     * @param maxSize The size of the seam.
+     * @param maxOtherSize The other direction's size of the initial image.
+     * @param direction direction of resizing occuring.
+     * @return the best seam of the seamTable.
+     */
     private static int[] lowestSeamNextLines( long[][] seamTable,int firstCoord, int maxSize, int maxOtherSize, String direction){
         int[] seam = new int[maxSize];
         seam[maxSize-1] = firstCoord;
@@ -170,6 +187,7 @@ public class ImageSeamComputation {
         }
         return seam;
     }
+
     /**
      * Isolate the best seam over the image.
      *

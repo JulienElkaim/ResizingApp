@@ -148,7 +148,7 @@ public class Controller {
 
     /**
      * Called when a key is pressed.
-     * Set memory of this key.
+     * Set memory of this key, and react for special key combination.
      *
      * @param keyEvent is the action of the key pressed, with all the key relative information.
      */
