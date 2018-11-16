@@ -69,6 +69,20 @@
             <Label fx:id="seamPrintingLabel" onMouseEntered="#imageSeamDisplay"
                    onMouseExited="#imageSeamDisplay" GridPane.rowIndex="13" text="Show next seam"/>
 
+            <GridPane vgap="1" hgap="5" GridPane.rowIndex="14">
+                <Label  text="Red:" GridPane.rowIndex="0"  />
+                <Slider GridPane.rowIndex="1" value="50" fx:id="redSlider" majorTickUnit="100" showTickLabels="true"
+                        showTickMarks="true" minorTickCount="5"/>
+
+                <Label GridPane.rowIndex="2"  text="Green:"/>
+                <Slider GridPane.rowIndex="3"  value="50" fx:id="greenSlider" majorTickUnit="100" showTickLabels="true"
+                        showTickMarks="true" minorTickCount="5"/>
+
+                <Label GridPane.rowIndex="4"  text="Blue"  />
+                <Slider GridPane.rowIndex="5" value="50" fx:id="blueSlider" majorTickUnit="100" showTickLabels="true"
+                        showTickMarks="true" minorTickCount="5"/>
+            </GridPane>
+
         </GridPane>
 
         <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage">

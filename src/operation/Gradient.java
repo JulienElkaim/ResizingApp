@@ -59,4 +59,46 @@ public class Gradient {
         }
         return gradientBImage;
     }
+
+
+    public static BufferedImage imageColoring(String myColor, BufferedImage myBufferedImage, double ratio) {
+        int decalage;
+        int colorToChange;
+        int secondColor;
+        int thirdColor;
+        int maxX = myBufferedImage.getWidth();
+        int maxY = myBufferedImage.getHeight();
+
+        for (int x = 0; x < maxX; x++){
+            for(int y = 0; y < maxY; y++) {
+
+                Color myPixelColor = new Color(myBufferedImage.getRGB(x, y));
+
+                switch (myColor) {
+                    case "R":
+                        decalage = 16;
+                        colorToChange = myPixelColor.getRed();
+                        secondColor = myPixelColor.getGreen()<<8;
+                        thirdColor = myPixelColor.getBlue();
+                        break;
+                    case "G":
+                        decalage = 8;
+                        colorToChange = myPixelColor.getGreen();
+                        secondColor = myPixelColor.getRed()<<16;
+                        thirdColor = myPixelColor.getBlue();
+                        break;
+                    default:
+                        decalage = 0;
+                        colorToChange = myPixelColor.getBlue();
+                        secondColor = myPixelColor.getGreen()<<8;
+                        thirdColor = myPixelColor.getRed()<<16;
+                        break;
+                }
+                colorToChange =( Math.min((int)(colorToChange*ratio),255) )<< decalage;
+                myBufferedImage.setRGB( x , y ,( colorToChange + secondColor + thirdColor ) );
+            }
+
+        }
+        return myBufferedImage;
+    }
 }

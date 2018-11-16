@@ -39,6 +39,9 @@ public class Controller {
     public MenuItem directionMenu;
     private String direction;
     private String sliderListener = "";
+    public Slider redSlider;
+    public Slider greenSlider;
+    public Slider blueSlider;
 
     //Hoovered objects
     public Rectangle redG;
@@ -70,8 +73,21 @@ public class Controller {
         this.tempImg = "null";
         this.initializeGradientItems();
         this.initializeSliderItems();
+        this.initializeColorSlidersItems();
 
         this.myImage.setOnMouseMoved(t -> updatePointerPositionLabel(t.getX() - this.myImage.getX(), t.getY() - this.myImage.getX()));
+
+    }
+
+    /**
+     * This method initializes the color sliders items used in the application.
+     */
+    private void initializeColorSlidersItems() {
+        this.redSlider.valueProperty().addListener(this::changedRed);
+
+        this.greenSlider.valueProperty().addListener(this::changedGreen);
+
+        this.blueSlider.valueProperty().addListener(this::changedBlue);
 
     }
 
@@ -99,6 +115,11 @@ public class Controller {
 
     }
 
+    private void ColorModificator(ObservableValue<? extends Number> ov, Number old_val, Number new_val, String color){
+        double coefColor = (new_val.doubleValue()/100 +0.5) / (old_val.doubleValue()/100+0.5);
+        this.myBufferedImage= SimpleOperation.cloningBufferedImage( Gradient.imageColoring(color,this.myBufferedImage, coefColor) );
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
+    }
     /**
      * Function called when the Slider's value changes, notifications are not used because we chose a "toggle framework".
      *
@@ -488,6 +509,18 @@ public class Controller {
 
     public void pointerLabelReset() {
         this.pointerPositionLabel.setText("| x : - y : -");
+    }
+
+    private void changedBlue(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        ColorModificator(ov, old_val, new_val, "B");
+    }
+
+    private void changedGreen(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        ColorModificator(ov, old_val, new_val, "G");
+    }
+
+    private void changedRed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        ColorModificator(ov, old_val, new_val, "R");
     }
 }
 
