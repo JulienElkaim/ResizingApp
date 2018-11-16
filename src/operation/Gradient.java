@@ -60,7 +60,13 @@ public class Gradient {
         return gradientBImage;
     }
 
-
+    /** Modify color composition of a bufferedImage.
+     *
+     * @param myColor is the color to increase/decrease.
+     * @param myBufferedImage is the bufferedImage to color.
+     * @param ratio
+     * @return a bufferedImage with rgb values modified.
+     */
     public static BufferedImage imageColoring(String myColor, BufferedImage myBufferedImage, double ratio) {
         int decalage;
         int colorToChange;

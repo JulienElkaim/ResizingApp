@@ -83,11 +83,11 @@ public class Controller {
      * This method initializes the color sliders items used in the application.
      */
     private void initializeColorSlidersItems() {
-        this.redSlider.valueProperty().addListener(this::changedRed);
+        this.redSlider.valueProperty().addListener(this::listenRed);
 
-        this.greenSlider.valueProperty().addListener(this::changedGreen);
+        this.greenSlider.valueProperty().addListener(this::listenGreen);
 
-        this.blueSlider.valueProperty().addListener(this::changedBlue);
+        this.blueSlider.valueProperty().addListener(this::listenBlue);
 
     }
 
@@ -115,11 +115,6 @@ public class Controller {
 
     }
 
-    private void ColorModificator(ObservableValue<? extends Number> ov, Number old_val, Number new_val, String color){
-        double coefColor = (new_val.doubleValue()/100 +0.5) / (old_val.doubleValue()/100+0.5);
-        this.myBufferedImage= SimpleOperation.cloningBufferedImage( Gradient.imageColoring(color,this.myBufferedImage, coefColor) );
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
-    }
     /**
      * Function called when the Slider's value changes, notifications are not used because we chose a "toggle framework".
      *
@@ -146,6 +141,49 @@ public class Controller {
             case "Crop":
                 this.cropDisplayedImage(new_val.doubleValue());
         }
+    }
+
+    /** Listen the blue slider.
+     *
+     * @param ov      is the observable value of the slider.
+     * @param old_val is the previous value of the slider.
+     * @param new_val is the actual value of the slider.
+     */
+    private void listenBlue(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        ColorModificator(ov, old_val, new_val, "B");
+    }
+
+    /** Listen the green slider.
+     *
+     ** @param ov      is the observable value of the slider.
+     *      * @param old_val is the previous value of the slider.
+     *      * @param new_val is the actual value of the slider.
+     */
+    private void listenGreen(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        ColorModificator(ov, old_val, new_val, "G");
+    }
+
+    /** Listen the red slider.
+     *
+     * @param ov      is the observable value of the slider.
+     * @param old_val is the previous value of the slider.
+     * @param new_val is the actual value of the slider.
+     */
+    private void listenRed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        ColorModificator(ov, old_val, new_val, "R");
+    }
+
+    /** Increase/Decrease the color selected (basic graphical change).
+     *
+     * @param ov      is the observable value of the slider.
+     * @param old_val is the previous value of the slider.
+     * @param new_val is the actual value of the slider.
+     * @param color is the color R/G/B used for coloring process.
+     */
+    private void ColorModificator(ObservableValue<? extends Number> ov, Number old_val, Number new_val, String color){
+        double coefColor = (new_val.doubleValue()/100 +0.5) / (old_val.doubleValue()/100+0.5);
+        this.myBufferedImage= SimpleOperation.cloningBufferedImage( Gradient.imageColoring(color,this.myBufferedImage, coefColor) );
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
     /**
@@ -337,9 +375,12 @@ public class Controller {
      * @param sliderValue is the actual value of the slider
      */
     private void zoomDisplayedImage(double X, double Y, double sliderValue) {
-
-        double viewHeight = this.myImage.getFitHeight();
-        this.myBufferedImage = this.resizer.zoom(this.myBufferedImage, viewHeight, this.direction, X, Y, sliderValue);
+        double viewSize;
+        if(this.direction.equals("H"))
+            viewSize = this.myImage.getFitHeight();
+        else
+            viewSize = this.myImage.getFitWidth();
+        this.myBufferedImage = this.resizer.zoom(this.myBufferedImage, viewSize, this.direction, X, Y, sliderValue);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
 
     }
@@ -497,6 +538,11 @@ public class Controller {
 
     }
 
+    /** Display X and Y position of the pointer.
+     *
+     * @param X is the x-coordinate on the imageView.
+     * @param Y is the y-coordinate on the imageView.
+     */
     private void updatePointerPositionLabel(double X, double Y){
         double coefViewReal;
         if (this.direction.equals("H"))
@@ -506,21 +552,13 @@ public class Controller {
         this.pointerPositionLabel.setText("| x : "+(int)(X/coefViewReal)+" y : "+(int)(Y/coefViewReal));
     }
 
-
+    /** Reset the pointer label when the mouse exit the image area.
+     *
+     */
     public void pointerLabelReset() {
         this.pointerPositionLabel.setText("| x : - y : -");
     }
 
-    private void changedBlue(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        ColorModificator(ov, old_val, new_val, "B");
-    }
 
-    private void changedGreen(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        ColorModificator(ov, old_val, new_val, "G");
-    }
-
-    private void changedRed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        ColorModificator(ov, old_val, new_val, "R");
-    }
 }
 

@@ -108,10 +108,9 @@ public class ImageResize {
 
         if (direction.equals("H"))
             coefViewReal = viewSize / initHeight;
-        if (direction.equals("W"))
+        if (direction.equals("V"))
             coefViewReal = viewSize / initWidth;
-        if (direction.equals("BOTH"))
-            coefViewReal = viewSize;
+
 
         double XReal = X / coefViewReal;
         double YReal = Y / coefViewReal;
@@ -120,9 +119,9 @@ public class ImageResize {
         int width = (int) (zoomingCoef * initWidth);
         int height = (int) (zoomingCoef * initHeight);
 
-        while (x + width >= myBufferedImage.getWidth())
+        while (x + width > myBufferedImage.getWidth())
             x -= 1;
-        while (y + height >= myBufferedImage.getHeight())
+        while (y + height > myBufferedImage.getHeight())
             y -= 1;
         return myBufferedImage.getSubimage((int) x, (int) y, width, height);
     }
