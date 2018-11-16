@@ -86,9 +86,12 @@ public class ImageSeamComputation {
                 if (y==0){
                     if (direction.equals("H"))
                         dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y);
-                    if (direction.equals("V"))
-                        dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x-1][y], dynamicSeamTable[x - 1][y + 1]);
-
+                    if (direction.equals("V")) {
+                        if (x == 0)
+                            dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y);
+                        else
+                            dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x - 1][y], dynamicSeamTable[x - 1][y + 1]);
+                    }
                 }else if(x==0){
                     if (direction.equals("H"))
                         dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x][y - 1], dynamicSeamTable[x + 1][y - 1]);
@@ -214,21 +217,35 @@ public class ImageSeamComputation {
     static BufferedImage seamVerticalDestroyer(BufferedImage img, int[] seam, String direction) {
         int maxX = img.getWidth();
         int maxY = img.getHeight();
-        BufferedImage newBImage = new BufferedImage(maxX - 1, maxY, BufferedImage.TYPE_INT_RGB);
+        BufferedImage newBImage;
+        if (direction.equals("H")) {
+            newBImage = new BufferedImage(maxX - 1, maxY, BufferedImage.TYPE_INT_RGB);
+            maxX = maxX - 1;
+        }else{ //direction "V"
+            newBImage = new BufferedImage(maxX, maxY - 1, BufferedImage.TYPE_INT_RGB);
+            maxY = maxY-1;
+        }
 
         for (int y = 0; y < maxY; y++) {
-            for (int x = 0; x < maxX - 1; x++) {
+            for (int x = 0; x<maxX; x++) {
 
-                if (seam[y] <= x) {
+
 
                     if (direction.equals("H")) {
-                        newBImage.setRGB(x, y, img.getRGB(x + 1, y));
-                    } else {
-                        newBImage.setRGB(x, y, img.getRGB(x, y + 1));
+                        if (seam[y] <= x) {
+                            newBImage.setRGB(x, y, img.getRGB(x + 1, y));
+                        } else {
+                        newBImage.setRGB(x, y, img.getRGB(x, y));
                     }
-                } else {
-                    newBImage.setRGB(x, y, img.getRGB(x, y));
-                }
+                    } else { // direction V
+                        if (seam[x] <= y) {
+                            //System.out.println("("+x+","+y+")");
+                            newBImage.setRGB(x, y, img.getRGB(x, y + 1));
+                        } else {
+                            newBImage.setRGB(x, y, img.getRGB(x, y));
+                        }
+                    }
+
             }
         }
 

@@ -14,7 +14,7 @@
 
 <?import javafx.scene.shape.Rectangle?>
 
-<VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressedAdd" fx:controller="imageChange.Controller"
+<VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressed" fx:controller="imageChange.Controller"
       stylesheets="/imageChange/sample.css" minWidth="Infinity" minHeight="Infinity"
       xmlns:fx="http://javafx.com/fxml/1">
     <MenuBar id="MenuBar" minWidth="800" GridPane.rowIndex="0">
@@ -30,10 +30,10 @@
     <HBox>
         <GridPane prefWidth="250" hgap="10" vgap="10">
 
-            <Button GridPane.rowIndex="0" onAction="#Switcher" text="Crop"/>
-            <Button GridPane.rowIndex="1" onAction="#Switcher" text="Resize"/>
-            <Button GridPane.rowIndex="2" onAction="#Switcher" text="Zoom"/>
-            <Button GridPane.rowIndex="3" onAction="#Switcher" text="Seam Carving"/>
+            <Button GridPane.rowIndex="0" onAction="#switcherListener" text="Crop"/>
+            <Button GridPane.rowIndex="1" onAction="#switcherListener" text="Resize"/>
+            <Button GridPane.rowIndex="2" onAction="#switcherListener" text="Zoom"/>
+            <Button GridPane.rowIndex="3" onAction="#switcherListener" text="Seam Carving"/>
 
 
             <GridPane GridPane.rowIndex="4" hgap="10">
@@ -45,7 +45,7 @@
                            fx:id="blueG" width="40" height="40"/>
             </GridPane>
 
-            <Label GridPane.rowIndex="7">Percentage Of Width :</Label>
+            <Label fx:id="sliderLabel" GridPane.rowIndex="7"/>
             <Slider GridPane.rowIndex="8" value="50" fx:id="mySlider" majorTickUnit="100" showTickLabels="true"
                     showTickMarks="true" minorTickCount="5"/>
             <HBox GridPane.rowIndex="10" alignment="CENTER">
@@ -54,12 +54,16 @@
 
             <Label fx:id="energyPrintingLabel" onMouseEntered="#imageEnergyDisplay" onMouseExited="#imageEnergyDisplay"
                    GridPane.rowIndex="12" text="Show energy"/>
-            <Label fx:id="seamPrintingLabel" onMouseEntered="#imageVerticalSeamDisplay"
-                   onMouseExited="#imageVerticalSeamDisplay" GridPane.rowIndex="13" text="Show next seam"/>
+            <Label fx:id="seamPrintingLabel" onMouseEntered="#imageSeamDisplay"
+                   onMouseExited="#imageSeamDisplay" GridPane.rowIndex="13" text="Show next seam"/>
 
             <Label GridPane.rowIndex="16" text="Make actual image persistent : "/>
             <HBox GridPane.rowIndex="17" alignment="CENTER">
-                <Button alignment="CENTER" onAction="#makeNewOperationPersistent" text="Validate modifications"/>
+                <Button alignment="CENTER" onAction="#saveViewModifications" text="Validate modifications"/>
+            </HBox>
+            <Label GridPane.rowIndex="18" text="Change direction : "/>
+            <HBox GridPane.rowIndex="19" alignment="CENTER">
+                <Button fx:id="directionButton" alignment="CENTER" onAction="#directionSwitch"/>
             </HBox>
         </GridPane>
 

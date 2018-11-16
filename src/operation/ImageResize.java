@@ -39,9 +39,9 @@ public class ImageResize {
         int height = myBufferedImage.getHeight();
 
         if (direction.equals("H"))
-            width = (int) (coef * myBufferedImage.getWidth());
+            width = (int) (coef * width);
         else
-            height = (int) (coef * myBufferedImage.getWidth());
+            height = (int) (coef * height);
 
 
         return (this.scale(myBufferedImage, width, height));
