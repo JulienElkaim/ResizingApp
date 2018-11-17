@@ -63,7 +63,7 @@ public class Controller {
     private KeyCode keyPressed;
     private String tempImg;
     private ImageResize resizer = new ImageResize();
-    double initFitHeight;
+    private double initFitHeight;
 
 
     /**
