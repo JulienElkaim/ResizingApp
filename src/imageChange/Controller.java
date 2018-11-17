@@ -61,13 +61,14 @@ public class Controller {
     private KeyCode keyPressed;
     private String tempImg;
     private ImageResize resizer = new ImageResize();
-
+    double initFitHeight;
 
 
     /**
      * INITIALIZE method is called after the fxml creation. Useful to set environment variables.
      */
     public void initialize() {
+        this.initFitHeight = this.myImage.getFitHeight();
         directionMenu.setText("Switch direction -> Height");
         this.direction="H";
         this.tempImg = "null";
@@ -406,7 +407,9 @@ public class Controller {
         catch(IOException e){System.out.println("Error occured during the openning process!");}
         catch(IllegalArgumentException e){System.out.println("No file choosed !");}
 
+
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
+        this.myImage.setFitHeight(initFitHeight);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
         this.sliderListenerLabel.setText(this.updateListnerLabel(this.sliderListener));
 
@@ -525,6 +528,10 @@ public class Controller {
 
     }
 
+    /** Open the readme file to help user.
+     *
+     * @throws IOException when README is not available.
+     */
     public void helpMe()throws IOException{
         File file = new File("./README.md");
 

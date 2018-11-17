@@ -93,5 +93,4 @@ public class SimpleOperation {
         return myStr.toString();
     }
 
-
 }

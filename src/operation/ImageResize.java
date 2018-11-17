@@ -87,7 +87,6 @@ public class ImageResize {
         return img;
     }
 
-
     /**
      * Provide the user with useful method to zoom on its image.
      *
