@@ -18,6 +18,8 @@ import javafx.scene.control.Slider;
 import operation.*;
 import javafx.scene.shape.Rectangle;
 
+import static java.lang.Math.abs;
+
 public class Controller {
 
     /** MENU:
@@ -136,7 +138,7 @@ public class Controller {
 
             case "Seam Carving":
                 this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
-                this.seamCarveDisplayedImage(new_val.intValue());
+                this.seamCarveDisplayedImage(new_val.doubleValue());
                 break;
 
             case "Crop":
@@ -389,10 +391,19 @@ public class Controller {
     /**
      * Trigger Seam Carving process.
      *
-     * @param nbOfSeam is the number of occurrence of the process.
+     * @param sliderValue is the percentage of width to display.
      */
-    private void seamCarveDisplayedImage(int nbOfSeam) {
-        BufferedImage img = this.resizer.SeamCarving(nbOfSeam, this.myBufferedImage, this.direction);
+    private void seamCarveDisplayedImage(double sliderValue) {
+        double coef =  (0.01 < sliderValue / 100) ? abs(sliderValue) / 100 : 0.01; // Slider a 100: 100%, Slider a 0: 10%
+        int actualReferenceSize;
+        if(this.direction.equals("H"))
+            actualReferenceSize= this.myBufferedImage.getWidth();
+        else // direction "V"
+            actualReferenceSize = this.myBufferedImage.getHeight();
+
+        int nbOfSeamToDestroy = actualReferenceSize - (int)(coef*actualReferenceSize);
+        System.out.println(nbOfSeamToDestroy);
+        BufferedImage img = this.resizer.SeamCarving(nbOfSeamToDestroy, this.myBufferedImage, this.direction);
 
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(img);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
