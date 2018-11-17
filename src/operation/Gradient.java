@@ -64,7 +64,7 @@ public class Gradient {
      *
      * @param myColor is the color to increase/decrease.
      * @param myBufferedImage is the bufferedImage to color.
-     * @param ratio
+     * @param ratio is the ratio to apply at the color concerned.
      * @return a bufferedImage with rgb values modified.
      */
     public static BufferedImage imageColoring(String myColor, BufferedImage myBufferedImage, double ratio) {

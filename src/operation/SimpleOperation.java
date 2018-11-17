@@ -26,13 +26,6 @@ public class SimpleOperation {
         }
         return bImageNew;
 
-        /* Old version of clonningBufferedImage
-        ColorModel cm = bImage.getColorModel();
-        boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
-        WritableRaster raster = bImage.copyData(null);
-        return new BufferedImage(cm, raster, isAlphaPremultiplied, null);
-        */
-
     }
 
     /**
