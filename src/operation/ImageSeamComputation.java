@@ -103,7 +103,7 @@ public class ImageSeamComputation {
                         dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x][y - 1], dynamicSeamTable[x - 1][y - 1]);
 
                 }else if (y == (maxY-1)){
-                    if(direction.equals("H"))
+                    if(direction.equals("V")) // ON A CORRIGE
                         dynamicSeamTable[x][y] = imgToCompute.getRGB(x, y) + Math.min(dynamicSeamTable[x-1][y], dynamicSeamTable[x - 1][y - 1]);
 
                 }else{
