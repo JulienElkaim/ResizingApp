@@ -34,7 +34,7 @@ Cette application permettra d'effectuer les opérations suivantes sur une images
 
 ## Difficultés rencontrées
 
-* resizing *(mise à l'échelle) *
+* resizing *(mise à l'échelle)*
     * à effectuer sur la BufferedImage plutôt que sur l'ImageView
 
 * crop *(recardage)*
@@ -44,7 +44,7 @@ Cette application permettra d'effectuer les opérations suivantes sur une images
     * a soulevé le problème de la copie de la BufferedImage
     
 * Multi Direction *(extension)*
-    * a susciter de
+    * a suscité de nombreux problèmes à cause des liens nécessaires avec l'ImageView définie dans le FXML.
 ## Extensions de base
 ### Recadrage (crop)
 Cette opération découpe l'image pour ne garder que le pourcentage de l'image d'origine choisi avec le slider
@@ -80,7 +80,7 @@ __Mode d'emploi :__ Faire `CTRL + C` ou cliquer Edit > *Validate modifs*.
 Mis en oeuvre car il n'enregistre que les changements, il ne crée pas pour autant un sauvegarde de l'image au même titre que save.
 
 ###Remise à zéro des changements
-__Fontionalité :__ permet d'annuler les changements effectués depuis le dernier enregistrement
+__Fontionnalité :__ permet d'annuler les changements effectués depuis le dernier enregistrement
 
 __Mode d'emploi :__ Faire `SHIFT + left clic` pour revenir au dernier enregistrement (checkpoint) ou cliquer sur Edit > Reset Modifs.
 
@@ -137,7 +137,7 @@ __Mode d'emploi :__  Liste exclusive des raccourcis existant:
 Permet d'améliorer l'interface en relayant certaines fonctions dans le menu, sans pour autant sacrifier l'expérience utilisateur.
 
 ### Interface dynamique: Position du pointeur, opération en cours, sens de modification. 
- __Fonctionnalité :__ Permet une visualisation direct des caractéristiques de l'outil. Améliore l'expérience utilisateur.
+ __Fonctionnalité :__ Permet une visualisation directe des caractéristiques de l'outil. Améliore l'expérience utilisateur.
 
 __Mode d'emploi:__ 
 
@@ -145,7 +145,7 @@ __Mode d'emploi:__
 - __Autres :__ aucun.
 
 ### Fonction d'aide
-Permet d'accèder directement au fichier README.md pour comprendre les fonctionnalités.
+Permet d'accéder directement au fichier README.md pour comprendre les fonctionnalités.
 
 ## Exemple de résultats
 

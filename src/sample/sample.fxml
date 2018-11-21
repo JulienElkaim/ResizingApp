@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.image.Image?>
+
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.shape.Box?>
+<VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressedAdd" fx:controller="sample.SampleController" stylesheets="/sample/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1" >
+    <MenuBar id="MenuBar" minWidth = "800"   GridPane.rowIndex="0">
+        <Menu   text="File" >
+            <MenuItem text="Open..." onAction="#ChooseAFile"/>
+            <MenuItem text="Save as..." onAction="#saveAFile"/>
+            <Menu text="Others">
+                <MenuItem text="Hello ! I was hidden !"/>
+            </Menu>
+
+        </Menu>
+    </MenuBar>
+    <HBox >
+        <GridPane prefWidth="200" hgap="10"  vgap="10"  >
+            <Button GridPane.rowIndex="0"  onAction="#Switcher" text="Crop" />
+            <Button GridPane.rowIndex="1"  onAction="#Switcher" text="Resize" />
+            <Button GridPane.rowIndex="2"  onAction = "#Switcher" text="Seam Carving" />
+            <Button GridPane.rowIndex="3"  onAction="#Switcher" text="Zoom" />
+            <Button GridPane.rowIndex="4"  onAction="#redGradient" text="Red Gradient" />
+            <Button GridPane.rowIndex="5"  onAction="#greenGradient" text="Green Gradient" />
+            <Button GridPane.rowIndex="6"  onAction="#blueGradient" text="Blue Gradient" />
+            <Label  GridPane.rowIndex="7" >Percentage Of Width</Label>
+            <Slider GridPane.rowIndex="8" value="50" fx:id="mySlider"  majorTickUnit="100" showTickLabels="true" showTickMarks="true"  minorTickCount="5"/>
+
+            <Label fx:id="energyPrintingLabel" onMouseEntered="#energyMap" onMouseExited="#energyMap" GridPane.rowIndex="9" text="Show energy" />
+            <Label fx:id="seamPrintingLabel" onMouseEntered="#printBestSeamVertical" onMouseExited="#printBestSeamVertical" GridPane.rowIndex="10" text="Show next seam" />
+
+        </GridPane>
+        <StackPane maxWidth="1300" maxHeight="980" styleClass="paneOfImage" >
+            <ImageView onMouseClicked="#imageClicked" StackPane.alignment="CENTER"  HBox.hgrow="SOMETIMES"  fx:id="myImage"  fitWidth="1000" fitHeight="850" preserveRatio="true">
+
+            </ImageView>
+        </StackPane>
+    </HBox>
+</VBox>

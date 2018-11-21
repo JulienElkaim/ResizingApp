@@ -71,7 +71,7 @@ public class Controller {
      */
     public void initialize() {
         this.initFitHeight = this.myImage.getFitHeight();
-        directionMenu.setText("Switch direction -> Height");
+        directionMenu.setText("Switch direction -> Height   CTRL+D");
         this.direction="H";
         this.tempImg = "null";
         this.initializeGradientItems();
@@ -220,7 +220,7 @@ public class Controller {
     public void keyPressed(KeyEvent keyEvent) {
         this.keyPressed = keyEvent.getCode();
         //(CMD)CTRL+W will switch the current direction used
-        if (keyEvent.getCode() == KeyCode.D && (keyEvent.isControlDown() || keyEvent.isShortcutDown()))
+        if (keyEvent.getCode() == KeyCode.D && (keyEvent.isControlDown()  || keyEvent.isShortcutDown()))
             this.directionSwitch();
         //(CMD)CTRL+C save modifications to continue working on it
         if (keyEvent.getCode() == KeyCode.C && (keyEvent.isControlDown() || keyEvent.isShortcutDown()) )
@@ -255,7 +255,7 @@ public class Controller {
     public void directionSwitch() {
         if (this.direction.equals("H")) { //actually in width, go in height mode
 
-            this.directionMenu.setText("Switch direction -> Width");
+            this.directionMenu.setText("Switch direction -> Width   CRTL+D");
             this.directionLabel.setText("Actual direction: Height");
             double idealFitWidth = (this.myImage.getFitHeight()/this.myBufferedImage.getHeight()) * this.myBufferedImage.getWidth();
             this.myImage.setFitWidth(idealFitWidth);
@@ -264,7 +264,7 @@ public class Controller {
 
         }else{ // actually in height, go in width mode
 
-            this.directionMenu.setText("Switch direction -> Height");
+            this.directionMenu.setText("Switch direction -> Height  CTRL+D");
             this.directionLabel.setText("Actual direction: Width");
             double idealFitHeight = (this.myImage.getFitWidth()/this.myBufferedImage.getWidth()) * this.myBufferedImage.getHeight();
             this.myImage.setFitHeight(idealFitHeight);
@@ -402,7 +402,6 @@ public class Controller {
             actualReferenceSize = this.myBufferedImage.getHeight();
 
         int nbOfSeamToDestroy = actualReferenceSize - (int)(coef*actualReferenceSize);
-        System.out.println(nbOfSeamToDestroy);
         BufferedImage img = this.resizer.SeamCarving(nbOfSeamToDestroy, this.myBufferedImage, this.direction);
 
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(img);

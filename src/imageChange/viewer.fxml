@@ -21,18 +21,18 @@
 <VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressed" fx:controller="imageChange.Controller"  stylesheets="/imageChange/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1">
     <MenuBar id="MenuBar" minWidth="800" GridPane.rowIndex="0">
         <Menu text="File">
-            <MenuItem accelerator="SHORTCUT+N" text="Open..." onAction="#ChooseAFile"/>
-            <MenuItem accelerator="SHORTCUT+SHIFT+S" text="Save as..." onAction="#saveAFile"/>
+            <MenuItem text="Open...  CTRL+N" onAction="#ChooseAFile"/>
+            <MenuItem text="Save as...   CTRL+SHIFT+S" onAction="#saveAFile"/>
             <Menu text="Others">
-                <MenuItem text="Hello ! I was hidden !"/>
+                <MenuItem text="Hello! I was hidden!"/>
             </Menu>
 
         </Menu>
         <Menu text = "Edit">
-            <MenuItem accelerator="CTRL+C"  text=" Validate Modifs" onAction="#saveViewModifications"  />
-            <MenuItem accelerator="Click+SHIFT"  text=" Reset Modifs" onAction="#resetViewModifications"  />
+            <MenuItem  text=" Validate Modifs  CTRL+C" onAction="#saveViewModifications"  />
+            <MenuItem  text=" Reset Modifs  SHIFT+Left_Clic" onAction="#resetViewModifications"  />
             <SeparatorMenuItem/>
-            <MenuItem fx:id="directionMenu" accelerator="CTRL+D" onAction="#directionSwitch"  />
+            <MenuItem fx:id="directionMenu"  onAction="#directionSwitch"  />
         </Menu>
         <Menu text="Help" >
             <MenuItem text="Read Me..." onAction="#helpMe"/>
