@@ -64,7 +64,7 @@ Choix d'implémentation :
 * Pour le Seam Carving suivant la largeur, les seams verticales sont détruites une par une pour éviter des erreurs de suppression.
 * Pour le Seam Carving suivant la hauteur(extension), les seams horizontales sont détruites une par une pour éviter des erreurs de suppression
 
-###Open & Save image file
+### Open & Save image file
 Cette opération permet d'ouvrir une image et de sauvegarder les changements effectués dessus.
 
 Choix d'implémentation : 
