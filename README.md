@@ -57,7 +57,7 @@ Choix d'implémentation :
 Cette opération permet de mettre à l'échelle l'image pour qu'elle tienne dans la taille choisie avec slider.
 
 
-###Seam Carving
+### Seam Carving
 Nous suivons cet [algorithme](https://en.wikipedia.org/wiki/Seam_carving).
 
 Choix d'implémentation :
@@ -71,22 +71,22 @@ Choix d'implémentation :
 * Ajout d'un chemin par défaut contenant plusieurs images d'example.
 * Limitation aux fichiers image de type JPEG.
 
-##Extensions rajoutées
-###Persistance des changements
+## Extensions rajoutées
+### Persistance des changements
 __Fonctionnalité :__ permet d'enregistrer les changements depuis le dernier enregistrement (checkpoint).
 
 __Mode d'emploi :__ Faire `CTRL + C` ou cliquer Edit > *Validate modifs*.
 
 Mis en oeuvre car il n'enregistre que les changements, il ne crée pas pour autant un sauvegarde de l'image au même titre que save.
 
-###Remise à zéro des changements
+### Remise à zéro des changements
 __Fontionnalité :__ permet d'annuler les changements effectués depuis le dernier enregistrement
 
 __Mode d'emploi :__ Faire `SHIFT + left clic` pour revenir au dernier enregistrement (checkpoint) ou cliquer sur Edit > Reset Modifs.
 
 Mis en oeuvre pour permettre à l'utilisateur de revenir en arrière pour éviter d'enchainer les changements innoportuns.
 
-###Zoom
+### Zoom
 __Fonctionnalité :__ Permet de zoomer sur l'image de manière intuitive par un clique de souris.
 
 __Mode d'emploi :__
