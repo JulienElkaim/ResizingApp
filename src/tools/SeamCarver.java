@@ -7,7 +7,7 @@ import java.awt.image.ColorConvertOp;
 
 import static java.lang.Math.abs;
 
-public class ImageSeamComputation {
+public class SeamCarver {
 
     /**
      * Print energy negative of the image.
@@ -17,7 +17,7 @@ public class ImageSeamComputation {
      */
     public static BufferedImage EnergizedImage(BufferedImage img) {
 
-        return ImageSeamComputation.grayOut(ImageSeamComputation.determineEnergy(img));
+        return SeamCarver.grayOut(SeamCarver.determineEnergy(img));
 
     }
 

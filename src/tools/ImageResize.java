@@ -77,10 +77,10 @@ public class ImageResize {
     public  BufferedImage SeamCarving(int nbOfSeamToWithdraw, BufferedImage img, String direction) {
 
         for (int i = 0; i < nbOfSeamToWithdraw; i++) {
-            BufferedImage energyBImage = ImageSeamComputation.EnergizedImage(img);
-            int[] seamToWithdraw = ImageSeamComputation.bestSeam(energyBImage, direction);
+            BufferedImage energyBImage = SeamCarver.EnergizedImage(img);
+            int[] seamToWithdraw = SeamCarver.bestSeam(energyBImage, direction);
 
-            BufferedImage bImageWithOutSeam = ImageSeamComputation.seamVerticalDestroyer(img, seamToWithdraw, direction);
+            BufferedImage bImageWithOutSeam = SeamCarver.seamVerticalDestroyer(img, seamToWithdraw, direction);
             img = SimpleOperation.cloningBufferedImage(bImageWithOutSeam);
         }
 

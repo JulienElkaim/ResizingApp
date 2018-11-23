@@ -492,11 +492,11 @@ public class Controller {
             if (this.myBufferedImage != null)
                 this.energyPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
             assert this.myBufferedImage != null;
-            BufferedImage bImageEnergized = ImageSeamComputation.EnergizedImage(this.myBufferedImage);
+            BufferedImage bImageEnergized = SeamCarver.EnergizedImage(this.myBufferedImage);
 
             if (doWePrintSeam) {
                 int totalRedRGB = 255 << 16;
-                int[] seamToPrint = ImageSeamComputation.bestSeam(bImageEnergized, this.direction);
+                int[] seamToPrint = SeamCarver.bestSeam(bImageEnergized, this.direction);
                 if (this.direction.equals("H")) {
                     for (int y = 0; y < seamToPrint.length; y++)
                         bImageEnergized.setRGB(seamToPrint[y], y, totalRedRGB);
