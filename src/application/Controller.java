@@ -62,7 +62,7 @@ public class Controller {
     //Conceptual objects
     private KeyCode keyPressed;
     private String tempImg;
-    private ImageResize resizer = new ImageResize();
+    private Resizer resizer = new Resizer();
     private double initFitHeight;
 
 
@@ -108,7 +108,7 @@ public class Controller {
     }
 
     /**
-     * This method initialize the GradientItems used to display Gradient computation.
+     * This method initialize the GradientItems used to display GradientPainter computation.
      */
     private void initializeGradientItems() {
 
@@ -185,7 +185,7 @@ public class Controller {
      */
     private void ColorModificator(ObservableValue<? extends Number> ov, Number old_val, Number new_val, String color){
         double coefColor = (new_val.doubleValue()/100 +0.5) / (old_val.doubleValue()/100+0.5);
-        this.myBufferedImage= SimpleOperation.cloningBufferedImage( Gradient.imageColoring(color,this.myBufferedImage, coefColor) );
+        this.myBufferedImage= SimpleOperation.cloningBufferedImage( GradientPainter.imageColoring(color,this.myBufferedImage, coefColor) );
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
@@ -296,9 +296,9 @@ public class Controller {
     }
 
     /**
-     * Trigger a Gradient computation based on the color choice provided.
+     * Trigger a GradientPainter computation based on the color choice provided.
      *
-     * @param colorGradient the color choice (RGB) to determine the Gradient used.
+     * @param colorGradient the color choice (RGB) to determine the GradientPainter used.
      */
     private void gradientSwitcher(String colorGradient) {
 
@@ -323,26 +323,26 @@ public class Controller {
     }
 
     /**
-     * Apply a red Gradient computation on the displayed image.
+     * Apply a red GradientPainter computation on the displayed image.
      */
     private void redGradient() {
-        BufferedImage img = Gradient.createGradient("red", this.myBufferedImage);
+        BufferedImage img = GradientPainter.createGradient("red", this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
     /**
-     * Apply a green Gradient computation on the displayed image.
+     * Apply a green GradientPainter computation on the displayed image.
      */
     private void greenGradient() {
-        BufferedImage img = Gradient.createGradient("green", this.myBufferedImage);
+        BufferedImage img = GradientPainter.createGradient("green", this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
     /**
-     * Apply a blue Gradient computation on the displayed image.
+     * Apply a blue GradientPainter computation on the displayed image.
      */
     private void blueGradient() {
-        BufferedImage img = Gradient.createGradient("blue", this.myBufferedImage);
+        BufferedImage img = GradientPainter.createGradient("blue", this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 

@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 
 import static java.lang.Math.abs;
 
-public class ImageResize {
+public class Resizer {
 
     /**
      * Provide useful method to scale an image with new width and height.

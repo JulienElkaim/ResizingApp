@@ -6,14 +6,14 @@ import java.awt.image.BufferedImage;
 
 import static java.lang.Math.abs;
 
-public class Gradient {
+public class GradientPainter {
 
     /**
      * The gradient is the difference between the intensity of the same colour in the left and in the right pixel
      *
-     * @param myColor         is the Gradient color we want to apply. Choices are RGB.
+     * @param myColor         is the GradientPainter color we want to apply. Choices are RGB.
      * @param myBufferedImage is the BufferedImage to apply the gradient.
-     * @return a power-gradiented image resulting of the Gradient application.
+     * @return a power-gradiented image resulting of the GradientPainter application.
      */
     public static BufferedImage createGradient(String myColor, BufferedImage myBufferedImage) {
         BufferedImage gradientBImage = SimpleOperation.cloningBufferedImage(myBufferedImage);
