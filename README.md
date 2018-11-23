@@ -1,22 +1,25 @@
 # ResizingApp
 
-## Table of Contents
+## Table des matières
 1. [Introduction](#introduction)
 1. [Difficultés rencontrées](#difficultés-rencontrées)
-1. [Extensions de base](#extensions-de-base)
-    1. [Recadrage (crop)](#recadrage-crop)
-    1. [Redimensionnement](#redimensionnement)
-    1. [Seam Carving](#seam-carving)
-    1. [Open & Save](#Open-&-Save-image-file)
-1. [Extensions rajoutées](#extensions-rajoutées)
-    1. [Persistance des changements](#persistance-des-changements)
-    1. [Remise à zéro des changements](#remise-à-zéro-des-changements)
-    1. [Zoom](#Zoom)   
-    1. [Examples dynamiques](#Dynamic-display-:-Gradients-R/G/B-,-Energie-/-Seam)   
-    1. [Choix de la dimension Height / Width](#Choix-du-sens-de-l'opération-:-Width-or-Height)   
-    1. [Colorisation](#Fonctions-de-colorisation)
-    1. [Raccourcis clavier](#Raccourcis-clavier)
-    1. [Interface dynamique](#Interface-dynamique:-Position-du-pointeur,-opération-en-cours,-sens-de-modification.)
+1. [Fonctionnalités de base](#fonctionnalités-de-base)
+    1. [Ouverture du fichier (Open)](#ouverture-du-fichier-open)
+    1. [Recadrage (Crop)](#recadrage-crop)
+    1. [Mise à l'échelle (Resize)](#mise-à-léchelle-resize)
+    1. [Retrait de bandelettes (Carve seams)](#retrait-de-bandelettes-carve-seams)
+    1. [Enregistrement du fichier (Save)](#enregistrement-du-fichier-save)
+1. [Extensions](#extensions)
+    1. [Persistance des modifications](#persistance-des-modifications)
+    1. [Remise à zéro des modifications](#remise-à-zéro-des-modifications)
+    1. [Zoom](#zoom)  
+    1. [Informations utilisateur selon contexte](#informations-utilisateur-selon-contexte)   
+    1. [Choix de la direction du traitement d'image](#choix-de-la-direction-du-traitement-dimage)   
+    1. [Colorisation](#colorisation)
+1. [Interface utilisateur](#interface-utilisateur)
+    1. [Raccourcis clavier](#raccourcis-clavier)
+    1. [Informations contextuelles](#informations-contextuelles)
+    1. [Fonction d'aide (Help)](#fonction-daide-help)
 1. [Exemple de résultats](#exemple-de-résultats)
 
 ## Introduction 
@@ -29,7 +32,7 @@ Rendu : 30 novembre
 [FXML](http://fxexperience.com/wp-content/uploads/2011/08/Introducing-FXML.pdf)
 
 L’objectif de ce projet est l’implémentation d’une application de redimensionnement d’image en Java.
-Cette application permettra d'effectuer les opérations suivantes sur une images : recadrage, mise à l’échelle et seam carving.
+Cette application permettra d'effectuer les opérations suivantes sur une image : recadrage, mise à l’échelle et seam carving.
 
 
 ## Difficultés rencontrées
@@ -37,7 +40,7 @@ Cette application permettra d'effectuer les opérations suivantes sur une images
 * resizing *(mise à l'échelle)*
     * à effectuer sur la BufferedImage plutôt que sur l'ImageView
 
-* crop *(recardage)*
+* crop *(recadrage)*
     * dépendant du FXML et de sa définition de l'ImageView
 
 * gradient 
@@ -45,126 +48,163 @@ Cette application permettra d'effectuer les opérations suivantes sur une images
     
 * Multi Direction *(extension)*
     * a suscité de nombreux problèmes à cause des liens nécessaires avec l'ImageView définie dans le FXML.
-## Extensions de base
-### Recadrage (crop)
-Cette opération découpe l'image pour ne garder que le pourcentage de l'image d'origine choisi avec le slider
+
+## Fonctionnalités de base
+
+### Ouverture du fichier (Open)
+Cette opération permet d'ouvrir un fichier contenant une image, dans le but de l'éditer.
+
+Choix d'implémentation : 
+* Ajout d'un chemin par défaut contenant plusieurs images d'exemple.
+* Limitation aux fichiers image de type JPEG.
+
+__Mode d'emploi :__ Au clavier `Ctrl + O` ou à partir du menu *File > Open*.
+
+### Recadrage (Crop)
+Cette opération découpe l'image pour ne garder que le pourcentage de l'image d'origine choisi avec le curseur.
 
 Choix d'implémentation :
 * Pour le recadrage suivant la largeur, on fait le choix de ne garder que la partie gauche de l'image.
-* Pour le recadrage suivant la hauteur(extension), on fait le choix de ne garder que la partie haute de l'image.
+* Pour le recadrage suivant la hauteur (extension), on fait le choix de ne garder que la partie haute de l'image.
 
-### Redimensionnement
-Cette opération permet de mettre à l'échelle l'image pour qu'elle tienne dans la taille choisie avec slider.
+### Mise à l'échelle (Resize)
+Cette opération permet de changer la largeur ou la hauteur de l'image pour qu'elle tienne dans la taille choisie avec le curseur.
 
 
-### Seam Carving
+### Retrait de bandelettes (Carve seams)
 Nous suivons cet [algorithme](https://en.wikipedia.org/wiki/Seam_carving).
 
 Choix d'implémentation :
-* Pour le Seam Carving suivant la largeur, les seams verticales sont détruites une par une pour éviter des erreurs de suppression.
-* Pour le Seam Carving suivant la hauteur(extension), les seams horizontales sont détruites une par une pour éviter des erreurs de suppression
+* Pour le Seam Carving suivant la largeur, les bandelettes verticales sont détruites une par une pour éviter des erreurs de suppression.
+* Pour le Seam Carving suivant la hauteur (extension), les bandelettes horizontales sont détruites une par une pour éviter des erreurs de suppression.
 
-### Open & Save image file
-Cette opération permet d'ouvrir une image et de sauvegarder les changements effectués dessus.
+### Enregistrement du fichier (Save)
+Cette opération permet d'écrire sur le disque le fichier actuellement ouvert.
 
 Choix d'implémentation : 
-* Ajout d'un chemin par défaut contenant plusieurs images d'example.
+* Ajout d'un chemin par défaut contenant plusieurs images d'exemple.
 * Limitation aux fichiers image de type JPEG.
 
-## Extensions rajoutées
-### Persistance des changements
-__Fonctionnalité :__ permet d'enregistrer les changements depuis le dernier enregistrement (checkpoint).
+__Mode d'emploi :__ Au clavier `Ctrl + S` ou à partir du menu *File > Save*.
 
-__Mode d'emploi :__ Faire `CTRL + C` ou cliquer Edit > *Validate modifs*.
+## Extensions
+### Persistance des modifications
+__Fonctionnalité :__ permet d'enregistrer les modifications sur image depuis le dernier enregistrement (checkpoint).
 
-Mis en oeuvre car il n'enregistre que les changements, il ne crée pas pour autant un sauvegarde de l'image au même titre que save.
+__Mode d'emploi :__ Au clavier `Ctrl + Shift + S` ou à partir du menu  *Edit > Create checkpoint*.
 
-### Remise à zéro des changements
-__Fontionnalité :__ permet d'annuler les changements effectués depuis le dernier enregistrement
+Mis en oeuvre car il n'enregistre que les modifications, il ne crée pas pour autant un fichier image au même titre que Save.
 
-__Mode d'emploi :__ Faire `SHIFT + left clic` pour revenir au dernier enregistrement (checkpoint) ou cliquer sur Edit > Reset Modifs.
+### Remise à zéro des modifications
+__Fontionalité :__ permet d'annuler les modifications effectuées depuis le dernier checkpoint
+
+__Mode d'emploi :__ Au clavier `Ctrl + Shift + C` pour revenir au dernier enregistrement (checkpoint) ou à partir du menu *Edit > Cancel changes since checkpoint*.
 
 Mis en oeuvre pour permettre à l'utilisateur de revenir en arrière pour éviter d'enchainer les changements innoportuns.
 
 ### Zoom
-__Fonctionnalité :__ Permet de zoomer sur l'image de manière intuitive par un clique de souris.
+__Fonctionnalité :__ Permet de zoomer sur l'image de manière intuitive par un clic de souris.
 
 __Mode d'emploi :__
-1. Sélectionner l'option zoom en appuyant sur le bouton zoom (option par défaut au lancement)
-2. Cliquer sur l'image pour zoomer sur cette zone.
+1. Sélectionner la fonction Zoom en appuyant sur le bouton Zoom (option par défaut au lancement)
+1. Ajuster le curseur pour définir le facteur de zoom
+1. Cliquer sur l'image définir le centre de zoom
 
+Implémenté pour permettre à l'utilisateur d'obtenir directement une sous image de manière très précise dans l'image. La valeur du curseur est utilisée pour définir le facteur de zoom.
 
-Implémenté pour permettre à l'utilisateur d'obtenir directement une sous image de manière très précise dans l'image. La valeur du slider est utilisée pour définir la puissance du zoom.
-
-### Dynamic display : Gradients R/G/B , Energie / Seam
+### Informations utilisateur selon contexte
 __Fonctionnalité :__
-1. __Gradients :__ permet d'afficher le gradient de la couleur de votre choix.
-2. __Energie et Seam :__ permet d'afficher le résultat du calcul d'énergie sur l'image, ainsi que le seam d'énergie minimale.
+- __Gradients :__ permet d'afficher le gradient RVB de la couleur de votre choix.
+- __Energie et Seam :__ permet d'afficher le résultat du calcul d'énergie sur l'image, ainsi que la bandelette d'énergie minimale.
 
 __Mode d'emploi :__ Survoler la surface associée.
 * __Gradients :__ un des carrés de couleur pour le gradient de la couleur correspondante.
 * __Energie et Seam :__ le Label d'énergie ou le label de l'énergie et du seam d'énergie minimale.
 
-Mis en oeuvre pour proposer une nouvelle façon de faire un choix à l'utilisateur, différent des boutons "classiques",
-ils permettent de faire un changement temporaire, juste un affichage temporaire du résulats de l'opération souhaitée. Le résultat est à titre informatif pour permettre à l'utilisateur de faire ses futurs choix d'opération.
+Mis en oeuvre pour proposer à l'utilisateur une nouvelle façon de faire un choix, différente des boutons "classiques",
+ils permettent de faire un changement temporaire, juste un affichage temporaire du résulat de l'opération souhaitée. Le résultat est à titre informatif pour permettre à l'utilisateur de faire ses futurs choix d'opération.
 
-### Choix du sens de l'opération : Width or Height
-__Fonctionnalité :__ Choisir si l'utilisateur souhaite effectuer les opérations en fonction
-de la hauteur ou de la largeur.
+### Choix de la direction du traitement d'image
+__Fonctionnalité :__ Choisir si l'utilisateur souhaite effectuer les traitements d'image selon la hauteur ou la largeur.
 
-__Mode d'emploi :__ Faire `CTRL + D` ou cliquer sur Edit > Switch direction.
+__Mode d'emploi :__ Au clavier `Ctrl + D` ou à partir du menu *Edit > Switch direction*.
 
-Implémenté pour fournir à l'utilisateur un degrès de liberté supérieur dans la modification de l'image en cours de modification.
+Implémenté pour fournir à l'utilisateur un degré de liberté supérieur dans la modification de l'image en cours de modification.
 
-### Fonctions de colorisation 
-__Fonctionnalité :__ Permet de renforcer ou réduire l'intensité d'une des trois couleurs R/G/B. 
+### Colorisation 
+__Fonctionnalité :__ Permet de renforcer ou réduire l'intensité d'une des trois couleurs R/V/B. 
 
-__Mode d'emploi :__ Utilisation du slider associé à la couleur à modifier. La modification se fait dynamiquement.
+__Mode d'emploi :__ Utiliser le curseur associé à la couleur à modifier. La modification se fait dynamiquement.
 
-Cette utilisation des Listeners permet à l'utilisateur de modifier intrinsequement son image avant de faire des retouches de redimensionnement. 
+Cette utilisation des Listeners permet à l'utilisateur de modifier intrinsèquement son image avant de faire des retouches de redimensionnement. 
 
 ### Raccourcis clavier
-__Fonctionnalité:__ Permet d'activer rapidement les fonctionnalités implémentées.
+__Fonctionnalité :__ Permet d'activer rapidement les fonctionnalités implémentées.
 
-__Mode d'emploi :__  Liste exclusive des raccourcis existant:
+__Mode d'emploi :__  Appui simultané des touches de clavier.
 
-  - `CTRL + N` Ouverture d'un nouveau fichier image.
-  - `CTRL + SHIFT + S` Sauvegarde des modifications en fichier image.
-  - `CTRL + D` Choix du sens des opérations sur image.
-  - `CTRL + C` Persistance des modifications réalisées.
-  - `SHIFT + Left click` Retour au dernier checkpoint enregistré. 
- 
+Liste des raccourcis au paragraphe [Interface utilisteur](#raccourcis-clavier).
+
 Permet d'améliorer l'interface en relayant certaines fonctions dans le menu, sans pour autant sacrifier l'expérience utilisateur.
 
-### Interface dynamique: Position du pointeur, opération en cours, sens de modification. 
+### Informations contextuelles 
  __Fonctionnalité :__ Permet une visualisation directe des caractéristiques de l'outil. Améliore l'expérience utilisateur.
+ 
+ Liste des informations concernées au paragraphe [Interface utilisteur](#affichages-contextuels).
 
-__Mode d'emploi:__ 
+__Mode d'emploi :__ 
+- __Position du pointeur :__ Déplacer le curseur sur l'image affichée. L'affichage se fait dans la barre d'état.  
+- __Autres informations :__ lecture de l'affichage dans la barre d'état.
 
-- __Position du pointeur :__ Déplacer le curseur sur l'image affichée. l'affichage se fait en bas à gauche.  
-- __Autres :__ aucun.
+## Interface utilisateur
 
-### Fonction d'aide
-Permet d'accéder directement au fichier README.md pour comprendre les fonctionnalités.
-
-## Exemple de résultats
-
-__L'interface utilisateur__
+### Aperçu de l'interface utilisateur
 
 <img src="./example/UI.png" alt = "Interface utilisateur, voir dans dossier img si erreur d'affichage" width="714"/>
 
-__Image d'origine__
+- Bandeau supérieur : barre de menu.
+- Bandeau inférieur : barre d'état.
+- Bandeau latéral gauche : commandes et affichages.
 
+### Affichages contextuels
+
+> - Traitement en cours : cropping | resizing | seam carving
+> - Direction : horizontal | vertical
+> - Position du pointeur : x pixels à partir de la gauche, y pixels à partir du haut
+
+### Raccourcis clavier
+
+> - **Ctrl+O** 
+Ouverture (_Open_) d'un fichier image.
+> - **Ctrl + D** 
+Modification du sens (_Direction_) des traitements sur image.
+> - **Ctrl + Shift + S** 
+Persistance des modifications réalisées (_Save checkpoint_).
+> - **Ctrl + Shift + C** 
+Annualation (_Cancel_) des modifications effectués depuis le dernier checkpoint
+> - **Ctrl + S** 
+Enregistrement (_Save_) des modifications en fichier image.
+
+> - **F1**  
+Ouverture du fichier d'aide.
+
+### Fonction d'aide (Help)
+Permet d'accéder directement au fichier README.md pour comprendre les fonctionnalités.
+
+__Mode d'emploi :__ Au clavier `F1` ou à partir du menu *Help*.
+
+## Exemples de résultats
+
+Les traitements ont été réalisés selon la direction horizontale.
+
+__Image d'origine__
 <img src="./img/broadway.jpg" alt = "Image d'origine, voir dans dossier img si erreur d'affichage" width="714"/>
 
-__Après recadrage (Crop)__
-
+__Image après recadrage (Crop)__
 <img src="./example/AfterCrop.jpg" alt = "Image après recadrage, voir dans dossier img si erreur d'affichage" width="482"/>
 
-__Après mise à l'échelle (resizing)__
+__Image après mise à l'échelle (Resize)__
+<img src="./example/AfterResize.jpg" alt = "Image après redimensionnement, voir dans dossier img si erreur d'affichage" width="482"/>
 
-<img src="./example/AfterResize.jpg" alt = "Image après mise à l'échelle, voir dans dossier img si erreur d'affichage" width="482"/>
-
-__Après seam carving__
-
+__Image après suppression de bandelettes (Carve seams)__
 <img src="./example/AfterResize.jpg" alt = "Image après seam carving, voir dans dossier img si erreur d'affichage" width="482"/>
