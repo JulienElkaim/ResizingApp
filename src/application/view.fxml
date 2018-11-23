@@ -18,7 +18,7 @@
 
 <?import javafx.scene.control.ScrollPane?>
 
-<VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressed" fx:controller="application.Controller" stylesheets="/application/sample.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1">
+<VBox onKeyReleased="#keyPressedRemove" onKeyPressed="#keyPressed" fx:controller="application.Controller" stylesheets="/application/view.css" minWidth="Infinity" minHeight="Infinity" xmlns:fx="http://javafx.com/fxml/1">
     <MenuBar id="MenuBar" minWidth="800" GridPane.rowIndex="0">
         <Menu text="File">
             <MenuItem text="Open...  CTRL+N" onAction="#ChooseAFile"/>
