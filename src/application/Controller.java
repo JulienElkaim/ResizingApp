@@ -65,6 +65,7 @@ public class Controller {
     private Resizer resizer = new Resizer();
     private double initFitHeight;
 
+    private GradientPainter gradientPainter = new GradientPainter();
 
     /**
      * INITIALIZE method is called after the fxml creation. Useful to set environment variables.
@@ -185,9 +186,10 @@ public class Controller {
      */
     private void ColorModificator(ObservableValue<? extends Number> ov, Number old_val, Number new_val, String color){
         double coefColor = (new_val.doubleValue()/100 +0.5) / (old_val.doubleValue()/100+0.5);
-        this.myBufferedImage= SimpleOperation.cloningBufferedImage( GradientPainter.imageColoring(color,this.myBufferedImage, coefColor) );
+        this.myBufferedImage= SimpleOperation.cloningBufferedImage( SimpleOperation.imageColoring(color,this.myBufferedImage, coefColor) );
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
+
 
     /**
      * Called when the image displayed is clicked.
@@ -326,7 +328,8 @@ public class Controller {
      * Apply a red GradientPainter computation on the displayed image.
      */
     private void redGradient() {
-        BufferedImage img = GradientPainter.createGradient("red", this.myBufferedImage);
+        gradientPainter.setGradientColor(Color.RED);
+        BufferedImage img = gradientPainter.process(this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
@@ -334,7 +337,8 @@ public class Controller {
      * Apply a green GradientPainter computation on the displayed image.
      */
     private void greenGradient() {
-        BufferedImage img = GradientPainter.createGradient("green", this.myBufferedImage);
+        gradientPainter.setGradientColor(Color.GREEN);
+        BufferedImage img = gradientPainter.process(this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 
@@ -342,7 +346,8 @@ public class Controller {
      * Apply a blue GradientPainter computation on the displayed image.
      */
     private void blueGradient() {
-        BufferedImage img = GradientPainter.createGradient("blue", this.myBufferedImage);
+        gradientPainter.setGradientColor(Color.BLUE);
+        BufferedImage img = gradientPainter.process(this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
     }
 

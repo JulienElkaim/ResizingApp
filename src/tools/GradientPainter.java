@@ -4,18 +4,50 @@ package tools;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import static java.awt.Color.*;
 import static java.lang.Math.abs;
 
-public class GradientPainter {
+
+public class GradientPainter implements ImageProcessor {
+    enum GradientColor {
+        GRADIENT_RED(RED, 16),
+        GRADIENT_GREEN(GREEN, 8),
+        GRADIENT_BLUE(BLUE, 0);
+
+        Color color;
+        int offset;
+
+        GradientColor(Color color, int offset) {
+            this.color = color;
+            this.offset = offset;
+        }
+    }
+
+    private GradientColor gradientColor = null;
+    private double ratio = 0.;
+
+    // methode de paramétrage du traitement ou de l'outil
+    public void setGradientColor(Color color) {
+        for (GradientColor c : GradientColor.values()) {
+            if (c.color == color) {
+                this.gradientColor = c;
+                break;
+            }
+        }
+    }
+
+    public void setRatio(double ratio) {
+        this.ratio = ratio;
+    }
 
     /**
      * The gradient is the difference between the intensity of the same colour in the left and in the right pixel
      *
-     * @param myColor         is the GradientPainter color we want to apply. Choices are RGB.
      * @param myBufferedImage is the BufferedImage to apply the gradient.
      * @return a power-gradiented image resulting of the GradientPainter application.
      */
-    public static BufferedImage createGradient(String myColor, BufferedImage myBufferedImage) {
+    @Override
+    public BufferedImage process(BufferedImage myBufferedImage) {
         BufferedImage gradientBImage = SimpleOperation.cloningBufferedImage(myBufferedImage);
         int maxX = gradientBImage.getWidth();
         int maxY = gradientBImage.getHeight();
@@ -28,22 +60,20 @@ public class GradientPainter {
                 Color myLeftPixelColor = new Color(myBufferedImage.getRGB(x - 1, y));
 
 
-                int colorChange = 0;
-                int Left;
-                int Right;
+                int colorChange = this.gradientColor.offset;
+                int Left = 0;
+                int Right = 0;
                 //Color change requires on tools on gradient: 8 for green, 16 for red, nothing for blue
-                switch (myColor) {
-                    case "red":
+                switch (this.gradientColor) {
+                    case GRADIENT_RED:
                         Left = myLeftPixelColor.getRed();
                         Right = myRightPixelColor.getRed();
-                        colorChange = 16;
                         break;
-                    case "green":
+                    case GRADIENT_GREEN:
                         Left = myLeftPixelColor.getGreen();
                         Right = myRightPixelColor.getGreen();
-                        colorChange = 8;
                         break;
-                    default:
+                    case GRADIENT_BLUE:
                         Left = myLeftPixelColor.getBlue();
                         Right = myRightPixelColor.getBlue();
                         break;
@@ -58,53 +88,5 @@ public class GradientPainter {
             }
         }
         return gradientBImage;
-    }
-
-    /** Modify color composition of a bufferedImage.
-     *
-     * @param myColor is the color to increase/decrease.
-     * @param myBufferedImage is the bufferedImage to color.
-     * @param ratio is the ratio to apply at the color concerned.
-     * @return a bufferedImage with rgb values modified.
-     */
-    public static BufferedImage imageColoring(String myColor, BufferedImage myBufferedImage, double ratio) {
-        int decalage;
-        int colorToChange;
-        int secondColor;
-        int thirdColor;
-        int maxX = myBufferedImage.getWidth();
-        int maxY = myBufferedImage.getHeight();
-
-        for (int x = 0; x < maxX; x++){
-            for(int y = 0; y < maxY; y++) {
-
-                Color myPixelColor = new Color(myBufferedImage.getRGB(x, y));
-
-                switch (myColor) {
-                    case "R":
-                        decalage = 16;
-                        colorToChange = myPixelColor.getRed();
-                        secondColor = myPixelColor.getGreen()<<8;
-                        thirdColor = myPixelColor.getBlue();
-                        break;
-                    case "G":
-                        decalage = 8;
-                        colorToChange = myPixelColor.getGreen();
-                        secondColor = myPixelColor.getRed()<<16;
-                        thirdColor = myPixelColor.getBlue();
-                        break;
-                    default:
-                        decalage = 0;
-                        colorToChange = myPixelColor.getBlue();
-                        secondColor = myPixelColor.getGreen()<<8;
-                        thirdColor = myPixelColor.getRed()<<16;
-                        break;
-                }
-                colorToChange =( Math.min((int)(colorToChange*ratio),255) )<< decalage;
-                myBufferedImage.setRGB( x , y ,( colorToChange + secondColor + thirdColor ) );
-            }
-
-        }
-        return myBufferedImage;
     }
 }
