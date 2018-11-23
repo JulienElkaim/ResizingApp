@@ -1,4 +1,4 @@
-package operation;
+package tools;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -96,7 +96,7 @@ public class ImageResize {
      * @param X               the View x-coordinate where the mouse pointed out.
      * @param Y               the View y-coordinate where the mouse pointed out.
      * @param zoomCoef        the strength of the zoom. High coef mean high zoom.
-     * @return the BufferedImage resulting the zoom operation.
+     * @return the BufferedImage resulting the zoom tools.
      */
     public  BufferedImage zoom(BufferedImage myBufferedImage, double viewSize, String direction, double X, double Y, double zoomCoef) {
 

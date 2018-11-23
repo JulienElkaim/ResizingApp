@@ -21,7 +21,7 @@
     1. [Affichages contextuels](#Affichages contextuels)
     1. [Raccourcis clavier](#raccourcis-clavier)
     1. [Fonction d'aide (Help)](#fonction-daide-help)
-1. [Exemple de résultats](#exemple-de-résultats)
+1. [Exemple de résultats](#Exemples de résultats)
 
 ## Introduction 
 Java 11, JavaFx
@@ -144,7 +144,7 @@ __Fonctionnalité :__ Permet d'activer rapidement les fonctionnalités implémen
 
 __Mode d'emploi :__  Appui simultané des touches de clavier.
 
-Liste des raccourcis au paragraphe [Interface utilisteur](#raccourcis-clavier).
+Liste des raccourcis au paragraphe [Interface utilisteur](#Raccourcis clavier).
 
 Permet d'améliorer l'interface en relayant certaines fonctions dans le menu, sans pour autant sacrifier l'expérience utilisateur.
 
@@ -208,4 +208,4 @@ __Image après mise à l'échelle (Resize)__
 <img src="./example/AfterResize.jpg" alt = "Image après redimensionnement, voir dans dossier img si erreur d'affichage" width="482"/>
 
 __Image après suppression de bandelettes (Carve seams)__
-<img src="./example/AfterResize.jpg" alt = "Image après seam carving, voir dans dossier img si erreur d'affichage" width="482"/>
+<img src="./example/afterSeamCarving2.jpg" alt = "Image après seam carving, voir dans dossier img si erreur d'affichage" width="482"/>

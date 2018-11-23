@@ -1,4 +1,4 @@
-package operation;
+package tools;
 
 
 import java.awt.*;
@@ -31,7 +31,7 @@ public class Gradient {
                 int colorChange = 0;
                 int Left;
                 int Right;
-                //Color change requires on operation on gradient: 8 for green, 16 for red, nothing for blue
+                //Color change requires on tools on gradient: 8 for green, 16 for red, nothing for blue
                 switch (myColor) {
                     case "red":
                         Left = myLeftPixelColor.getRed();

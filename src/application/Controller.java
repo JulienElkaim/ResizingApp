@@ -1,4 +1,4 @@
-package imageChange;
+package application;
 
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javafx.scene.control.Slider;
-import operation.*;
+import tools.*;
 import javafx.scene.shape.Rectangle;
 
 import static java.lang.Math.abs;
@@ -413,7 +413,7 @@ public class Controller {
      *
      */
     public void ChooseAFile(){
-        try{ this.myBufferedImageSTOCKED = ImageIO.read(operation.SimpleOperation.imageFileOpen());}
+        try{ this.myBufferedImageSTOCKED = ImageIO.read(tools.SimpleOperation.imageFileOpen());}
         catch(IOException e){System.out.println("Error occured during the openning process!");}
         catch(IllegalArgumentException e){System.out.println("No file choosed !");}
 
