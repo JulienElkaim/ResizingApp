@@ -11,7 +11,7 @@ public class ImageEditor extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("viewer.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("view.fxml"));
         primaryStage.setTitle("Seam Carving Project");
         final Scene scene = new Scene(root, 1600, 900);
 
