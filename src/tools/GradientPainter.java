@@ -24,7 +24,6 @@ public class GradientPainter implements ImageProcessor {
     }
 
     private GradientColor gradientColor = null;
-    private double ratio = 0.;
 
     // methode de paramétrage du traitement ou de l'outil
     public void setGradientColor(Color color) {
@@ -34,10 +33,6 @@ public class GradientPainter implements ImageProcessor {
                 break;
             }
         }
-    }
-
-    public void setRatio(double ratio) {
-        this.ratio = ratio;
     }
 
     /**
@@ -77,6 +72,8 @@ public class GradientPainter implements ImageProcessor {
                         Left = myLeftPixelColor.getBlue();
                         Right = myRightPixelColor.getBlue();
                         break;
+                    default:
+                        System.err.println("Error on color: " + this.gradientColor);
                 }
                 int gradient = abs(Left - Right);
                 if (gradient > 255) {
