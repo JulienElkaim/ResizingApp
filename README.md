@@ -6,7 +6,7 @@
 1. [Fonctionnalités de base](#fonctionnalités-de-base)
     1. [Ouverture du fichier (Open)](#ouverture-du-fichier-open)
     1. [Recadrage (Crop)](#recadrage-crop)
-    1. [Mise à l'échelle (Resize)](#mise-à-léchelle-resize)
+    1. [Mise à l'échelle (Resize)](#Mise-à-l'échelle-(Resize))
     1. [Retrait de bandelettes (Carve seams)](#retrait-de-bandelettes-carve-seams)
     1. [Enregistrement du fichier (Save)](#enregistrement-du-fichier-save)
 1. [Extensions](#extensions)
@@ -17,8 +17,9 @@
     1. [Choix de la direction du traitement d'image](#choix-de-la-direction-du-traitement-dimage)   
     1. [Colorisation](#colorisation)
 1. [Interface utilisateur](#interface-utilisateur)
+    1. [Aperçu de l'interface utilisateur](#Aperçu de l'interface utilisateur)
+    1. [Affichages contextuels](#Affichages contextuels)
     1. [Raccourcis clavier](#raccourcis-clavier)
-    1. [Informations contextuelles](#informations-contextuelles)
     1. [Fonction d'aide (Help)](#fonction-daide-help)
 1. [Exemple de résultats](#exemple-de-résultats)
 
@@ -47,7 +48,7 @@ Cette application permettra d'effectuer les opérations suivantes sur une image 
     * a soulevé le problème de la copie de la BufferedImage
     
 * Multi Direction *(extension)*
-    * a suscité de nombreux problèmes à cause des liens nécessaires avec l'ImageView définie dans le FXML.
+    * a suscité de
 
 ## Fonctionnalités de base
 
