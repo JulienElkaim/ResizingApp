@@ -63,13 +63,14 @@ public class Controller {
     //Conceptual objects
     private KeyCode keyPressed;
     private String tempImg;
-    private Resizer resizer = new Resizer();
     private double initFitHeight;
 
     private GradientPainter gradientPainter = new GradientPainter();
     private Colorizer colorizer = new Colorizer();
     private FileManager fileManager = new FileManager();
     private UserHelper userHelper = new UserHelper();
+    private Resizer resizer = new Resizer();
+    private Zoomer zoomer = new Zoomer();
 
     /**
      * INITIALIZE method is called after the fxml creation. Useful to set environment variables.
@@ -82,9 +83,7 @@ public class Controller {
         this.initializeGradientItems();
         this.initializeSliderItems();
         this.initializeColorSlidersItems();
-
         this.myImage.setOnMouseMoved(t -> updatePointerPositionLabel(t.getX() - this.myImage.getX(), t.getY() - this.myImage.getX()));
-
     }
 
     /**
@@ -92,11 +91,8 @@ public class Controller {
      */
     private void initializeColorSlidersItems() {
         this.redSlider.valueProperty().addListener(this::onColorizedRedChanged);
-
         this.greenSlider.valueProperty().addListener(this::onColorizedGreenChanged);
-
         this.blueSlider.valueProperty().addListener(this::onColorizedBlueChanged);
-
     }
 
 
@@ -104,48 +100,39 @@ public class Controller {
      * This method initializes the sliderItems used in the application
      */
     private void initializeSliderItems() {
-
         this.sliderListener = "Zoom";
         this.sliderLabel.setText(this.updateSliderLabel());
         this.sliderListenerLabel.setText(this.updateListnerLabel(this.sliderListener));
         this.mySlider.valueProperty().addListener(this::ListenSlider);
-
     }
 
     /**
      * This method initialize the GradientItems used to display GradientPainter computation.
      */
     private void initializeGradientItems() {
-
         this.redG.setFill(javafx.scene.paint.Color.RED);
         this.greenG.setFill(javafx.scene.paint.Color.GREEN);
         this.blueG.setFill(javafx.scene.paint.Color.BLUE);
-
     }
 
     /**
      * Function called when the Slider's value changes, notifications are not used because we chose a "toggle framework".
-     *
      * @param ov      is the observable value of the slider.
      * @param old_val is the previous value of the slider.
      * @param new_val is the actual value of the slider.
      */
     private void ListenSlider(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-
         switch (this.sliderListener) {
             case "Resize":
                 this.resizeDisplayedImage(new_val.doubleValue());
                 break;
-
             case "Zoom":
                 //Just for visualisation, the use of ZOOM with the slider is done by clicking on the imageView
                 break;
-
             case "Seam Carving":
                 this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
                 this.seamCarveDisplayedImage(new_val.doubleValue());
                 break;
-
             case "Crop":
                 this.cropDisplayedImage(new_val.doubleValue());
         }
@@ -190,10 +177,8 @@ public class Controller {
      */
     private void Colorize(ObservableValue<? extends Number> ov, Number old_val, Number new_val, Color color){
         double coefColor = (new_val.doubleValue()/100 +0.5) / (old_val.doubleValue()/100+0.5);
-
         this.colorizer.setChangeColor(color);
         this.colorizer.setRatio(coefColor);
-
         this.myBufferedImage= SimpleOperation.cloningBufferedImage( this.colorizer.process(this.myBufferedImage));
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
@@ -205,12 +190,10 @@ public class Controller {
      * @param mouseEvent is the click mouse event, with all the mouse-click relative information.
      */
     public void imageClicked(MouseEvent mouseEvent) {
-
         if (this.keyPressed == KeyCode.SHIFT)
             this.resetViewModifications();
         else if (this.sliderListener.equals("Zoom"))
             this.zoomDisplayedImage(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY(), this.mySlider.getValue());
-
     }
 
     /**
@@ -243,7 +226,6 @@ public class Controller {
             this.saveFile();
 
         }
-
     }
 
 
@@ -361,49 +343,47 @@ public class Controller {
 
     /**
      * Trigger the resizing process.
-     *
      * @param sliderValue is the actual value of the slider.
      */
     private void resizeDisplayedImage(double sliderValue) {
-
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.resizer.resizing(this.myBufferedImageSTOCKED, sliderValue, this.direction));
+        this.resizer.setCoef(sliderValue);
+        this.resizer.setDirection(this.direction);
+        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.resizer.process(this.myBufferedImageSTOCKED));
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-
     }
 
     /**
      * Trigger the cropping process.
-     *
      * @param sliderValue is the actual value of the slider.
      */
     private void cropDisplayedImage(double sliderValue) {
-
         this.myBufferedImage = this.resizer.cropping(this.myBufferedImageSTOCKED, sliderValue, this.direction);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-
     }
 
     /**
      * Trigger zooming process.
-     *
      * @param X           is the x-coordinate of the mouse pointer when click occurred.
      * @param Y           is the y-coordinate of the mouse pointer when click occurred.
      * @param sliderValue is the actual value of the slider
      */
     private void zoomDisplayedImage(double X, double Y, double sliderValue) {
+        this.zoomer.setCoef(sliderValue);
+        this.zoomer.setDirection(this.direction);
+        this.zoomer.setX(X);
+        this.zoomer.setY(Y);
         double viewSize;
         if(this.direction.equals("H"))
             viewSize = this.myImage.getFitHeight();
         else
             viewSize = this.myImage.getFitWidth();
-        this.myBufferedImage = this.resizer.zoom(this.myBufferedImage, viewSize, this.direction, X, Y, sliderValue);
+        this.zoomer.setViewSize(viewSize);
+        this.myBufferedImage = this.zoomer.process(this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-
     }
 
     /**
      * Trigger Seam Carving process.
-     *
      * @param sliderValue is the percentage of width to display.
      */
     private void seamCarveDisplayedImage(double sliderValue) {
@@ -416,7 +396,6 @@ public class Controller {
 
         int nbOfSeamToDestroy = actualReferenceSize - (int)(coef*actualReferenceSize);
         BufferedImage img = this.resizer.SeamCarving(nbOfSeamToDestroy, this.myBufferedImage, this.direction);
-
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(img);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
@@ -430,12 +409,10 @@ public class Controller {
         catch(IOException e){System.out.println("Error occured during the openning process!");}
         catch(IllegalArgumentException e){System.out.println("No file choosed !");}
 
-
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
         this.myImage.setFitHeight(initFitHeight);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
         this.sliderListenerLabel.setText(this.updateListnerLabel(this.sliderListener));
-
     }
 
     /**
@@ -445,16 +422,15 @@ public class Controller {
     private void saveFile(){
         this.fileManager.imageFileSave(this.myBufferedImage);
     }
+
     /**
      * Reset actual modification that occurred on the image.
      * The last persistent change saved is displayed.
      * only callable by SHIFT + LEFT CLICK
      */
     public void resetViewModifications() {
-
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-
     }
 
     /**
@@ -465,7 +441,6 @@ public class Controller {
         int maxX = this.myBufferedImage.getWidth();
         int maxY = this.myBufferedImage.getHeight();
         this.myBufferedImageSTOCKED = new BufferedImage(maxX, maxY, BufferedImage.TYPE_INT_RGB);
-
         for (int y = 0; y < maxY; y++)
             for (int x = 0; x < maxX; x++)
                 this.myBufferedImageSTOCKED.setRGB(x, y, this.myBufferedImage.getRGB(x, y));
@@ -493,21 +468,16 @@ public class Controller {
      * @param doWePrintSeam only if necessary to display the seam.
      */
     private void energyImageDisplay(BufferedImage imgToEnergize, String label, boolean doWePrintSeam) {
-
         this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.BLACK);
-
         if (this.tempImg.equals("Energy computation") || this.tempImg.equals("Show next seam")) {
             this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.PALEVIOLETRED);
             this.myImage.setImage(SwingFXUtils.toFXImage(imgToEnergize, null));
             this.tempImg = "null";
-
         } else {
-
             if (this.myBufferedImage != null)
                 this.energyPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
             assert this.myBufferedImage != null;
             BufferedImage bImageEnergized = SeamCarver.EnergizedImage(this.myBufferedImage);
-
             if (doWePrintSeam) {
                 int totalRedRGB = 255 << 16;
                 int[] seamToPrint = SeamCarver.bestSeam(bImageEnergized, this.direction);
@@ -519,7 +489,6 @@ public class Controller {
                         bImageEnergized.setRGB( x,seamToPrint[x], totalRedRGB);
                 }
             }
-
             this.myImage.setImage(SwingFXUtils.toFXImage(bImageEnergized, null));
             this.tempImg = label;
         }
@@ -543,13 +512,11 @@ public class Controller {
      * @return the label to display on the application window relative to the slider
      */
     private String updateSliderLabel(){
-
         if (this.direction.equals("H"))
             return "Percentage of Width : ";
         if (this.direction.equals("V"))
             return "Percentage of Height : ";
         return "/!\\ Direction issue ! Please relaunch the App /!\\";
-
     }
 
     @FXML
@@ -558,7 +525,6 @@ public class Controller {
     }
 
     /** Display X and Y position of the pointer.
-     *
      * @param X is the x-coordinate on the imageView.
      * @param Y is the y-coordinate on the imageView.
      */
@@ -577,7 +543,5 @@ public class Controller {
     public void pointerLabelReset() {
         this.pointerPositionLabel.setText("| x : - y : -");
     }
-
-
 }
 

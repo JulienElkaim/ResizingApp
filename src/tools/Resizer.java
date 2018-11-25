@@ -6,7 +6,34 @@ import java.awt.image.BufferedImage;
 
 import static java.lang.Math.abs;
 
-public class Resizer {
+public class Resizer implements ImageProcessor{
+
+    private double coef = 0.0;
+    private String direction = "V"; //default value
+
+    public void setCoef(double coef){
+        this.coef = coef;
+    }
+
+    public void setDirection(String direction){
+        this.direction = direction;
+    }
+    /**
+     * Provide method to resize the width of your image.
+     * @param myBufferedImage is the image to resize.
+     * @return the image resized.
+     */
+    @Override
+    public  BufferedImage process(BufferedImage myBufferedImage){
+        double coef = (0.01 < this.coef / 100) ? abs(this.coef) / 100 : 0.01;
+        int width =myBufferedImage.getWidth();
+        int height = myBufferedImage.getHeight();
+        if (this.direction.equals("H"))
+            width = (int) (coef * width);
+        else
+            height = (int) (coef * height);
+        return (this.scale(myBufferedImage, width, height));
+    }
 
     /**
      * Provide useful method to scale an image with new width and height.
@@ -24,27 +51,6 @@ public class Resizer {
                 (double) height / myBufferedImage.getHeight());
         g.drawRenderedImage(myBufferedImage, at);
         return dest;
-    }
-
-    /**
-     * Provide useful method to resize the width of your image.
-     *
-     * @param myBufferedImage is the image to resize.
-     * @param resizeCoef      coefficient to apply to width.
-     * @return the image resized.
-     */
-    public  BufferedImage resizing(BufferedImage myBufferedImage, double resizeCoef, String direction) {
-        double coef = (0.01 < resizeCoef / 100) ? abs(resizeCoef) / 100 : 0.01;
-        int width =myBufferedImage.getWidth();
-        int height = myBufferedImage.getHeight();
-
-        if (direction.equals("H"))
-            width = (int) (coef * width);
-        else
-            height = (int) (coef * height);
-
-
-        return (this.scale(myBufferedImage, width, height));
     }
 
     /**
@@ -86,43 +92,4 @@ public class Resizer {
 
         return img;
     }
-
-    /**
-     * Provide the user with useful method to zoom on its image.
-     *
-     * @param myBufferedImage The image where to zoom happen.
-     * @param viewSize        the displayed image's size , different of the BufferedImage used.
-     * @param direction       the size direction provided, H for Height and W for width. BOTH is an already computed coef View / Real
-     * @param X               the View x-coordinate where the mouse pointed out.
-     * @param Y               the View y-coordinate where the mouse pointed out.
-     * @param zoomCoef        the strength of the zoom. High coef mean high zoom.
-     * @return the BufferedImage resulting the zoom tools.
-     */
-    public  BufferedImage zoom(BufferedImage myBufferedImage, double viewSize, String direction, double X, double Y, double zoomCoef) {
-
-        double zoomingCoef = zoomCoef / 100 * (0.1 - 1) + 1;// 1* -0.9 +1
-        double initWidth = myBufferedImage.getWidth();
-        double initHeight = myBufferedImage.getHeight();
-        double coefViewReal = 1;
-
-        if (direction.equals("H"))
-            coefViewReal = viewSize / initHeight;
-        if (direction.equals("V"))
-            coefViewReal = viewSize / initWidth;
-
-
-        double XReal = X / coefViewReal;
-        double YReal = Y / coefViewReal;
-        double x = Math.max(0, XReal - (zoomingCoef / 2) * initWidth);
-        double y = Math.max(0, YReal - (zoomingCoef / 2) * initHeight);
-        int width = (int) (zoomingCoef * initWidth);
-        int height = (int) (zoomingCoef * initHeight);
-
-        while (x + width > myBufferedImage.getWidth())
-            x -= 1;
-        while (y + height > myBufferedImage.getHeight())
-            y -= 1;
-        return myBufferedImage.getSubimage((int) x, (int) y, width, height);
-    }
-
 }
