@@ -66,6 +66,8 @@ public class Controller {
     private double initFitHeight;
 
     private GradientPainter gradientPainter = new GradientPainter();
+    private Colorizer colorizer = new Colorizer();
+
 
     /**
      * INITIALIZE method is called after the fxml creation. Useful to set environment variables.
@@ -87,11 +89,11 @@ public class Controller {
      * This method initializes the color sliders items used in the application.
      */
     private void initializeColorSlidersItems() {
-        this.redSlider.valueProperty().addListener(this::listenRed);
+        this.redSlider.valueProperty().addListener(this::onColorizedRedChanged);
 
-        this.greenSlider.valueProperty().addListener(this::listenGreen);
+        this.greenSlider.valueProperty().addListener(this::onColorizedGreenChanged);
 
-        this.blueSlider.valueProperty().addListener(this::listenBlue);
+        this.blueSlider.valueProperty().addListener(this::onColorizedBlueChanged);
 
     }
 
@@ -153,8 +155,8 @@ public class Controller {
      * @param old_val is the previous value of the slider.
      * @param new_val is the actual value of the slider.
      */
-    private void listenBlue(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        ColorModificator(ov, old_val, new_val, "B");
+    private void onColorizedBlueChanged(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        Colorize(ov, old_val, new_val, Color.BLUE);
     }
 
     /** Listen the green slider.
@@ -163,8 +165,8 @@ public class Controller {
      *      * @param old_val is the previous value of the slider.
      *      * @param new_val is the actual value of the slider.
      */
-    private void listenGreen(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        ColorModificator(ov, old_val, new_val, "G");
+    private void onColorizedGreenChanged(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        Colorize(ov, old_val, new_val, Color.GREEN);
     }
 
     /** Listen the red slider.
@@ -173,8 +175,8 @@ public class Controller {
      * @param old_val is the previous value of the slider.
      * @param new_val is the actual value of the slider.
      */
-    private void listenRed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        ColorModificator(ov, old_val, new_val, "R");
+    private void onColorizedRedChanged(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+        Colorize(ov, old_val, new_val, Color.RED);
     }
 
     /** Increase/Decrease the color selected (basic graphical change).
@@ -184,9 +186,13 @@ public class Controller {
      * @param new_val is the actual value of the slider.
      * @param color is the color R/G/B used for coloring process.
      */
-    private void ColorModificator(ObservableValue<? extends Number> ov, Number old_val, Number new_val, String color){
+    private void Colorize(ObservableValue<? extends Number> ov, Number old_val, Number new_val, Color color){
         double coefColor = (new_val.doubleValue()/100 +0.5) / (old_val.doubleValue()/100+0.5);
-        this.myBufferedImage= SimpleOperation.cloningBufferedImage( SimpleOperation.imageColoring(color,this.myBufferedImage, coefColor) );
+
+        this.colorizer.setChangeColor(color);
+        this.colorizer.setRatio(coefColor);
+
+        this.myBufferedImage= SimpleOperation.cloningBufferedImage( this.colorizer.process(this.myBufferedImage));
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
