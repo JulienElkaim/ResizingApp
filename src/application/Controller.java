@@ -76,7 +76,8 @@ public class Controller {
         this.initializeGradientItems();
         this.initializeSliderItems();
         this.initializeColorSlidersItems();
-        this.myImage.setOnMouseMoved(t -> updatePointerPositionLabel(t.getX() - this.myImage.getX(), t.getY() - this.myImage.getX()));
+        this.myImage.setOnMouseMoved(t -> view.updatePointerPositionLabel(t.getX() - this.myImage.getX(),
+        t.getY() - this.myImage.getX(), this.myBufferedImage, this.myImage, pointerPositionLabel));
     }
 
     /**
@@ -195,7 +196,8 @@ public class Controller {
      * Called when a key is released.
      * Erase memory of this key.
      */
-    public void keyPressedRemove() {
+    @FXML
+    private void keyPressedRemove() {
         this.keyPressed = null;
     }
 
@@ -205,7 +207,8 @@ public class Controller {
      *
      * @param keyEvent is the action of the key pressed, with all the key relative information.
      */
-    public void keyPressed(KeyEvent keyEvent) {
+    @FXML
+    private void keyPressed(KeyEvent keyEvent) {
         this.keyPressed = keyEvent.getCode();
         //(CMD)CTRL+W will switch the current direction used
         if (keyEvent.getCode() == KeyCode.D && (keyEvent.isControlDown()  || keyEvent.isShortcutDown()))
@@ -247,21 +250,24 @@ public class Controller {
     /**
      * Triggered when red square is hoovered.
      */
-    public void redGSwitcher() {
+    @FXML
+    private void redGSwitcher() {
         view.gradientSwitcher("redG", this.myImage, this.myBufferedImage);
     }
 
     /**
      * Triggered when green square is hoovered.
      */
-    public void greenGSwitcher() {
+    @FXML
+    private void greenGSwitcher() {
         view.gradientSwitcher("greenG", this.myImage, this.myBufferedImage);
     }
 
     /**
      * Triggered when blue square is hoovered.
      */
-    public void blueGSwitcher() {
+    @FXML
+    private void blueGSwitcher() {
         view.gradientSwitcher("blueG", this.myImage, this.myBufferedImage);
     }
 
@@ -351,23 +357,24 @@ public class Controller {
     }
 
 
-    /** Display X and Y position of the pointer.
-     * @param X is the x-coordinate on the imageView.
-     * @param Y is the y-coordinate on the imageView.
-     */
-    private void updatePointerPositionLabel(double X, double Y){
-        double coefViewReal;
-        if (this.view.getDirection().equals("H"))
-            coefViewReal = this.myImage.getFitHeight()/this.myBufferedImage.getHeight();
-        else // direction "V"
-            coefViewReal = this.myImage.getFitWidth()/this.myBufferedImage.getWidth();
-        this.pointerPositionLabel.setText("| x : "+(int)(X/coefViewReal)+" y : "+(int)(Y/coefViewReal));
-    }
+//    /** Display X and Y position of the pointer.
+//     * @param X is the x-coordinate on the imageView.
+//     * @param Y is the y-coordinate on the imageView.
+//     */
+//    private void updatePointerPositionLabel(double X, double Y){
+//        double coefViewReal;
+//        if (this.view.getDirection().equals("H"))
+//            coefViewReal = this.myImage.getFitHeight()/this.myBufferedImage.getHeight();
+//        else // direction "V"
+//            coefViewReal = this.myImage.getFitWidth()/this.myBufferedImage.getWidth();
+//        this.pointerPositionLabel.setText("| x : "+(int)(X/coefViewReal)+" y : "+(int)(Y/coefViewReal));
+//    }
 
     /** Reset the pointer label when the mouse exit the image area.
      *
      */
-    public void pointerLabelReset() {
+    @FXML
+    private void pointerLabelReset() {
         this.pointerPositionLabel.setText("| x : - y : -");
     }
 }

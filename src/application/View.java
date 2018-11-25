@@ -214,4 +214,18 @@ class View {
         myBufferedImage = Utils.clone(img);
         myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
     }
+
+    /** Display X and Y position of the pointer.
+     * @param X is the x-coordinate on the imageView.
+     * @param Y is the y-coordinate on the imageView.
+     */
+    void updatePointerPositionLabel(double X, double Y, BufferedImage myBufferedImage, ImageView myImage,
+        Label pointerPositionLabel){
+        double coefViewReal;
+        if (this.getDirection().equals("H"))
+            coefViewReal = myImage.getFitHeight()/myBufferedImage.getHeight();
+        else // direction "V"
+            coefViewReal = myImage.getFitWidth()/myBufferedImage.getWidth();
+        pointerPositionLabel.setText("| x : "+(int)(X/coefViewReal)+" y : "+(int)(Y/coefViewReal));
+    }
 }
