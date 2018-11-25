@@ -56,7 +56,6 @@ public class Controller {
     private View view = new View();
 
     //Slider objects
-//    private String direction;
     private String sliderListener = "";
 
     //Image objects
@@ -65,10 +64,8 @@ public class Controller {
 
     //Conceptual objects
     private KeyCode keyPressed;
-    private String tempImg;
     private double initFitHeight;
 
-    private GradientPainter gradientPainter = new GradientPainter();
     private Colorizer colorizer = new Colorizer();
     private FileManager fileManager = new FileManager();
     private UserHelper userHelper = new UserHelper();
@@ -83,7 +80,6 @@ public class Controller {
     public void initialize() {
         this.initFitHeight = this.myImage.getFitHeight();
         directionMenu.setText("Switch direction -> Height   CTRL+D");
-        this.tempImg = "null";
         this.initializeGradientItems();
         this.initializeSliderItems();
         this.initializeColorSlidersItems();
@@ -106,7 +102,7 @@ public class Controller {
     private void initializeSliderItems() {
         this.sliderListener = "Zoom";
         this.sliderLabel.setText(this.view.updateSliderLabel());
-        this.sliderListenerLabel.setText(this.updateListnerLabel(this.sliderListener));
+        this.sliderListenerLabel.setText(this.updateListenerLabel(this.sliderListener));
         this.mySlider.valueProperty().addListener(this::ListenSlider);
     }
 
@@ -241,7 +237,7 @@ public class Controller {
      */
     public void switcherListener(ActionEvent actionEvent) {
         this.sliderListener = Utils.getButtonText(actionEvent.getSource().toString());
-        this.sliderListenerLabel.setText(this.updateListnerLabel(this.sliderListener));
+        this.sliderListenerLabel.setText(this.updateListenerLabel(this.sliderListener));
     }
 
     /** Actualize all the parameters tied to the direction.
@@ -258,75 +254,21 @@ public class Controller {
      * Triggered when red square is hoovered.
      */
     public void redGSwitcher() {
-        gradientSwitcher("redG");
+        view.gradientSwitcher("redG", this.myImage, this.myBufferedImage);
     }
 
     /**
      * Triggered when green square is hoovered.
      */
     public void greenGSwitcher() {
-        gradientSwitcher("greenG");
+        view.gradientSwitcher("greenG", this.myImage, this.myBufferedImage);
     }
 
     /**
      * Triggered when blue square is hoovered.
      */
     public void blueGSwitcher() {
-        gradientSwitcher("blueG");
-    }
-
-    /**
-     * Trigger a GradientPainter computation based on the color choice provided.
-     *
-     * @param colorGradient the color choice (RGB) to determine the GradientPainter used.
-     */
-    private void gradientSwitcher(String colorGradient) {
-
-        if (this.tempImg.equals(colorGradient)) {
-            this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-            this.tempImg = "null";
-        } else {
-
-            switch (colorGradient) {
-                case "redG":
-                    this.redGradient();
-                    break;
-                case "greenG":
-                    this.greenGradient();
-                    break;
-                case "blueG":
-                    this.blueGradient();
-                    break;
-            }
-            this.tempImg = colorGradient;
-        }
-    }
-
-    /**
-     * Apply a red GradientPainter computation on the displayed image.
-     */
-    private void redGradient() {
-        gradientPainter.setGradientColor(Color.RED);
-        BufferedImage img = gradientPainter.process(this.myBufferedImage);
-        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
-    }
-
-    /**
-     * Apply a green GradientPainter computation on the displayed image.
-     */
-    private void greenGradient() {
-        gradientPainter.setGradientColor(Color.GREEN);
-        BufferedImage img = gradientPainter.process(this.myBufferedImage);
-        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
-    }
-
-    /**
-     * Apply a blue GradientPainter computation on the displayed image.
-     */
-    private void blueGradient() {
-        gradientPainter.setGradientColor(Color.BLUE);
-        BufferedImage img = gradientPainter.process(this.myBufferedImage);
-        this.myImage.setImage(SwingFXUtils.toFXImage(img, null));
+        view.gradientSwitcher("blueG", this.myImage, this.myBufferedImage);
     }
 
     /**
@@ -400,7 +342,7 @@ public class Controller {
         this.myBufferedImage = Utils.clone(this.myBufferedImageSTOCKED);
         this.myImage.setFitHeight(initFitHeight);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-        this.sliderListenerLabel.setText(this.updateListnerLabel(this.sliderListener));
+        this.sliderListenerLabel.setText(this.updateListenerLabel(this.sliderListener));
     }
 
     /**
@@ -437,49 +379,19 @@ public class Controller {
     /**
      * Display the energy map of the displayed image and the most relevant seam.
      */
-    public void imageSeamDisplay() {
-        this.energyImageDisplay(this.myBufferedImage, "Show next seam", true);
+    @FXML
+    private void imageSeamDisplay() {
+        view.energyImageDisplay(this.myBufferedImage, "Show next seam", true, this.myImage,
+        this.seamPrintingLabel, this.energyPrintingLabel);
     }
 
     /**
      * Display the energy map of the displayed image.
      */
-    public void imageEnergyDisplay() {
-        this.energyImageDisplay(this.myBufferedImage, "Energy computation", false);
-    }
-
-    /**
-     * Method to display an energy computation on an image, with the most relevant seam if necessary.
-     *
-     * @param imgToEnergize the actual displayed image.
-     * @param label         the label hoovered that trigger the function.
-     * @param doWePrintSeam only if necessary to display the seam.
-     */
-    private void energyImageDisplay(BufferedImage imgToEnergize, String label, boolean doWePrintSeam) {
-        this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.BLACK);
-        if (this.tempImg.equals("Energy computation") || this.tempImg.equals("Show next seam")) {
-            this.seamPrintingLabel.setTextFill(javafx.scene.paint.Color.PALEVIOLETRED);
-            this.myImage.setImage(SwingFXUtils.toFXImage(imgToEnergize, null));
-            this.tempImg = "null";
-        } else {
-            if (this.myBufferedImage != null)
-                this.energyPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
-            assert this.myBufferedImage != null;
-            BufferedImage bImageEnergized = SeamCarver.EnergizedImage(this.myBufferedImage);
-            if (doWePrintSeam) {
-                int totalRedRGB = 255 << 16;
-                int[] seamToPrint = SeamCarver.bestSeam(bImageEnergized, this.view.getDirection());
-                if (this.view.getDirection().equals("H")) {
-                    for (int y = 0; y < seamToPrint.length; y++)
-                        bImageEnergized.setRGB(seamToPrint[y], y, totalRedRGB);
-                }else{
-                    for (int x = 0; x < seamToPrint.length; x++)
-                        bImageEnergized.setRGB( x,seamToPrint[x], totalRedRGB);
-                }
-            }
-            this.myImage.setImage(SwingFXUtils.toFXImage(bImageEnergized, null));
-            this.tempImg = label;
-        }
+    @FXML
+    private void imageEnergyDisplay() {
+        view.energyImageDisplay(this.myBufferedImage, "Energy computation", false, this.myImage,
+        this.seamPrintingLabel, this.energyPrintingLabel);
     }
 
     /**
@@ -488,11 +400,12 @@ public class Controller {
      * @param functionName is the Function actually listening the slider.
      * @return the label to display on the application window.
      */
-    private String updateListnerLabel(String functionName) {
+    @FXML
+    private String updateListenerLabel(String functionName) {
         if (this.myBufferedImage == null)
-            return " Please load an Image to process ! ";
+            return " Please load an Image to process! ";
         else
-            return "Actually Using : " + functionName;
+            return "Actually Using: " + functionName;
     }
 
     @FXML
