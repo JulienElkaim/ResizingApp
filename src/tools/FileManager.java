@@ -36,12 +36,9 @@ public class FileManager {
         saveFileChooser.setInitialDirectory(new File("./img/"));
         saveFileChooser.setInitialFileName("AfterMyModifications");
         File file = saveFileChooser.showSaveDialog(null);
-        try {
-            ImageIO.write(img, "jpg", file);
-        } catch (IOException e) {
-            System.out.println("Save of your image was unsuccessful.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("You decided to cancel the save process.");
-        }
+        try{
+            ImageIO.write(img, "jpg", file);}
+        catch(IOException e){System.out.println("Save of your image was unsuccessful.");}
+        catch(IllegalArgumentException e){System.out.println("You decided to cancel the save process.");}
     }
 }

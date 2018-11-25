@@ -36,31 +36,28 @@ public class Controller {
      */
 
     @FXML private MenuItem directionMenu;
-
+    @FXML private Rectangle redG;
+    @FXML private Rectangle greenG;
+    @FXML private Rectangle blueG;
+    @FXML private Label sliderLabel;
+    @FXML private Slider mySlider;
+    @FXML private Label sliderListenerLabel;
+    @FXML private Label energyPrintingLabel;
+    @FXML private Label seamPrintingLabel;
+    @FXML private Slider redSlider;
+    @FXML private Slider greenSlider;
+    @FXML private Slider blueSlider;
+    @FXML private ImageView myImage;
+    @FXML private Label directionLabel;
+    @FXML private Label pointerPositionLabel;
 
     //Slider objects
-    public Slider mySlider;
-    public Label sliderListenerLabel;
-    public Label sliderLabel;
     private String direction;
     private String sliderListener = "";
-    public Slider redSlider;
-    public Slider greenSlider;
-    public Slider blueSlider;
-
-    //Hoovered objects
-    public Rectangle redG;
-    public Rectangle greenG;
-    public Rectangle blueG;
-    public Label seamPrintingLabel;
-    public Label energyPrintingLabel;
 
     //Image objects
-    public ImageView myImage;
     private BufferedImage myBufferedImage;
     private BufferedImage myBufferedImageSTOCKED;
-    public Label directionLabel;
-    public Label pointerPositionLabel;
 
     //Conceptual objects
     private KeyCode keyPressed;
@@ -239,7 +236,7 @@ public class Controller {
             this.saveViewModifications();
         //(CMD)CTRL+N propose to open a new image
         if (keyEvent.getCode() == KeyCode.N && (keyEvent.isControlDown() || keyEvent.isShortcutDown()) )
-            this.openAFile();
+            this.openFile();
         //(CMD)CTRL+SHIFT+S propose to save your image.
         if (keyEvent.getCode() == KeyCode.S && keyEvent.isShiftDown() && (keyEvent.isControlDown() || keyEvent.isShortcutDown()) ){
             this.saveFile();
@@ -425,9 +422,9 @@ public class Controller {
 
     /**
      * Trigger Opening file process.
-     *
      */
-    public void openAFile(){
+    @FXML
+    private void openFile(){
         try{ this.myBufferedImageSTOCKED = ImageIO.read(this.fileManager.imageFileOpen());}
         catch(IOException e){System.out.println("Error occured during the openning process!");}
         catch(IllegalArgumentException e){System.out.println("No file choosed !");}
@@ -443,7 +440,8 @@ public class Controller {
     /**
      * Trigger Saving image process.
      */
-    public void saveFile(){
+    @FXML
+    private void saveFile(){
         this.fileManager.imageFileSave(this.myBufferedImage);
     }
     /**
