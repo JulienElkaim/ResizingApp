@@ -52,6 +52,4 @@ public class Resizer implements ImageProcessor{
         g.drawRenderedImage(myBufferedImage, at);
         return dest;
     }
-
-
 }

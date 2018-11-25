@@ -10,7 +10,7 @@ import static java.lang.Math.abs;
 public class SeamCarver implements ImageProcessor{
     //number of seam to retrieve on our image.
     private int nbOfSeamToWithdraw;
-    private String direction = "H";
+    private String direction = "V";
 
     public void setNbOfSeamToWithdraw(int nbOfSeamToWithdraw){
         this.nbOfSeamToWithdraw = nbOfSeamToWithdraw;

@@ -52,8 +52,10 @@ public class Controller {
     @FXML private Label directionLabel;
     @FXML private Label pointerPositionLabel;
 
+    private View view = new View();
+
     //Slider objects
-    private String direction;
+//    private String direction;
     private String sliderListener = "";
 
     //Image objects
@@ -80,7 +82,6 @@ public class Controller {
     public void initialize() {
         this.initFitHeight = this.myImage.getFitHeight();
         directionMenu.setText("Switch direction -> Height   CTRL+D");
-        this.direction="H";
         this.tempImg = "null";
         this.initializeGradientItems();
         this.initializeSliderItems();
@@ -103,7 +104,7 @@ public class Controller {
      */
     private void initializeSliderItems() {
         this.sliderListener = "Zoom";
-        this.sliderLabel.setText(this.updateSliderLabel());
+        this.sliderLabel.setText(this.view.updateSliderLabel());
         this.sliderListenerLabel.setText(this.updateListnerLabel(this.sliderListener));
         this.mySlider.valueProperty().addListener(this::ListenSlider);
     }
@@ -191,7 +192,8 @@ public class Controller {
      *
      * @param mouseEvent is the click mouse event, with all the mouse-click relative information.
      */
-    public void imageClicked(MouseEvent mouseEvent) {
+    @FXML
+    private void imageClicked(MouseEvent mouseEvent) {
         if (this.keyPressed == KeyCode.SHIFT)
             this.resetViewModifications();
         else if (this.sliderListener.equals("Zoom"))
@@ -243,29 +245,12 @@ public class Controller {
 
     /** Actualize all the parameters tied to the direction.
      * myImage.fit(Height?Width?) -> We fix the direction not modified.
-     * direction -> string showing the direction choosed. "V" is Height, "H" is width.
+     * direction -> string showing the direction chosen. "V" is Height, "H" is width.
      * directionButto.text -> As indication, display the direction that will be modify if we click it.
      */
-    public void directionSwitch() {
-        if (this.direction.equals("H")) { //actually in width, go in height mode
-
-            this.directionMenu.setText("Switch direction -> Width   CRTL+D");
-            this.directionLabel.setText("Actual direction: Height");
-            double idealFitWidth = (this.myImage.getFitHeight()/this.myBufferedImage.getHeight()) * this.myBufferedImage.getWidth();
-            this.myImage.setFitWidth(idealFitWidth);
-            this.myImage.fitHeightProperty().setValue(null);
-            this.direction = "V";
-
-        }else{ // actually in height, go in width mode
-
-            this.directionMenu.setText("Switch direction -> Height  CTRL+D");
-            this.directionLabel.setText("Actual direction: Width");
-            double idealFitHeight = (this.myImage.getFitWidth()/this.myBufferedImage.getWidth()) * this.myBufferedImage.getHeight();
-            this.myImage.setFitHeight(idealFitHeight);
-            this.myImage.fitWidthProperty().setValue(null);
-            this.direction = "H";
-        }
-        this.sliderLabel.setText(this.updateSliderLabel());
+    @FXML
+    private void directionSwitch() {
+        this.view.switchDirection(this.directionMenu, this.directionLabel, this.sliderLabel, this.myImage, this.myBufferedImage);
     }
 
     /**
@@ -349,7 +334,7 @@ public class Controller {
      */
     private void resizeDisplayedImage(double sliderValue) {
         this.resizer.setCoef(sliderValue);
-        this.resizer.setDirection(this.direction);
+        this.resizer.setDirection(this.view.getDirection());
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.resizer.process(this.myBufferedImageSTOCKED));
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
@@ -360,7 +345,7 @@ public class Controller {
      */
     private void cropDisplayedImage(double sliderValue) {
         this.cropper.setCoef(sliderValue);
-        this.cropper.setDirection(this.direction);
+        this.cropper.setDirection(this.view.getDirection());
         this.myBufferedImage = this.cropper.process(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
@@ -373,7 +358,7 @@ public class Controller {
      */
     private void zoomDisplayedImage(double x, double y, double sliderValue) {
         this.zoomer.setCoef(sliderValue);
-        this.zoomer.setDirection(this.direction);
+        this.zoomer.setDirection(this.view.getDirection());
         this.zoomer.setX(x);
         this.zoomer.setY(y);
         //to set viewSize, direction needs to be chosen before
@@ -387,10 +372,10 @@ public class Controller {
      * @param sliderValue is the percentage of width to display.
      */
     private void seamCarveDisplayedImage(double sliderValue) {
-        this.seamCarver.setDirection(this.direction);
+        this.seamCarver.setDirection(this.view.getDirection());
         double coef =  (0.01 < sliderValue / 100) ? abs(sliderValue) / 100 : 0.01; // Slider a 100: 100%, Slider a 0: 10%
         int actualReferenceSize;
-        if(this.direction.equals("H"))
+        if(this.view.getDirection().equals("H"))
             actualReferenceSize= this.myBufferedImage.getWidth();
         else // direction "V"
             actualReferenceSize = this.myBufferedImage.getHeight();
@@ -482,8 +467,8 @@ public class Controller {
             BufferedImage bImageEnergized = SeamCarver.EnergizedImage(this.myBufferedImage);
             if (doWePrintSeam) {
                 int totalRedRGB = 255 << 16;
-                int[] seamToPrint = SeamCarver.bestSeam(bImageEnergized, this.direction);
-                if (this.direction.equals("H")) {
+                int[] seamToPrint = SeamCarver.bestSeam(bImageEnergized, this.view.getDirection());
+                if (this.view.getDirection().equals("H")) {
                     for (int y = 0; y < seamToPrint.length; y++)
                         bImageEnergized.setRGB(seamToPrint[y], y, totalRedRGB);
                 }else{
@@ -509,22 +494,11 @@ public class Controller {
             return "Actually Using : " + functionName;
     }
 
-    /** Actualize the label displayed to notify the direction we are working on.
-     *
-     * @return the label to display on the application window relative to the slider
-     */
-    private String updateSliderLabel(){
-        if (this.direction.equals("H"))
-            return "Percentage of Width : ";
-        if (this.direction.equals("V"))
-            return "Percentage of Height : ";
-        return "/!\\ Direction issue ! Please relaunch the App /!\\";
-    }
-
     @FXML
     private void openHelpFile() throws IOException {
         this.userHelper.helpMe();
     }
+
 
     /** Display X and Y position of the pointer.
      * @param X is the x-coordinate on the imageView.
@@ -532,7 +506,7 @@ public class Controller {
      */
     private void updatePointerPositionLabel(double X, double Y){
         double coefViewReal;
-        if (this.direction.equals("H"))
+        if (this.view.getDirection().equals("H"))
             coefViewReal = this.myImage.getFitHeight()/this.myBufferedImage.getHeight();
         else // direction "V"
             coefViewReal = this.myImage.getFitWidth()/this.myBufferedImage.getWidth();
@@ -546,4 +520,3 @@ public class Controller {
         this.pointerPositionLabel.setText("| x : - y : -");
     }
 }
-

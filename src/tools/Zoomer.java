@@ -8,7 +8,7 @@ public class Zoomer implements  ImageProcessor{
     //the displayed image's size , different of the BufferedImage used.
     private double viewSize = 0.0;
     //the size direction provided, H for Height and W for width. BOTH is an already computed coef View / Real
-    private String direction = "H";
+    private String direction = "V";
     //the View x-coordinate where the mouse pointed out.
     private double X = 0.0;
     //the View y-coordinate where the mouse pointed out.
