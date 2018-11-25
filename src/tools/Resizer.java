@@ -53,43 +53,5 @@ public class Resizer implements ImageProcessor{
         return dest;
     }
 
-    /**
-     * Provide the user with useful method to crop an image.
-     *
-     * @param myBufferedImage the image source to crop.
-     * @param cropCoef        the coefficient to apply to width.
-     * @return a cropped image.
-     */
-    public  BufferedImage cropping(BufferedImage myBufferedImage, double cropCoef, String direction) {
-        double coef = (0.01 < cropCoef / 100) ? abs(cropCoef) / 100 : 0.01;
-        int width = myBufferedImage.getWidth();
-        int height = myBufferedImage.getHeight();
 
-        if (direction.equals("H"))
-            width = (int) (coef * width);
-        else
-            height = (int) (coef * height);
-
-        return myBufferedImage.getSubimage(0, 0, width, height);
-    }
-
-    /**
-     * Provide the user with useful method to resize its image with a Seam Carving algorithm.
-     *
-     * @param nbOfSeamToWithdraw number of seam to retrieve on our image.
-     * @param img                the image where the seams are withdrawn.
-     * @return the image without the seams.
-     */
-    public  BufferedImage SeamCarving(int nbOfSeamToWithdraw, BufferedImage img, String direction) {
-
-        for (int i = 0; i < nbOfSeamToWithdraw; i++) {
-            BufferedImage energyBImage = SeamCarver.EnergizedImage(img);
-            int[] seamToWithdraw = SeamCarver.bestSeam(energyBImage, direction);
-
-            BufferedImage bImageWithOutSeam = SeamCarver.seamVerticalDestroyer(img, seamToWithdraw, direction);
-            img = SimpleOperation.cloningBufferedImage(bImageWithOutSeam);
-        }
-
-        return img;
-    }
 }

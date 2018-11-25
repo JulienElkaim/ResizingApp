@@ -1,5 +1,7 @@
 package tools;
 
+import javafx.scene.image.ImageView;
+
 import java.awt.image.BufferedImage;
 
 public class Zoomer implements  ImageProcessor{
@@ -14,7 +16,12 @@ public class Zoomer implements  ImageProcessor{
     //the strength of the zoom. High coef mean high zoom.
     private double coef = 1.0;
 
-    public void setViewSize(double viewSize){
+    public void setViewSize(ImageView imageView){
+        double viewSize;
+        if(this.direction.equals("H"))
+            viewSize = imageView.getFitHeight();
+        else
+            viewSize = imageView.getFitWidth();
         this.viewSize = viewSize;
     }
     public void setDirection(String direction){

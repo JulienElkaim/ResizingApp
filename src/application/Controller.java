@@ -71,6 +71,8 @@ public class Controller {
     private UserHelper userHelper = new UserHelper();
     private Resizer resizer = new Resizer();
     private Zoomer zoomer = new Zoomer();
+    private  Cropper cropper = new Cropper();
+    private SeamCarver seamCarver = new SeamCarver();
 
     /**
      * INITIALIZE method is called after the fxml creation. Useful to set environment variables.
@@ -357,27 +359,25 @@ public class Controller {
      * @param sliderValue is the actual value of the slider.
      */
     private void cropDisplayedImage(double sliderValue) {
-        this.myBufferedImage = this.resizer.cropping(this.myBufferedImageSTOCKED, sliderValue, this.direction);
+        this.cropper.setCoef(sliderValue);
+        this.cropper.setDirection(this.direction);
+        this.myBufferedImage = this.cropper.process(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
     /**
      * Trigger zooming process.
-     * @param X           is the x-coordinate of the mouse pointer when click occurred.
-     * @param Y           is the y-coordinate of the mouse pointer when click occurred.
+     * @param x           is the x-coordinate of the mouse pointer when click occurred.
+     * @param y           is the y-coordinate of the mouse pointer when click occurred.
      * @param sliderValue is the actual value of the slider
      */
-    private void zoomDisplayedImage(double X, double Y, double sliderValue) {
+    private void zoomDisplayedImage(double x, double y, double sliderValue) {
         this.zoomer.setCoef(sliderValue);
         this.zoomer.setDirection(this.direction);
-        this.zoomer.setX(X);
-        this.zoomer.setY(Y);
-        double viewSize;
-        if(this.direction.equals("H"))
-            viewSize = this.myImage.getFitHeight();
-        else
-            viewSize = this.myImage.getFitWidth();
-        this.zoomer.setViewSize(viewSize);
+        this.zoomer.setX(x);
+        this.zoomer.setY(y);
+        //to set viewSize, direction needs to be chosen before
+        this.zoomer.setViewSize(this.myImage);
         this.myBufferedImage = this.zoomer.process(this.myBufferedImage);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
@@ -387,6 +387,7 @@ public class Controller {
      * @param sliderValue is the percentage of width to display.
      */
     private void seamCarveDisplayedImage(double sliderValue) {
+        this.seamCarver.setDirection(this.direction);
         double coef =  (0.01 < sliderValue / 100) ? abs(sliderValue) / 100 : 0.01; // Slider a 100: 100%, Slider a 0: 10%
         int actualReferenceSize;
         if(this.direction.equals("H"))
@@ -395,7 +396,8 @@ public class Controller {
             actualReferenceSize = this.myBufferedImage.getHeight();
 
         int nbOfSeamToDestroy = actualReferenceSize - (int)(coef*actualReferenceSize);
-        BufferedImage img = this.resizer.SeamCarving(nbOfSeamToDestroy, this.myBufferedImage, this.direction);
+        this.seamCarver.setNbOfSeamToWithdraw(nbOfSeamToDestroy);
+        BufferedImage img = this.seamCarver.process(this.myBufferedImage);
         this.myBufferedImage = SimpleOperation.cloningBufferedImage(img);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
