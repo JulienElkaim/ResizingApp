@@ -7,6 +7,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Slider;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.image.ImageView;
 import tools.*;
 import utils.Utils;
@@ -16,18 +18,24 @@ import static java.lang.Math.abs;
 class View {
 
 	private String direction = "H";
-    private String tempImg = "null";
+    public String tempImg = "null";
     String sliderListener = "Zoom";
+    private double initFitHeight = 0.0;
 
     private GradientPainter gradientPainter = new GradientPainter();
     private SeamCarver seamCarver = new SeamCarver();
     private Resizer resizer = new Resizer();
     private Cropper cropper = new Cropper();
     private Zoomer zoomer = new Zoomer();
+    private Colorizer colorizer = new Colorizer();
 
-    String getDirection() {
+    public String getDirection() {
 		return this.direction;
 	}
+
+	private double setInitFitHeight(ImageView myImage){
+        return myImage.getFitHeight();
+    }
 
 	void switchDirection(MenuItem menu, Label directionLabel, Label sliderLabel, ImageView image,
 			BufferedImage buffer) {
@@ -127,7 +135,7 @@ class View {
      * @param label         the label hoovered that trigger the function.
      * @param doWePrintSeam only if necessary to display the seam.
      */
-    void energyImageDisplay(BufferedImage imgToEnergize, String label, boolean doWePrintSeam, ImageView myImage,
+    void energyImageDisplay(BufferedImage imgToEnergize, BufferedImage myBufferedImage, String label, boolean doWePrintSeam, ImageView myImage,
                             Label seamPrintingLabel, Label energyPrintingLabel) {
         seamPrintingLabel.setTextFill(javafx.scene.paint.Color.BLACK);
         if (this.tempImg.equals("Energy computation") || this.tempImg.equals("Show next seam")) {
@@ -135,10 +143,10 @@ class View {
             myImage.setImage(SwingFXUtils.toFXImage(imgToEnergize, null));
             this.tempImg = "null";
         } else {
-            if (imgToEnergize != null)
+            if (myBufferedImage != null)
                 energyPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
-            assert imgToEnergize != null;
-            BufferedImage bImageEnergized = SeamCarver.EnergizedImage(imgToEnergize);
+            assert myBufferedImage != null;
+            BufferedImage bImageEnergized = SeamCarver.EnergizedImage(myBufferedImage);
             if (doWePrintSeam) {
                 int totalRedRGB = 255 << 16;
                 int[] seamToPrint = SeamCarver.bestSeam(bImageEnergized, this.getDirection());
@@ -227,5 +235,31 @@ class View {
         else // direction "V"
             coefViewReal = myImage.getFitWidth()/myBufferedImage.getWidth();
         pointerPositionLabel.setText("| x : "+(int)(X/coefViewReal)+" y : "+(int)(Y/coefViewReal));
+    }
+
+
+    /**
+     * This method initialize the GradientItems used to display GradientPainter computation.
+     */
+    void initializeGradientItems(Rectangle redG, Rectangle greenG, Rectangle blueG) {
+        redG.setFill(javafx.scene.paint.Color.RED);
+        greenG.setFill(javafx.scene.paint.Color.GREEN);
+        blueG.setFill(javafx.scene.paint.Color.BLUE);
+    }
+
+    /** Increase/Decrease the color selected (basic graphical change).
+     *
+     * @param ov      is the observable value of the slider.
+     * @param old_val is the previous value of the slider.
+     * @param new_val is the actual value of the slider.
+     * @param color is the color R/G/B used for coloring process.
+     */
+    void Colorize(ObservableValue<? extends Number> ov, Number old_val, Number new_val, Color color,
+                  BufferedImage myBufferedImage, ImageView myImage){
+        double coefColor = (new_val.doubleValue()/100 +0.5) / (old_val.doubleValue()/100+0.5);
+        this.colorizer.setChangeColor(color);
+        this.colorizer.setRatio(coefColor);
+        myBufferedImage= Utils.clone( this.colorizer.process(myBufferedImage));
+        myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage,null));
     }
 }

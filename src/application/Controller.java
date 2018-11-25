@@ -59,10 +59,9 @@ public class Controller {
 
     //Conceptual objects
     private KeyCode keyPressed;
-    private double initFitHeight;
 
     private View view = new View();
-    private Colorizer colorizer = new Colorizer();
+    //    private Colorizer colorizer = new Colorizer();
     private FileManager fileManager = new FileManager();
     private UserHelper userHelper = new UserHelper();
 
@@ -71,13 +70,12 @@ public class Controller {
      * INITIALIZE method is called after the fxml creation. Useful to set environment variables.
      */
     public void initialize() {
-        this.initFitHeight = this.myImage.getFitHeight();
         directionMenu.setText("Switch direction -> Height   CTRL+D");
-        this.initializeGradientItems();
+        view.initializeGradientItems(redG, greenG, blueG);
         this.initializeSliderItems();
         this.initializeColorSlidersItems();
         this.myImage.setOnMouseMoved(t -> view.updatePointerPositionLabel(t.getX() - this.myImage.getX(),
-        t.getY() - this.myImage.getX(), this.myBufferedImage, this.myImage, pointerPositionLabel));
+                t.getY() - this.myImage.getX(), this.myBufferedImage, this.myImage, pointerPositionLabel));
     }
 
     /**
@@ -94,21 +92,20 @@ public class Controller {
      * This method initializes the sliderItems used in the application
      */
     private void initializeSliderItems() {
-        //this.sliderListener = "Zoom";
         this.sliderLabel.setText(this.view.updateSliderLabel());
         this.sliderListenerLabel.setText(this.updateListenerLabel(view.sliderListener));
         this.mySlider.valueProperty().addListener(this::ListenSlider);
     }
-
-    /**
-     * This method initialize the GradientItems used to display GradientPainter computation.
-     */
-    private void initializeGradientItems() {
-        this.redG.setFill(javafx.scene.paint.Color.RED);
-        this.greenG.setFill(javafx.scene.paint.Color.GREEN);
-        this.blueG.setFill(javafx.scene.paint.Color.BLUE);
-    }
-
+//
+//    /**
+//     * This method initialize the GradientItems used to display GradientPainter computation.
+//     */
+//    private void initializeGradientItems() {
+//        this.redG.setFill(javafx.scene.paint.Color.RED);
+//        this.greenG.setFill(javafx.scene.paint.Color.GREEN);
+//        this.blueG.setFill(javafx.scene.paint.Color.BLUE);
+//    }
+//
     /**
      * Function called when the Slider's value changes, notifications are not used because we chose a "toggle framework".
      * @param ov      is the observable value of the slider.
@@ -131,7 +128,7 @@ public class Controller {
                 view.cropDisplayedImage(new_val.doubleValue(), this.myBufferedImageSTOCKED, this.myImage);
         }
     }
-
+//
     /** Listen the blue slider.
      *
      * @param ov      is the observable value of the slider.
@@ -139,7 +136,7 @@ public class Controller {
      * @param new_val is the actual value of the slider.
      */
     private void onColorizedBlueChanged(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        Colorize(ov, old_val, new_val, Color.BLUE);
+        view.Colorize(ov, old_val, new_val, Color.BLUE, this.myBufferedImage, this.myImage);
     }
 
     /** Listen the green slider.
@@ -149,7 +146,7 @@ public class Controller {
      *      * @param new_val is the actual value of the slider.
      */
     private void onColorizedGreenChanged(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        Colorize(ov, old_val, new_val, Color.GREEN);
+        view.Colorize(ov, old_val, new_val, Color.GREEN, this.myBufferedImage, this.myImage);
     }
 
     /** Listen the red slider.
@@ -159,24 +156,8 @@ public class Controller {
      * @param new_val is the actual value of the slider.
      */
     private void onColorizedRedChanged(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        Colorize(ov, old_val, new_val, Color.RED);
+        view.Colorize(ov, old_val, new_val, Color.RED, this.myBufferedImage, this.myImage);
     }
-
-    /** Increase/Decrease the color selected (basic graphical change).
-     *
-     * @param ov      is the observable value of the slider.
-     * @param old_val is the previous value of the slider.
-     * @param new_val is the actual value of the slider.
-     * @param color is the color R/G/B used for coloring process.
-     */
-    private void Colorize(ObservableValue<? extends Number> ov, Number old_val, Number new_val, Color color){
-        double coefColor = (new_val.doubleValue()/100 +0.5) / (old_val.doubleValue()/100+0.5);
-        this.colorizer.setChangeColor(color);
-        this.colorizer.setRatio(coefColor);
-        this.myBufferedImage= Utils.clone( this.colorizer.process(this.myBufferedImage));
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
-    }
-
 
     /**
      * Called when the image displayed is clicked.
@@ -189,7 +170,7 @@ public class Controller {
             this.resetViewModifications();
         else if (view.sliderListener.equals("Zoom"))
             view.zoomDisplayedImage(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY(),
-            this.mySlider.getValue(), this.myBufferedImage, this.myImage);
+                    this.mySlider.getValue(), this.myBufferedImage, this.myImage);
     }
 
     /**
@@ -281,7 +262,6 @@ public class Controller {
         catch(IllegalArgumentException e){System.out.println("No file choosed !");}
 
         this.myBufferedImage = Utils.clone(this.myBufferedImageSTOCKED);
-        this.myImage.setFitHeight(initFitHeight);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
         this.sliderListenerLabel.setText(this.updateListenerLabel(view.sliderListener));
     }
@@ -324,8 +304,8 @@ public class Controller {
      */
     @FXML
     private void imageSeamDisplay() {
-        view.energyImageDisplay(this.myBufferedImage, "Show next seam", true, this.myImage,
-        this.seamPrintingLabel, this.energyPrintingLabel);
+        view.energyImageDisplay(this.myBufferedImageSTOCKED, this.myBufferedImage,"Show next seam", true, this.myImage,
+                this.seamPrintingLabel, this.energyPrintingLabel);
     }
 
     /**
@@ -333,8 +313,8 @@ public class Controller {
      */
     @FXML
     private void imageEnergyDisplay() {
-        view.energyImageDisplay(this.myBufferedImage, "Energy computation", false, this.myImage,
-        this.seamPrintingLabel, this.energyPrintingLabel);
+        view.energyImageDisplay(this.myBufferedImageSTOCKED, this.myBufferedImage,"Energy computation", false, this.myImage,
+                this.seamPrintingLabel, this.energyPrintingLabel);
     }
 
     /**
@@ -355,20 +335,6 @@ public class Controller {
     private void openHelpFile() throws IOException {
         this.userHelper.helpMe();
     }
-
-
-//    /** Display X and Y position of the pointer.
-//     * @param X is the x-coordinate on the imageView.
-//     * @param Y is the y-coordinate on the imageView.
-//     */
-//    private void updatePointerPositionLabel(double X, double Y){
-//        double coefViewReal;
-//        if (this.view.getDirection().equals("H"))
-//            coefViewReal = this.myImage.getFitHeight()/this.myBufferedImage.getHeight();
-//        else // direction "V"
-//            coefViewReal = this.myImage.getFitWidth()/this.myBufferedImage.getWidth();
-//        this.pointerPositionLabel.setText("| x : "+(int)(X/coefViewReal)+" y : "+(int)(Y/coefViewReal));
-//    }
 
     /** Reset the pointer label when the mouse exit the image area.
      *
