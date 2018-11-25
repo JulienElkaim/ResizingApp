@@ -33,26 +33,6 @@ public class Colorizer implements ImageProcessor {
 		this.ratio = ratio;
 	}
 
-//	/**
-//	 * Get the color to change during process.
-//	 * 
-//	 * @return color
-//	 *            color to change
-//	 */
-//	ColorEnum getChangeColor() {
-//		return this.changeColor;
-//	}
-//
-//	/**
-//	 * Get the ratio applied to the change color.
-//	 * 
-//	 * @return color
-//	 *            color to change
-//	 */
-//	double getRatio() {
-//		return this.ratio;
-//	}
-
 	@Override
 	public BufferedImage process(BufferedImage myBufferedImage) {
 		int decalage = 0;

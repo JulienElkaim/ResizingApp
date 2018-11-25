@@ -67,6 +67,7 @@ public class Controller {
 
     private GradientPainter gradientPainter = new GradientPainter();
     private Colorizer colorizer = new Colorizer();
+    private FileManager fileManager = new FileManager();
 
 
     /**
@@ -235,10 +236,10 @@ public class Controller {
             this.saveViewModifications();
         //(CMD)CTRL+N propose to open a new image
         if (keyEvent.getCode() == KeyCode.N && (keyEvent.isControlDown() || keyEvent.isShortcutDown()) )
-            this.ChooseAFile();
+            this.openAFile();
         //(CMD)CTRL+SHIFT+S propose to save your image.
         if (keyEvent.getCode() == KeyCode.S && keyEvent.isShiftDown() && (keyEvent.isControlDown() || keyEvent.isShortcutDown()) ){
-            this.saveAFile();
+            this.saveFile();
 
         }
 
@@ -423,8 +424,8 @@ public class Controller {
      * Trigger Opening file process.
      *
      */
-    public void ChooseAFile(){
-        try{ this.myBufferedImageSTOCKED = ImageIO.read(tools.SimpleOperation.imageFileOpen());}
+    public void openAFile(){
+        try{ this.myBufferedImageSTOCKED = ImageIO.read(this.fileManager.imageFileOpen());}
         catch(IOException e){System.out.println("Error occured during the openning process!");}
         catch(IllegalArgumentException e){System.out.println("No file choosed !");}
 
@@ -439,8 +440,8 @@ public class Controller {
     /**
      * Trigger Saving image process.
      */
-    public void saveAFile(){
-        SimpleOperation.imageFileSave(this.myBufferedImage);
+    public void saveFile(){
+        this.fileManager.imageFileSave(this.myBufferedImage);
     }
     /**
      * Reset actual modification that occurred on the image.
