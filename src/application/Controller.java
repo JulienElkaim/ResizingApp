@@ -53,11 +53,6 @@ public class Controller {
     @FXML private Label directionLabel;
     @FXML private Label pointerPositionLabel;
 
-    private View view = new View();
-
-    //Slider objects
-    private String sliderListener = "";
-
     //Image objects
     private BufferedImage myBufferedImage;
     private BufferedImage myBufferedImageSTOCKED;
@@ -66,13 +61,11 @@ public class Controller {
     private KeyCode keyPressed;
     private double initFitHeight;
 
+    private View view = new View();
     private Colorizer colorizer = new Colorizer();
     private FileManager fileManager = new FileManager();
     private UserHelper userHelper = new UserHelper();
-    private Resizer resizer = new Resizer();
-    private Zoomer zoomer = new Zoomer();
-    private  Cropper cropper = new Cropper();
-    private SeamCarver seamCarver = new SeamCarver();
+
 
     /**
      * INITIALIZE method is called after the fxml creation. Useful to set environment variables.
@@ -100,9 +93,9 @@ public class Controller {
      * This method initializes the sliderItems used in the application
      */
     private void initializeSliderItems() {
-        this.sliderListener = "Zoom";
+        //this.sliderListener = "Zoom";
         this.sliderLabel.setText(this.view.updateSliderLabel());
-        this.sliderListenerLabel.setText(this.updateListenerLabel(this.sliderListener));
+        this.sliderListenerLabel.setText(this.updateListenerLabel(view.sliderListener));
         this.mySlider.valueProperty().addListener(this::ListenSlider);
     }
 
@@ -122,19 +115,19 @@ public class Controller {
      * @param new_val is the actual value of the slider.
      */
     private void ListenSlider(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
-        switch (this.sliderListener) {
+        switch (view.sliderListener) {
             case "Resize":
-                this.resizeDisplayedImage(new_val.doubleValue());
+                view.resizeDisplayedImage(new_val.doubleValue(), this.myBufferedImageSTOCKED, this.myImage);
                 break;
             case "Zoom":
                 //Just for visualisation, the use of ZOOM with the slider is done by clicking on the imageView
                 break;
             case "Seam Carving":
                 this.myBufferedImage = Utils.clone(this.myBufferedImageSTOCKED);
-                this.seamCarveDisplayedImage(new_val.doubleValue());
+                view.seamCarveDisplayedImage(new_val.doubleValue(), this.myBufferedImageSTOCKED, this.myImage);
                 break;
             case "Crop":
-                this.cropDisplayedImage(new_val.doubleValue());
+                view.cropDisplayedImage(new_val.doubleValue(), this.myBufferedImageSTOCKED, this.myImage);
         }
     }
 
@@ -193,8 +186,9 @@ public class Controller {
     private void imageClicked(MouseEvent mouseEvent) {
         if (this.keyPressed == KeyCode.SHIFT)
             this.resetViewModifications();
-        else if (this.sliderListener.equals("Zoom"))
-            this.zoomDisplayedImage(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY(), this.mySlider.getValue());
+        else if (view.sliderListener.equals("Zoom"))
+            view.zoomDisplayedImage(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY(),
+            this.mySlider.getValue(), this.myBufferedImage, this.myImage);
     }
 
     /**
@@ -232,18 +226,18 @@ public class Controller {
 
     /**
      * Allow to switch the listener of the slider.
-     *
      * @param actionEvent is the Button action, with all the button relative information.
      */
-    public void switcherListener(ActionEvent actionEvent) {
-        this.sliderListener = Utils.getButtonText(actionEvent.getSource().toString());
-        this.sliderListenerLabel.setText(this.updateListenerLabel(this.sliderListener));
+    @FXML
+    private void switcherListener(ActionEvent actionEvent) {
+        view.sliderListener = Utils.getButtonText(actionEvent.getSource().toString());
+        this.sliderListenerLabel.setText(this.updateListenerLabel(view.sliderListener));
     }
 
     /** Actualize all the parameters tied to the direction.
      * myImage.fit(Height?Width?) -> We fix the direction not modified.
      * direction -> string showing the direction chosen. "V" is Height, "H" is width.
-     * directionButto.text -> As indication, display the direction that will be modify if we click it.
+     * directionButton.text -> As indication, display the direction that will be modify if we click it.
      */
     @FXML
     private void directionSwitch() {
@@ -272,65 +266,6 @@ public class Controller {
     }
 
     /**
-     * Trigger the resizing process.
-     * @param sliderValue is the actual value of the slider.
-     */
-    private void resizeDisplayedImage(double sliderValue) {
-        this.resizer.setCoef(sliderValue);
-        this.resizer.setDirection(this.view.getDirection());
-        this.myBufferedImage = Utils.clone(this.resizer.process(this.myBufferedImageSTOCKED));
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-    }
-
-    /**
-     * Trigger the cropping process.
-     * @param sliderValue is the actual value of the slider.
-     */
-    private void cropDisplayedImage(double sliderValue) {
-        this.cropper.setCoef(sliderValue);
-        this.cropper.setDirection(this.view.getDirection());
-        this.myBufferedImage = this.cropper.process(this.myBufferedImageSTOCKED);
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-    }
-
-    /**
-     * Trigger zooming process.
-     * @param x           is the x-coordinate of the mouse pointer when click occurred.
-     * @param y           is the y-coordinate of the mouse pointer when click occurred.
-     * @param sliderValue is the actual value of the slider
-     */
-    private void zoomDisplayedImage(double x, double y, double sliderValue) {
-        this.zoomer.setCoef(sliderValue);
-        this.zoomer.setDirection(this.view.getDirection());
-        this.zoomer.setX(x);
-        this.zoomer.setY(y);
-        //to set viewSize, direction needs to be chosen before
-        this.zoomer.setViewSize(this.myImage);
-        this.myBufferedImage = this.zoomer.process(this.myBufferedImage);
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-    }
-
-    /**
-     * Trigger Seam Carving process.
-     * @param sliderValue is the percentage of width to display.
-     */
-    private void seamCarveDisplayedImage(double sliderValue) {
-        this.seamCarver.setDirection(this.view.getDirection());
-        double coef =  (0.01 < sliderValue / 100) ? abs(sliderValue) / 100 : 0.01; // Slider a 100: 100%, Slider a 0: 10%
-        int actualReferenceSize;
-        if(this.view.getDirection().equals("H"))
-            actualReferenceSize= this.myBufferedImage.getWidth();
-        else // direction "V"
-            actualReferenceSize = this.myBufferedImage.getHeight();
-
-        int nbOfSeamToDestroy = actualReferenceSize - (int)(coef*actualReferenceSize);
-        this.seamCarver.setNbOfSeamToWithdraw(nbOfSeamToDestroy);
-        BufferedImage img = this.seamCarver.process(this.myBufferedImage);
-        this.myBufferedImage = Utils.clone(img);
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-    }
-
-    /**
      * Trigger Opening file process.
      */
     @FXML
@@ -342,7 +277,7 @@ public class Controller {
         this.myBufferedImage = Utils.clone(this.myBufferedImageSTOCKED);
         this.myImage.setFitHeight(initFitHeight);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-        this.sliderListenerLabel.setText(this.updateListenerLabel(this.sliderListener));
+        this.sliderListenerLabel.setText(this.updateListenerLabel(view.sliderListener));
     }
 
     /**
@@ -358,7 +293,8 @@ public class Controller {
      * The last persistent change saved is displayed.
      * only callable by SHIFT + LEFT CLICK
      */
-    public void resetViewModifications() {
+    @FXML
+    private void resetViewModifications() {
         this.myBufferedImage = Utils.clone(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
@@ -367,7 +303,8 @@ public class Controller {
      * Save the last modification on the displayed image in order to chain modifications
      * without removing previous ones.
      */
-    public void saveViewModifications() {
+    @FXML
+    private void saveViewModifications() {
         int maxX = this.myBufferedImage.getWidth();
         int maxY = this.myBufferedImage.getHeight();
         this.myBufferedImageSTOCKED = new BufferedImage(maxX, maxY, BufferedImage.TYPE_INT_RGB);

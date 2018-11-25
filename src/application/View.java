@@ -3,20 +3,27 @@ package application;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
-import tools.GradientPainter;
-import tools.SeamCarver;
+import tools.*;
+import utils.Utils;
+
+import static java.lang.Math.abs;
 
 class View {
 
 	private String direction = "H";
     private String tempImg = "null";
+    String sliderListener = "Zoom";
 
     private GradientPainter gradientPainter = new GradientPainter();
-
+    private SeamCarver seamCarver = new SeamCarver();
+    private Resizer resizer = new Resizer();
+    private Cropper cropper = new Cropper();
+    private Zoomer zoomer = new Zoomer();
 
     String getDirection() {
 		return this.direction;
@@ -148,4 +155,63 @@ class View {
         }
     }
 
+
+    /**
+     * Trigger the resizing process.
+     * @param sliderValue is the actual value of the slider.
+     */
+    void resizeDisplayedImage(double sliderValue, BufferedImage myBufferedImageSTOCKED, ImageView myImage) {
+        this.resizer.setCoef(sliderValue);
+        this.resizer.setDirection(this.getDirection());
+        BufferedImage myBufferedImage = Utils.clone(this.resizer.process(myBufferedImageSTOCKED));
+        myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
+    }
+
+    /**
+     * Trigger the cropping process.
+     * @param sliderValue is the actual value of the slider.
+     */
+    void cropDisplayedImage(double sliderValue, BufferedImage myBufferedImageSTOCKED, ImageView myImage) {
+        this.cropper.setCoef(sliderValue);
+        this.cropper.setDirection(this.getDirection());
+        BufferedImage myBufferedImage = this.cropper.process(myBufferedImageSTOCKED);
+        myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
+    }
+
+    /**
+     * Trigger zooming process.
+     * @param x           is the x-coordinate of the mouse pointer when click occurred.
+     * @param y           is the y-coordinate of the mouse pointer when click occurred.
+     * @param sliderValue is the actual value of the slider
+     */
+    void zoomDisplayedImage(double x, double y, double sliderValue, BufferedImage myBufferedImage, ImageView myImage) {
+        this.zoomer.setCoef(sliderValue);
+        this.zoomer.setDirection(this.getDirection());
+        this.zoomer.setX(x);
+        this.zoomer.setY(y);
+        //to set viewSize, direction needs to be chosen before
+        this.zoomer.setViewSize(myImage);
+        myBufferedImage = this.zoomer.process(myBufferedImage);
+        myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
+    }
+
+    /**
+     * Trigger Seam Carving process.
+     * @param sliderValue is the percentage of width to display.
+     */
+    void seamCarveDisplayedImage(double sliderValue, BufferedImage myBufferedImage, ImageView myImage) {
+        this.seamCarver.setDirection(this.getDirection());
+        double coef =  (0.01 < sliderValue / 100) ? abs(sliderValue) / 100 : 0.01; // Slider a 100: 100%, Slider a 0: 10%
+        int actualReferenceSize;
+        if(this.getDirection().equals("H"))
+            actualReferenceSize= myBufferedImage.getWidth();
+        else // direction "V"
+            actualReferenceSize = myBufferedImage.getHeight();
+
+        int nbOfSeamToDestroy = actualReferenceSize - (int)(coef*actualReferenceSize);
+        this.seamCarver.setNbOfSeamToWithdraw(nbOfSeamToDestroy);
+        BufferedImage img = this.seamCarver.process(myBufferedImage);
+        myBufferedImage = Utils.clone(img);
+        myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
+    }
 }
