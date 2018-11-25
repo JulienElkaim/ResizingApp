@@ -13,11 +13,12 @@ import javafx.scene.input.MouseEvent;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import javafx.scene.control.Slider;
 import tools.*;
 import javafx.scene.shape.Rectangle;
+import utils.FileManager;
+import utils.UserHelper;
 
 import static java.lang.Math.abs;
 
@@ -31,7 +32,7 @@ public class Controller {
      * 5. Image modification methods.
      * 6. Open & Save images methods..
      * 7. Reset & Save modifications methods.
-     * 8. Seam Carving vizualization methods.
+     * 8. Seam Carving visualization methods.
      * 9. Label actualization methods.
      */
 
@@ -68,7 +69,7 @@ public class Controller {
     private GradientPainter gradientPainter = new GradientPainter();
     private Colorizer colorizer = new Colorizer();
     private FileManager fileManager = new FileManager();
-
+    private UserHelper userHelper = new UserHelper();
 
     /**
      * INITIALIZE method is called after the fxml creation. Useful to set environment variables.
@@ -551,21 +552,9 @@ public class Controller {
 
     }
 
-    /** Open the readme file to help user.
-     *
-     * @throws IOException when README is not available.
-     */
-    public void helpMe()throws IOException{
-        File file = new File("./README.md");
-
-        if(!Desktop.isDesktopSupported()){
-            System.out.println("Your computer have restricted access. Please open README.md manually.");
-        }else {
-            Desktop desktop = Desktop.getDesktop();
-            if (file.exists()) desktop.open(file);
-        }
-
-
+    @FXML
+    private void openHelpFile() throws IOException {
+        this.userHelper.helpMe();
     }
 
     /** Display X and Y position of the pointer.

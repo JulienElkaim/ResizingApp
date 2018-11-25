@@ -12,7 +12,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 
-
 <?import javafx.scene.shape.Rectangle?>
 
 
@@ -35,7 +34,7 @@
             <MenuItem fx:id="directionMenu"  onAction="#directionSwitch"  />
         </Menu>
         <Menu text="Help" >
-            <MenuItem text="Read Me..." onAction="#helpMe"/>
+            <MenuItem text="Open README file" onAction="#openHelpFile"/>
         </Menu>
     </MenuBar>
     <ScrollPane fitToHeight="true">
