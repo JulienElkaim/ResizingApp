@@ -3,6 +3,7 @@ package application;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
@@ -34,11 +35,13 @@ public class Controller {
      * 9. Label actualization methods.
      */
 
+    @FXML private MenuItem directionMenu;
+
+
     //Slider objects
     public Slider mySlider;
     public Label sliderListenerLabel;
     public Label sliderLabel;
-    public MenuItem directionMenu;
     private String direction;
     private String sliderListener = "";
     public Slider redSlider;
