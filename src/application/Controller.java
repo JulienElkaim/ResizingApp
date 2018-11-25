@@ -18,6 +18,7 @@ import javafx.scene.control.Slider;
 import tools.*;
 import javafx.scene.shape.Rectangle;
 import utils.FileManager;
+import utils.Utils;
 import utils.UserHelper;
 
 import static java.lang.Math.abs;
@@ -133,7 +134,7 @@ public class Controller {
                 //Just for visualisation, the use of ZOOM with the slider is done by clicking on the imageView
                 break;
             case "Seam Carving":
-                this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
+                this.myBufferedImage = Utils.clone(this.myBufferedImageSTOCKED);
                 this.seamCarveDisplayedImage(new_val.doubleValue());
                 break;
             case "Crop":
@@ -182,7 +183,7 @@ public class Controller {
         double coefColor = (new_val.doubleValue()/100 +0.5) / (old_val.doubleValue()/100+0.5);
         this.colorizer.setChangeColor(color);
         this.colorizer.setRatio(coefColor);
-        this.myBufferedImage= SimpleOperation.cloningBufferedImage( this.colorizer.process(this.myBufferedImage));
+        this.myBufferedImage= Utils.clone( this.colorizer.process(this.myBufferedImage));
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage,null));
     }
 
@@ -239,7 +240,7 @@ public class Controller {
      * @param actionEvent is the Button action, with all the button relative information.
      */
     public void switcherListener(ActionEvent actionEvent) {
-        this.sliderListener = SimpleOperation.getButtonText(actionEvent.getSource().toString());
+        this.sliderListener = Utils.getButtonText(actionEvent.getSource().toString());
         this.sliderListenerLabel.setText(this.updateListnerLabel(this.sliderListener));
     }
 
@@ -335,7 +336,7 @@ public class Controller {
     private void resizeDisplayedImage(double sliderValue) {
         this.resizer.setCoef(sliderValue);
         this.resizer.setDirection(this.view.getDirection());
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.resizer.process(this.myBufferedImageSTOCKED));
+        this.myBufferedImage = Utils.clone(this.resizer.process(this.myBufferedImageSTOCKED));
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
@@ -383,7 +384,7 @@ public class Controller {
         int nbOfSeamToDestroy = actualReferenceSize - (int)(coef*actualReferenceSize);
         this.seamCarver.setNbOfSeamToWithdraw(nbOfSeamToDestroy);
         BufferedImage img = this.seamCarver.process(this.myBufferedImage);
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage(img);
+        this.myBufferedImage = Utils.clone(img);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
@@ -396,7 +397,7 @@ public class Controller {
         catch(IOException e){System.out.println("Error occured during the openning process!");}
         catch(IllegalArgumentException e){System.out.println("No file choosed !");}
 
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
+        this.myBufferedImage = Utils.clone(this.myBufferedImageSTOCKED);
         this.myImage.setFitHeight(initFitHeight);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
         this.sliderListenerLabel.setText(this.updateListnerLabel(this.sliderListener));
@@ -416,7 +417,7 @@ public class Controller {
      * only callable by SHIFT + LEFT CLICK
      */
     public void resetViewModifications() {
-        this.myBufferedImage = SimpleOperation.cloningBufferedImage(this.myBufferedImageSTOCKED);
+        this.myBufferedImage = Utils.clone(this.myBufferedImageSTOCKED);
         this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 

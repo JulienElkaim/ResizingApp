@@ -1,5 +1,7 @@
 package tools;
 
+import utils.Utils;
+
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
@@ -31,7 +33,7 @@ public class GradientPainter implements ImageProcessor {
      */
     @Override
     public BufferedImage process(BufferedImage myBufferedImage) {
-        BufferedImage gradientBImage = SimpleOperation.cloningBufferedImage(myBufferedImage);
+        BufferedImage gradientBImage = Utils.clone(myBufferedImage);
         if (this.gradientColor != null) {
             int maxX = gradientBImage.getWidth();
             int maxY = gradientBImage.getHeight();

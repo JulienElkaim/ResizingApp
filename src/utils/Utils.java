@@ -1,15 +1,15 @@
-package tools;
+package utils;
 
 import java.awt.image.BufferedImage;
 
-public class SimpleOperation {
+public class Utils {
     /**
      * Create a copy of BufferedImage.
      *
      * @param bImage the image source to clone.
      * @return an exact copy of the source.
      */
-    public static BufferedImage cloningBufferedImage(BufferedImage bImage) {
+    public static BufferedImage clone(BufferedImage bImage) {
         int maxX = bImage.getWidth();
         int maxY = bImage.getHeight();
         BufferedImage bImageNew = new BufferedImage(maxX, maxY, BufferedImage.TYPE_INT_RGB);

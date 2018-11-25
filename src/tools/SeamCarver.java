@@ -1,5 +1,7 @@
 package tools;
 
+import utils.Utils;
+
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
@@ -30,7 +32,7 @@ public class SeamCarver implements ImageProcessor{
             BufferedImage energyBImage = SeamCarver.EnergizedImage(img);
             int[] seamToWithdraw = SeamCarver.bestSeam(energyBImage, this.direction);
             BufferedImage bImageWithOutSeam = SeamCarver.seamVerticalDestroyer(img, seamToWithdraw, this.direction);
-            img = SimpleOperation.cloningBufferedImage(bImageWithOutSeam);
+            img = Utils.clone(bImageWithOutSeam);
         }
         return img;
     }
@@ -64,7 +66,7 @@ public class SeamCarver implements ImageProcessor{
     private static BufferedImage determineEnergy(BufferedImage imgToCompute) {
         int maxX = imgToCompute.getWidth();
         int maxY = imgToCompute.getHeight();
-        BufferedImage newBImage = SimpleOperation.cloningBufferedImage(imgToCompute);
+        BufferedImage newBImage = Utils.clone(imgToCompute);
         for (int x = 2; x < maxX - 1; x++) {
             for (int y = 2; y < maxY - 1; y++) {
                 Color myLeftPixelColor = new Color(imgToCompute.getRGB(x - 1, y));
