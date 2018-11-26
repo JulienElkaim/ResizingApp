@@ -17,7 +17,7 @@ import static java.lang.Math.abs;
 
 class View {
 
-	private String direction = "H";
+    private String direction = "H";
     public String tempImg = "null";
     String sliderListener = "Zoom";
     private double initFitHeight = 0.0;
@@ -30,48 +30,48 @@ class View {
     private Colorizer colorizer = new Colorizer();
 
     public String getDirection() {
-		return this.direction;
-	}
+        return this.direction;
+    }
 
-	private double setInitFitHeight(ImageView myImage){
+    private double setInitFitHeight(ImageView myImage){
         return myImage.getFitHeight();
     }
 
-	void switchDirection(MenuItem menu, Label directionLabel, Label sliderLabel, ImageView image,
-			BufferedImage buffer) {
-		if (this.direction.equals("H")) { // actually in width, go in height mode
+    void switchDirection(MenuItem menu, Label directionLabel, Label sliderLabel, ImageView image,
+                         BufferedImage buffer) {
+        if (this.direction.equals("H")) { // actually in width, go in height mode
 
-			menu.setText("Switch direction -> Width   CRTL+D");
-			directionLabel.setText("Actual direction: Height");
-			double idealFitWidth = (image.getFitHeight() / buffer.getHeight()) * buffer.getWidth();
-			image.setFitWidth(idealFitWidth);
-			image.fitHeightProperty().setValue(null);
-			this.direction = "V";
+            menu.setText("Switch direction -> Width   CRTL+D");
+            directionLabel.setText("Actual direction: Height");
+            double idealFitWidth = (image.getFitHeight() / buffer.getHeight()) * buffer.getWidth();
+            image.setFitWidth(idealFitWidth);
+            image.fitHeightProperty().setValue(null);
+            this.direction = "V";
 
-		} else { // actually in height, go in width mode
+        } else { // actually in height, go in width mode
 
-			menu.setText("Switch direction -> Height  CTRL+D");
-			directionLabel.setText("Actual direction: Width");
-			double idealFitHeight = (image.getFitWidth() / buffer.getWidth()) * buffer.getHeight();
-			image.setFitHeight(idealFitHeight);
-			image.fitWidthProperty().setValue(null);
-			this.direction = "H";
-		}
-		sliderLabel.setText(this.updateSliderLabel());
+            menu.setText("Switch direction -> Height  CTRL+D");
+            directionLabel.setText("Actual direction: Width");
+            double idealFitHeight = (image.getFitWidth() / buffer.getWidth()) * buffer.getHeight();
+            image.setFitHeight(idealFitHeight);
+            image.fitWidthProperty().setValue(null);
+            this.direction = "H";
+        }
+        sliderLabel.setText(this.updateSliderLabel());
 
-	}
-	
+    }
+
     /** Actualize the label displayed to notify the direction we are working on.
-    *
-    * @return the label to display on the application window relative to the slider
-    */
-   String updateSliderLabel(){
-       if (this.direction.equals("H"))
-           return "Percentage of Width : ";
-       if (this.direction.equals("V"))
-           return "Percentage of Height : ";
-       return "/!\\ Direction issue! Please relaunch the App /!\\";
-   }
+     *
+     * @return the label to display on the application window relative to the slider
+     */
+    String updateSliderLabel(){
+        if (this.direction.equals("H"))
+            return "Percentage of Width : ";
+        if (this.direction.equals("V"))
+            return "Percentage of Height : ";
+        return "/!\\ Direction issue! Please relaunch the App /!\\";
+    }
 
 
     /**
@@ -135,7 +135,7 @@ class View {
      * @param label         the label hoovered that trigger the function.
      * @param doWePrintSeam only if necessary to display the seam.
      */
-    void energyImageDisplay(BufferedImage imgToEnergize, BufferedImage myBufferedImage, String label, boolean doWePrintSeam, ImageView myImage,
+    void energyImageDisplay(BufferedImage imgToEnergize, String label, boolean doWePrintSeam, ImageView myImage,
                             Label seamPrintingLabel, Label energyPrintingLabel) {
         seamPrintingLabel.setTextFill(javafx.scene.paint.Color.BLACK);
         if (this.tempImg.equals("Energy computation") || this.tempImg.equals("Show next seam")) {
@@ -143,10 +143,10 @@ class View {
             myImage.setImage(SwingFXUtils.toFXImage(imgToEnergize, null));
             this.tempImg = "null";
         } else {
-            if (myBufferedImage != null)
+            if (imgToEnergize != null)
                 energyPrintingLabel.setTextFill(javafx.scene.paint.Color.GREEN);
-            assert myBufferedImage != null;
-            BufferedImage bImageEnergized = SeamCarver.EnergizedImage(myBufferedImage);
+            assert imgToEnergize != null;
+            BufferedImage bImageEnergized = SeamCarver.EnergizedImage(imgToEnergize);
             if (doWePrintSeam) {
                 int totalRedRGB = 255 << 16;
                 int[] seamToPrint = SeamCarver.bestSeam(bImageEnergized, this.getDirection());
@@ -161,29 +161,6 @@ class View {
             myImage.setImage(SwingFXUtils.toFXImage(bImageEnergized, null));
             this.tempImg = label;
         }
-    }
-
-
-    /**
-     * Trigger the resizing process.
-     * @param sliderValue is the actual value of the slider.
-     */
-    void resizeDisplayedImage(double sliderValue, BufferedImage myBufferedImageSTOCKED, ImageView myImage) {
-        this.resizer.setCoef(sliderValue);
-        this.resizer.setDirection(this.getDirection());
-        BufferedImage myBufferedImage = Utils.clone(this.resizer.process(myBufferedImageSTOCKED));
-        myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
-    }
-
-    /**
-     * Trigger the cropping process.
-     * @param sliderValue is the actual value of the slider.
-     */
-    void cropDisplayedImage(double sliderValue, BufferedImage myBufferedImageSTOCKED, ImageView myImage) {
-        this.cropper.setCoef(sliderValue);
-        this.cropper.setDirection(this.getDirection());
-        BufferedImage myBufferedImage = this.cropper.process(myBufferedImageSTOCKED);
-        myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
     }
 
     /**
@@ -203,32 +180,12 @@ class View {
         myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
     }
 
-    /**
-     * Trigger Seam Carving process.
-     * @param sliderValue is the percentage of width to display.
-     */
-    void seamCarveDisplayedImage(double sliderValue, BufferedImage myBufferedImage, ImageView myImage) {
-        this.seamCarver.setDirection(this.getDirection());
-        double coef =  (0.01 < sliderValue / 100) ? abs(sliderValue) / 100 : 0.01; // Slider a 100: 100%, Slider a 0: 10%
-        int actualReferenceSize;
-        if(this.getDirection().equals("H"))
-            actualReferenceSize= myBufferedImage.getWidth();
-        else // direction "V"
-            actualReferenceSize = myBufferedImage.getHeight();
-
-        int nbOfSeamToDestroy = actualReferenceSize - (int)(coef*actualReferenceSize);
-        this.seamCarver.setNbOfSeamToWithdraw(nbOfSeamToDestroy);
-        BufferedImage img = this.seamCarver.process(myBufferedImage);
-        myBufferedImage = Utils.clone(img);
-        myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
-    }
-
     /** Display X and Y position of the pointer.
      * @param X is the x-coordinate on the imageView.
      * @param Y is the y-coordinate on the imageView.
      */
     void updatePointerPositionLabel(double X, double Y, BufferedImage myBufferedImage, ImageView myImage,
-        Label pointerPositionLabel){
+                                    Label pointerPositionLabel){
         double coefViewReal;
         if (this.getDirection().equals("H"))
             coefViewReal = myImage.getFitHeight()/myBufferedImage.getHeight();

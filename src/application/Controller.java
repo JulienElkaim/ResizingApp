@@ -64,6 +64,11 @@ public class Controller {
     //    private Colorizer colorizer = new Colorizer();
     private FileManager fileManager = new FileManager();
     private UserHelper userHelper = new UserHelper();
+    private Resizer resizer = new Resizer();
+    private Cropper cropper = new Cropper();
+    private Zoomer zoomer = new Zoomer();
+    private SeamCarver seamCarver = new SeamCarver();
+
 
 
     /**
@@ -96,16 +101,7 @@ public class Controller {
         this.sliderListenerLabel.setText(this.updateListenerLabel(view.sliderListener));
         this.mySlider.valueProperty().addListener(this::ListenSlider);
     }
-//
-//    /**
-//     * This method initialize the GradientItems used to display GradientPainter computation.
-//     */
-//    private void initializeGradientItems() {
-//        this.redG.setFill(javafx.scene.paint.Color.RED);
-//        this.greenG.setFill(javafx.scene.paint.Color.GREEN);
-//        this.blueG.setFill(javafx.scene.paint.Color.BLUE);
-//    }
-//
+
     /**
      * Function called when the Slider's value changes, notifications are not used because we chose a "toggle framework".
      * @param ov      is the observable value of the slider.
@@ -115,20 +111,80 @@ public class Controller {
     private void ListenSlider(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
         switch (view.sliderListener) {
             case "Resize":
-                view.resizeDisplayedImage(new_val.doubleValue(), this.myBufferedImageSTOCKED, this.myImage);
+                this.resizeDisplayedImage(new_val.doubleValue());
                 break;
             case "Zoom":
                 //Just for visualisation, the use of ZOOM with the slider is done by clicking on the imageView
                 break;
             case "Seam Carving":
                 this.myBufferedImage = Utils.clone(this.myBufferedImageSTOCKED);
-                view.seamCarveDisplayedImage(new_val.doubleValue(), this.myBufferedImageSTOCKED, this.myImage);
+                this.seamCarveDisplayedImage(new_val.doubleValue());
                 break;
             case "Crop":
-                view.cropDisplayedImage(new_val.doubleValue(), this.myBufferedImageSTOCKED, this.myImage);
+                this.cropDisplayedImage(new_val.doubleValue());
         }
     }
-//
+
+    /**
+     * Trigger the resizing process.
+     * @param sliderValue is the actual value of the slider.
+     */
+    private void resizeDisplayedImage(double sliderValue) {
+        this.resizer.setCoef(sliderValue);
+        this.resizer.setDirection(this.view.getDirection());
+        this.myBufferedImage = Utils.clone(this.resizer.process(this.myBufferedImageSTOCKED));
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    }
+
+    /**
+     * Trigger the cropping process.
+     * @param sliderValue is the actual value of the slider.
+     */
+    private void cropDisplayedImage(double sliderValue) {
+        this.cropper.setCoef(sliderValue);
+        this.cropper.setDirection(this.view.getDirection());
+        this.myBufferedImage = this.cropper.process(this.myBufferedImageSTOCKED);
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    }
+
+    /**
+     * Trigger zooming process.
+     * @param x           is the x-coordinate of the mouse pointer when click occurred.
+     * @param y           is the y-coordinate of the mouse pointer when click occurred.
+     * @param sliderValue is the actual value of the slider
+     */
+    private void zoomDisplayedImage(double x, double y, double sliderValue) {
+        this.zoomer.setCoef(sliderValue);
+        this.zoomer.setDirection(this.view.getDirection());
+        this.zoomer.setX(x);
+        this.zoomer.setY(y);
+        //to set viewSize, direction needs to be chosen before
+        this.zoomer.setViewSize(this.myImage);
+        this.myBufferedImage = this.zoomer.process(this.myBufferedImage);
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    }
+
+    /**
+     * Trigger Seam Carving process.
+     * @param sliderValue is the percentage of width to display.
+     */
+    private void seamCarveDisplayedImage(double sliderValue) {
+        this.seamCarver.setDirection(this.view.getDirection());
+        double coef =  (0.01 < sliderValue / 100) ? abs(sliderValue) / 100 : 0.01; // Slider a 100: 100%, Slider a 0: 10%
+        int actualReferenceSize;
+        if(this.view.getDirection().equals("H"))
+            actualReferenceSize= this.myBufferedImage.getWidth();
+        else // direction "V"
+            actualReferenceSize = this.myBufferedImage.getHeight();
+
+        int nbOfSeamToDestroy = actualReferenceSize - (int)(coef*actualReferenceSize);
+        this.seamCarver.setNbOfSeamToWithdraw(nbOfSeamToDestroy);
+        BufferedImage img = this.seamCarver.process(this.myBufferedImage);
+        this.myBufferedImage = Utils.clone(img);
+        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
+    }
+
+
     /** Listen the blue slider.
      *
      * @param ov      is the observable value of the slider.
@@ -169,8 +225,8 @@ public class Controller {
         if (this.keyPressed == KeyCode.SHIFT)
             this.resetViewModifications();
         else if (view.sliderListener.equals("Zoom"))
-            view.zoomDisplayedImage(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY(),
-                    this.mySlider.getValue(), this.myBufferedImage, this.myImage);
+            this.zoomDisplayedImage(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY(),
+                    this.mySlider.getValue());
     }
 
     /**
@@ -304,7 +360,7 @@ public class Controller {
      */
     @FXML
     private void imageSeamDisplay() {
-        view.energyImageDisplay(this.myBufferedImageSTOCKED, this.myBufferedImage,"Show next seam", true, this.myImage,
+        view.energyImageDisplay(this.myBufferedImage,"Show next seam", true, this.myImage,
                 this.seamPrintingLabel, this.energyPrintingLabel);
     }
 
@@ -313,7 +369,7 @@ public class Controller {
      */
     @FXML
     private void imageEnergyDisplay() {
-        view.energyImageDisplay(this.myBufferedImageSTOCKED, this.myBufferedImage,"Energy computation", false, this.myImage,
+        view.energyImageDisplay(this.myBufferedImage,"Energy computation", false, this.myImage,
                 this.seamPrintingLabel, this.energyPrintingLabel);
     }
 
