@@ -180,6 +180,28 @@ class View {
         myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
     }
 
+    /**
+     * Trigger the resizing process.
+     * @param sliderValue is the actual value of the slider.
+     */
+    void resizeDisplayedImage(double sliderValue, BufferedImage myBufferedImageSTOCKED, ImageView myImage) {
+        this.resizer.setCoef(sliderValue);
+        this.resizer.setDirection(this.getDirection());
+        BufferedImage myBufferedImage = Utils.clone(this.resizer.process(myBufferedImageSTOCKED));
+        myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
+    }
+
+    /**
+     * Trigger the cropping process.
+     * @param sliderValue is the actual value of the slider.
+     */
+    void cropDisplayedImage(double sliderValue, BufferedImage myBufferedImageSTOCKED, ImageView myImage) {
+        this.cropper.setCoef(sliderValue);
+        this.cropper.setDirection(this.getDirection());
+        BufferedImage myBufferedImage = this.cropper.process(myBufferedImageSTOCKED);
+        myImage.setImage(SwingFXUtils.toFXImage(myBufferedImage, null));
+    }
+
     /** Display X and Y position of the pointer.
      * @param X is the x-coordinate on the imageView.
      * @param Y is the y-coordinate on the imageView.

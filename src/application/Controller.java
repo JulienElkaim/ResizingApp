@@ -111,7 +111,7 @@ public class Controller {
     private void ListenSlider(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
         switch (view.sliderListener) {
             case "Resize":
-                this.resizeDisplayedImage(new_val.doubleValue());
+                view.resizeDisplayedImage(new_val.doubleValue(), this.myBufferedImageSTOCKED, this.myImage);
                 break;
             case "Zoom":
                 //Just for visualisation, the use of ZOOM with the slider is done by clicking on the imageView
@@ -121,47 +121,8 @@ public class Controller {
                 this.seamCarveDisplayedImage(new_val.doubleValue());
                 break;
             case "Crop":
-                this.cropDisplayedImage(new_val.doubleValue());
+                view.cropDisplayedImage(new_val.doubleValue(), this.myBufferedImageSTOCKED, this.myImage);
         }
-    }
-
-    /**
-     * Trigger the resizing process.
-     * @param sliderValue is the actual value of the slider.
-     */
-    private void resizeDisplayedImage(double sliderValue) {
-        this.resizer.setCoef(sliderValue);
-        this.resizer.setDirection(this.view.getDirection());
-        this.myBufferedImage = Utils.clone(this.resizer.process(this.myBufferedImageSTOCKED));
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-    }
-
-    /**
-     * Trigger the cropping process.
-     * @param sliderValue is the actual value of the slider.
-     */
-    private void cropDisplayedImage(double sliderValue) {
-        this.cropper.setCoef(sliderValue);
-        this.cropper.setDirection(this.view.getDirection());
-        this.myBufferedImage = this.cropper.process(this.myBufferedImageSTOCKED);
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
-    }
-
-    /**
-     * Trigger zooming process.
-     * @param x           is the x-coordinate of the mouse pointer when click occurred.
-     * @param y           is the y-coordinate of the mouse pointer when click occurred.
-     * @param sliderValue is the actual value of the slider
-     */
-    private void zoomDisplayedImage(double x, double y, double sliderValue) {
-        this.zoomer.setCoef(sliderValue);
-        this.zoomer.setDirection(this.view.getDirection());
-        this.zoomer.setX(x);
-        this.zoomer.setY(y);
-        //to set viewSize, direction needs to be chosen before
-        this.zoomer.setViewSize(this.myImage);
-        this.myBufferedImage = this.zoomer.process(this.myBufferedImage);
-        this.myImage.setImage(SwingFXUtils.toFXImage(this.myBufferedImage, null));
     }
 
     /**
@@ -225,8 +186,8 @@ public class Controller {
         if (this.keyPressed == KeyCode.SHIFT)
             this.resetViewModifications();
         else if (view.sliderListener.equals("Zoom"))
-            this.zoomDisplayedImage(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY(),
-                    this.mySlider.getValue());
+            view.zoomDisplayedImage(mouseEvent.getX() - this.myImage.getX(), mouseEvent.getY() - this.myImage.getY(),
+                    this.mySlider.getValue(), this.myBufferedImage, this.myImage);
     }
 
     /**
