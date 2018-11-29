@@ -1,15 +1,16 @@
 .root {
-    -fx-background-color: rgb(250,250,250);
+    -fx-background-color: rgb(250, 250, 250);
 }
+
 .label {
     -fx-font-size: 1.1em;
 }
 
-.paneOfImage{
+.paneOfImage {
     -fx-background-color: #cdd3d3;
 }
 
-.custom-footer .label{
+.custom-footer .label {
     -fx-font-size: 0.95em;
 
 }

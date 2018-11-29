@@ -11,4 +11,3 @@ public interface ImageProcessor {
      */
     BufferedImage process(BufferedImage inputImage);
 }
-

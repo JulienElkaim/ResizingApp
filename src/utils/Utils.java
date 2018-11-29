@@ -12,10 +12,11 @@ public class Utils {
     public static BufferedImage clone(BufferedImage bImage) {
         int maxX = bImage.getWidth();
         int maxY = bImage.getHeight();
-        BufferedImage bImageNew = new BufferedImage(maxX, maxY, BufferedImage.TYPE_INT_RGB);
-        for (int x = 0; x<maxX; x++){
-            for(int y = 0; y<maxY; y++){
-                bImageNew.setRGB(x,y,bImage.getRGB(x,y));
+        BufferedImage bImageNew = new BufferedImage(maxX, maxY,
+                BufferedImage.TYPE_INT_RGB);
+        for (int x = 0; x < maxX; x++) {
+            for (int y = 0; y < maxY; y++) {
+                bImageNew.setRGB(x, y, bImage.getRGB(x, y));
             }
         }
         return bImageNew;
@@ -26,7 +27,8 @@ public class Utils {
      * Retrieve interesting content of a specific string format.
      *
      * @param src is the String where the interesting text is.
-     * @return a string containing the name of the item generator of this string.
+     * @return a string containing the name of the item generator of this
+     * string.
      */
     public static String getButtonText(String src) {
         StringBuilder myStr = new StringBuilder();

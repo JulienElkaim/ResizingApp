@@ -92,14 +92,14 @@ __Mode d'emploi :__ Au clavier `Ctrl + S` ou à partir du menu *File > Save*.
 ### Persistance des modifications
 __Fonctionnalité :__ permet d'enregistrer les modifications sur image depuis le dernier enregistrement (checkpoint).
 
-__Mode d'emploi :__ Au clavier `Ctrl + Shift + S` ou à partir du menu  *Edit > Create checkpoint*.
+__Mode d'emploi :__ Au clavier `Ctrl + V` ou à partir du menu  *Changes > Create checkpoint*.
 
 Mis en oeuvre car il n'enregistre que les modifications, il ne crée pas pour autant un fichier image au même titre que Save.
 
 ### Remise à zéro des modifications
 __Fontionalité :__ permet d'annuler les modifications effectuées depuis le dernier checkpoint
 
-__Mode d'emploi :__ Au clavier `Ctrl + Shift + C` pour revenir au dernier enregistrement (checkpoint) ou à partir du menu *Edit > Cancel changes since checkpoint*.
+__Mode d'emploi :__ Au clavier `Ctrl + Shift + V` pour revenir au dernier enregistrement (checkpoint) ou à partir du menu *Edit > Cancel changes since checkpoint*.
 
 Mis en oeuvre pour permettre à l'utilisateur de revenir en arrière pour éviter d'enchainer les changements innoportuns.
 
@@ -109,7 +109,7 @@ __Fonctionnalité :__ Permet de zoomer sur l'image de manière intuitive par un 
 __Mode d'emploi :__
 1. Sélectionner la fonction Zoom en appuyant sur le bouton Zoom (option par défaut au lancement)
 1. Ajuster le curseur pour définir le facteur de zoom
-1. Cliquer sur l'image définir le centre de zoom
+1. Cliquer sur l'image pour définir le centre de zoom
 
 Implémenté pour permettre à l'utilisateur d'obtenir directement une sous image de manière très précise dans l'image. La valeur du curseur est utilisée pour définir le facteur de zoom.
 
@@ -179,9 +179,9 @@ __Mode d'emploi :__
 Ouverture (_Open_) d'un fichier image.
 > - **Ctrl + D** 
 Modification du sens (_Direction_) des traitements sur image.
-> - **Ctrl + Shift + S** 
+> - **Ctrl + V** 
 Persistance des modifications réalisées (_Save checkpoint_).
-> - **Ctrl + Shift + C** 
+> - **Ctrl + Shift + V** 
 Annualation (_Cancel_) des modifications effectués depuis le dernier checkpoint
 > - **Ctrl + S** 
 Enregistrement (_Save_) des modifications en fichier image.
