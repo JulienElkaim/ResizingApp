@@ -39,6 +39,16 @@ public class SeamCarver implements ImageProcessor {
         return img;
     }
 
+    /**
+     * Determine the color of the pixels around pixel of interest (x,y)
+     *
+     * @param imgToCompute is the BufferedImage to filter
+     * @param x absciss of the pixel of interest
+     * @param y ordinate of the pixel of interest
+     * @param maxX width of the image
+     * @param maxY height of the image
+     * @return colors of pixels on the left, on the right, on top and on bottom of the pixel of interest
+     */
     private static Color[] determineNeighbours(BufferedImage imgToCompute, int x, int y, int maxX, int maxY){
         Color myLeftPixelColor;
         Color myRightPixelColor;
