@@ -37,14 +37,27 @@ public class GradientPainter implements ImageProcessor {
         if (this.gradientColor != null) {
             int maxX = gradientBImage.getWidth();
             int maxY = gradientBImage.getHeight();
+            Color myLeftPixelColor;
+            Color myRightPixelColor;
 
-            for (int x = 2; x < maxX - 1; x++) {
+            for (int x = 1; x < maxX; x++) {
                 for (int y = 1; y < maxY; y++) {
-
-                    Color myRightPixelColor = new Color(
+                    if (x == 1){
+                        myLeftPixelColor = new Color(
+                                myBufferedImage.getRGB(x,y));
+                        myRightPixelColor = new Color(
+                                myBufferedImage.getRGB(x + 1, y));
+                    } else if (x == maxX-1) {
+                        myRightPixelColor = new Color(
+                                myBufferedImage.getRGB(x, y));
+                        myLeftPixelColor = new Color(
+                                myBufferedImage.getRGB(x - 1, y));
+                    } else {
+                        myRightPixelColor = new Color(
                             myBufferedImage.getRGB(x + 1, y));
-                    Color myLeftPixelColor = new Color(
+                        myLeftPixelColor = new Color(
                             myBufferedImage.getRGB(x - 1, y));
+                    }
 
                     int colorChange = 0;
                     int Left = 0;

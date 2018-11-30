@@ -39,8 +39,36 @@ public class SeamCarver implements ImageProcessor {
         return img;
     }
 
+    private static Color[] determineNeighbours(BufferedImage imgToCompute, int x, int y, int maxX, int maxY){
+        Color myLeftPixelColor;
+        Color myRightPixelColor;
+        Color myTopPixelColor;
+        Color myBottomPixelColor;
+        if (x == 1) {
+            myLeftPixelColor = new Color(imgToCompute.getRGB(x, y));
+            myRightPixelColor = new Color(imgToCompute.getRGB(x + 1, y));
+        } else if (x == maxX - 1) {
+            myLeftPixelColor = new Color(imgToCompute.getRGB(x - 1, y));
+            myRightPixelColor = new Color(imgToCompute.getRGB(x, y));
+        } else {
+            myLeftPixelColor = new Color(imgToCompute.getRGB(x - 1, y));
+            myRightPixelColor = new Color(imgToCompute.getRGB(x + 1, y));
+        };
+        if (y == 1) {
+            myTopPixelColor = new Color(imgToCompute.getRGB(x, y));
+            myBottomPixelColor = new Color(imgToCompute.getRGB(x, y + 1));
+        } else if (y == maxY - 1) {
+            myTopPixelColor = new Color(imgToCompute.getRGB(x, y - 1));
+            myBottomPixelColor = new Color(imgToCompute.getRGB(x, y));
+        } else {
+            myTopPixelColor = new Color(imgToCompute.getRGB(x, y - 1));
+            myBottomPixelColor = new Color(imgToCompute.getRGB(x, y + 1));
+        }
+        return new Color[]{myLeftPixelColor, myRightPixelColor, myTopPixelColor, myBottomPixelColor};
+    }
+
     /**
-     * BUG BUG BUG: Need to compute energy for border pixel (x=2, y=2...)
+     * Calculate the energy of a buffered image.
      *
      * @param imgToCompute is the bufferedImage on which to run energy computation.
      * @return BufferedImage that represent energy of the initial image.
@@ -49,20 +77,22 @@ public class SeamCarver implements ImageProcessor {
         int maxX = imgToCompute.getWidth();
         int maxY = imgToCompute.getHeight();
         BufferedImage newBImage = Utils.clone(imgToCompute);
-        for (int x = 2; x < maxX - 1; x++) {
-            for (int y = 2; y < maxY - 1; y++) {
-                Color myLeftPixelColor = new Color(
-                        imgToCompute.getRGB(x - 1, y));
-                Color myRightPixelColor = new Color(
-                        imgToCompute.getRGB(x + 1, y));
-                Color myTopPixelColor = new Color(
-                        imgToCompute.getRGB(x, y - 1));
-                Color myBottomPixelColor = new Color(
-                        imgToCompute.getRGB(x, y + 1));
-                int energyRed;
-                int energyGreen;
-                int energyBlue;
-                int energy;
+        Color myLeftPixelColor;
+        Color myRightPixelColor;
+        Color myTopPixelColor;
+        Color myBottomPixelColor;
+        int energyRed;
+        int energyGreen;
+        int energyBlue;
+        int energy;
+
+        for (int x = 1; x < maxX; x++) {
+            for (int y = 1; y < maxY; y++) {
+                myLeftPixelColor = determineNeighbours(imgToCompute, x, y, maxX, maxY)[0];
+                myRightPixelColor = determineNeighbours(imgToCompute, x, y, maxX, maxY)[1];
+                myTopPixelColor = determineNeighbours(imgToCompute, x, y, maxX, maxY)[2];
+                myBottomPixelColor = determineNeighbours(imgToCompute, x, y, maxX, maxY)[3];
+
                 energyRed = abs(
                         myLeftPixelColor.getRed() - myRightPixelColor.getRed())
                         + abs(myTopPixelColor.getRed()

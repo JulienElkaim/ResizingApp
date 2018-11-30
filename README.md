@@ -17,11 +17,11 @@
     1. [Choix de la direction du traitement d'image](#choix-de-la-direction-du-traitement-dimage)   
     1. [Colorisation](#colorisation)
 1. [Interface utilisateur](#interface-utilisateur)
-    1. [Aperçu de l'interface utilisateur](#Aperçu de l'interface utilisateur)
-    1. [Affichages contextuels](#Affichages contextuels)
+    1. [Aperçu de l'interface utilisateur](#aperçu-de-l'interface-utilisateur)
+    1. [Affichages contextuels](#affichages-contextuels)
     1. [Raccourcis clavier](#raccourcis-clavier)
     1. [Fonction d'aide (Help)](#fonction-daide-help)
-1. [Exemple de résultats](#Exemples de résultats)
+1. [Exemple de résultats](#exemples-de-résultats)
 
 ## Introduction 
 Java 11, JavaFx
@@ -47,9 +47,22 @@ Cette application permettra d'effectuer les opérations suivantes sur une image 
 * gradient 
     * a soulevé le problème de la copie de la BufferedImage
     
-* Multi Direction *(extension)*
-    * a suscité de
+* on a rencontré des erreurs de type NullPointerException. Il a fallu résoudre ce problème par des if pour traiter les
+les exceptions
 
+* quand nous avons travaillé avec les images, on a remarqué qu'il était nécessaire de les cloner pour en avoir une
+bonne copie
+
+* l'interface utilisateur plante durant le processing -> trouver un moyen de faire tourner les tâches en arrière plan
+   
+* rajout d'une image de taille plus faible que l'image du château (Broadway) pour que les opérations soient plus rapides
+     à effectuer et à tester
+
+* nous avons rencontrés des bugs et ajouté des tests afin de les trouver
+
+* problèmes lors du traitement des différents canaux de couleur. On a donc ajouté un enum pour éviter de se mélanger et
+clarifier le traitement des différentes couleurs.
+ 
 ## Fonctionnalités de base
 
 ### Ouverture du fichier (Open)
@@ -199,13 +212,17 @@ __Mode d'emploi :__ Au clavier `F1` ou à partir du menu *Help*.
 Les traitements ont été réalisés selon la direction horizontale.
 
 __Image d'origine__
+
 <img src="./img/broadway.jpg" alt = "Image d'origine, voir dans dossier img si erreur d'affichage" width="714"/>
 
 __Image après recadrage (Crop)__
+
 <img src="./example/AfterCrop.jpg" alt = "Image après recadrage, voir dans dossier img si erreur d'affichage" width="482"/>
 
 __Image après mise à l'échelle (Resize)__
+
 <img src="./example/AfterResize.jpg" alt = "Image après redimensionnement, voir dans dossier img si erreur d'affichage" width="482"/>
 
 __Image après suppression de bandelettes (Carve seams)__
-<img src="./example/afterSeamCarving2.jpg" alt = "Image après seam carving, voir dans dossier img si erreur d'affichage" width="482"/>
+
+<img src="./example/afterSeamCarving.jpg" alt = "Image après seam carving, voir dans dossier img si erreur d'affichage" width="482"/>
