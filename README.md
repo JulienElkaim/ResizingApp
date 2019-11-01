@@ -1,4 +1,5 @@
-# ResizingApp
+# ResizingApp  
+_**School project : Nov. 2018**_
 
 ## Table des matières
 1. [Introduction](#introduction)
